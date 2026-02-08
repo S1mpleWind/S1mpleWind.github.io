@@ -104,7 +104,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">1</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">1</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">2</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">2</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">2</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">3</span></a></li>
   </ul>
 </nav>
 
@@ -143,18 +143,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">3</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -179,6 +179,104 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/02/08/azure-server/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="S1mpleWind">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="S1mpleWind's blog">
+      <meta itemprop="description" content="If you don't play , you won't learn.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | S1mpleWind's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/02/08/azure-server/" class="post-title-link" itemprop="url">azure-server</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2026-02-08 20:40:13 / Modified: 21:09:32" itemprop="dateCreated datePublished" datetime="2026-02-08T20:40:13+08:00">2026-02-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="使用azure搭建服务器"><a href="#使用azure搭建服务器" class="headerlink" title="使用azure搭建服务器"></a>使用azure搭建服务器</h1><p>最近看到github education有能白嫖的azure额度，以及一年的免费域名，于是乎就整了一个服务器玩玩</p>
+<h2 id="0-准备阶段"><a href="#0-准备阶段" class="headerlink" title="0.准备阶段"></a>0.准备阶段</h2><h3 id="1）学生认证"><a href="#1）学生认证" class="headerlink" title="1）学生认证"></a>1）学生认证</h3><p>首先需要进行<code>github education</code>的申请<a target="_blank" rel="noopener" href="https://github.com/education">github education</a>，用自己的教育邮箱、学生证即可。因为要验证你的地区，所以申请的时候可以连上学校的vpn，这样亲测认证方便一点</p>
+<h3 id="2）azure"><a href="#2）azure" class="headerlink" title="2）azure"></a>2）azure</h3><p>然后就是去登录azure账号，搜一下azure，登录账号的时候选择<strong>sign in with Github</strong>即可</p>
+<p>（如果直接用GitHub登录失败，可能是没识别绑定的邮箱，比如你github用的<strong>主邮箱</strong>不是教育邮箱，这个时候用主邮箱注册一个微软账户，然后再用GitHub登录azure就行了）</p>
+<h3 id="3）域名"><a href="#3）域名" class="headerlink" title="3）域名"></a>3）域名</h3><p>GitHub教育包提供了一年的免费域名，进入<a target="_blank" rel="noopener" href="https://education.github.com/pack#namecheap">student dev pack</a>，找到·namecheap·，就可以搜索一个你喜欢的域名，领取一年免费的使用权</p>
+<hr>
+<h2 id="1-搭建服务器"><a href="#1-搭建服务器" class="headerlink" title="1. 搭建服务器"></a>1. 搭建服务器</h2><p>搭建服务器就是在azure里面创建一个虚拟机，然后就可以玩了</p>
+<p>这一步网上有很多教程，这里贴一个[知乎教程](<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/629609870">(38 条消息) 大学生都可领取的免费服务器！使用Azure学生订阅创建免费的Linux和Windows服务器 - 知乎</a>)，可惜好像以后basic里不能免费给公网ip了</p>
+<p>以下是我的虚拟机![屏幕截图 2026-02-08 205742](C:\Users\20811\Desktop\屏幕截图 2026-02-08 205742.png)</p>
+<hr>
+<h2 id="2-域名"><a href="#2-域名" class="headerlink" title="2.域名"></a>2.域名</h2><p>注册完虚拟机之后，他给我们的是动态ip，所以不能直接在我们的域名里加一个<code>A record</code>，因为ip变了之后就会解析失败</p>
+<p>可以看到<strong>上图</strong>中有一个<code>DNS 名称</code>,这里刚创立的时候其实是没有的，你可以输一个自己喜欢的，然后azure会帮你用**Fully Qualified Domain Name (FQDN)**来绑到这个域名。</p>
+<p>这样之后就可以在我们刚刚“买”的域名中配置一个<code>CNAME</code>,如下图所示，添加一条记录即可</p>
+<p>![屏幕截图 2026-02-08 210515](D:\FILES_N_Data\my-blog\source_posts\azure-server\屏幕截图 2026-02-08 210515.png)</p>
+<hr>
+<h2 id="3-搭网站"><a href="#3-搭网站" class="headerlink" title="3.搭网站"></a>3.搭网站</h2><p>到这就可以在上面搭建你的网页了</p>
+<p>但是我发现我有<code>github.io</code>了，不需要一个再部署静态网页的地方，这里就没有写网站</p>
+<hr>
+<h2 id="4-vpn"><a href="#4-vpn" class="headerlink" title="4. vpn"></a>4. vpn</h2><p>本着不浪费的原则，打算当梯子用</p>
+<p>正在更新中</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
