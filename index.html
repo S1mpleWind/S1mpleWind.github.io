@@ -218,7 +218,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2026-02-08 20:40:13 / Modified: 21:09:32" itemprop="dateCreated datePublished" datetime="2026-02-08T20:40:13+08:00">2026-02-08</time>
+      <time title="Created: 2026-02-08 20:40:13 / Modified: 21:44:18" itemprop="dateCreated datePublished" datetime="2026-02-08T20:40:13+08:00">2026-02-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -248,12 +248,12 @@
 <hr>
 <h2 id="1-搭建服务器"><a href="#1-搭建服务器" class="headerlink" title="1. 搭建服务器"></a>1. 搭建服务器</h2><p>搭建服务器就是在azure里面创建一个虚拟机，然后就可以玩了</p>
 <p>这一步网上有很多教程，这里贴一个[知乎教程](<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/629609870">(38 条消息) 大学生都可领取的免费服务器！使用Azure学生订阅创建免费的Linux和Windows服务器 - 知乎</a>)，可惜好像以后basic里不能免费给公网ip了</p>
-<p>以下是我的虚拟机![屏幕截图 2026-02-08 205742](C:\Users\20811\Desktop\屏幕截图 2026-02-08 205742.png)</p>
+<p>以下是我的虚拟机![屏幕截图 2026-02-08 205742](屏幕截图 2026-02-08 205742.png)</p>
 <hr>
 <h2 id="2-域名"><a href="#2-域名" class="headerlink" title="2.域名"></a>2.域名</h2><p>注册完虚拟机之后，他给我们的是动态ip，所以不能直接在我们的域名里加一个<code>A record</code>，因为ip变了之后就会解析失败</p>
 <p>可以看到<strong>上图</strong>中有一个<code>DNS 名称</code>,这里刚创立的时候其实是没有的，你可以输一个自己喜欢的，然后azure会帮你用**Fully Qualified Domain Name (FQDN)**来绑到这个域名。</p>
 <p>这样之后就可以在我们刚刚“买”的域名中配置一个<code>CNAME</code>,如下图所示，添加一条记录即可</p>
-<p>![屏幕截图 2026-02-08 210515](D:\FILES_N_Data\my-blog\source_posts\azure-server\屏幕截图 2026-02-08 210515.png)</p>
+<p>![屏幕截图 2026-02-08 210515](屏幕截图 2026-02-08 210515.png)</p>
 <hr>
 <h2 id="3-搭网站"><a href="#3-搭网站" class="headerlink" title="3.搭网站"></a>3.搭网站</h2><p>到这就可以在上面搭建你的网页了</p>
 <p>但是我发现我有<code>github.io</code>了，不需要一个再部署静态网页的地方，这里就没有写网站</p>
@@ -322,7 +322,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-01-15 20:42:38" itemprop="dateModified" datetime="2026-01-15T20:42:38+08:00">2026-01-15</time>
+      <time title="Modified: 2026-02-08 21:43:04" itemprop="dateModified" datetime="2026-02-08T21:43:04+08:00">2026-02-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -456,7 +456,7 @@
 <li>从仓库中恢复不同版本的文件<br><img src="/2026/01/14/Git-Guide-0/1.jpeg" alt="Git组成框架"></li>
 </ul>
 <p>但是划分成这三个区域究竟有什么用呢？<br>在图形化界面中，我们往往只能从资源管理器中看到工作区。也就是普通的目录<br><img src="/2026/01/14/Git-Guide-0/2.png" alt="在这里插入图片描述"></p>
-<p>而我们的缓存区和仓库通常是储存在一个名为.git的隐藏文件夹里的<br>使用<code>ls -a</code>可以显示所有的目录<br><img src="/2026/01/14/Git-Guide-0/3.png" alt="在这里插入图片描述"><br>打开.git目录<br><img src="/4.png#pic_center" alt="在这里插入图片描述"></p>
+<p>而我们的缓存区和仓库通常是储存在一个名为.git的隐藏文件夹里的<br>使用<code>ls -a</code>可以显示所有的目录<br><img src="/2026/01/14/Git-Guide-0/3.png" alt="在这里插入图片描述"><br>打开.git目录<br><img src="/2026/01/14/Git-Guide-0/4.png" alt="在这里插入图片描述"></p>
 <p>那么文件夹里有这么多东西，又分别是用来干嘛的呢？</p>
 <p>下面简单介绍一下 <code>.git</code> 文件夹里这些主要文件和目录的作用：</p>
 <hr>
