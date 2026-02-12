@@ -21,22 +21,22 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"s1mplewind.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.26.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="Speculative-Decoding , LLM推理的加速 这篇文章简单介绍一下我学习spec-decoding的过程，以及一些学习笔记  Speculative Decoding Speculative decoding 是使用轻量的draft model去一次性生成多个token,然后交给原本的llm去进行验证。 假设我们一次性生成kkk个token，那么整个过程的 cost&#x3D;decod">
+    <meta name="description" content="Speculative-Decoding , LLM推理的加速 这篇文章简单介绍一下我学习spec-decoding的过程，以及一些学习笔记  Speculative Decoding Speculative decoding 是使用轻量的draft model去一次性生成多个token,然后交给原本的llm去进行验证。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Speculative-Decoding">
 <meta property="og:url" content="http://s1mplewind.github.io/2026/02/12/Speculative-Decoding/index.html">
 <meta property="og:site_name" content="S1mpleWind&#39;s blog">
-<meta property="og:description" content="Speculative-Decoding , LLM推理的加速 这篇文章简单介绍一下我学习spec-decoding的过程，以及一些学习笔记  Speculative Decoding Speculative decoding 是使用轻量的draft model去一次性生成多个token,然后交给原本的llm去进行验证。 假设我们一次性生成kkk个token，那么整个过程的 cost&#x3D;decod">
+<meta property="og:description" content="Speculative-Decoding , LLM推理的加速 这篇文章简单介绍一下我学习spec-decoding的过程，以及一些学习笔记  Speculative Decoding Speculative decoding 是使用轻量的draft model去一次性生成多个token,然后交给原本的llm去进行验证。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://s1mplewind.github.io/2026/02/12/Speculative-Decoding/medusa-1770779280396-1.png">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/02/12/Speculative-Decoding/medusa.png">
 <meta property="og:image" content="http://s1mplewind.github.io/2026/02/12/Speculative-Decoding/tree-mask.png">
-<meta property="og:image" content="http://s1mplewind.github.io/2026/02/12/Speculative-Decoding/sparse-tree.png">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/02/12/Speculative-Decoding/sparse_tree.png">
 <meta property="article:published_time" content="2026-02-12T10:06:56.000Z">
-<meta property="article:modified_time" content="2026-02-12T10:06:56.845Z">
+<meta property="article:modified_time" content="2026-02-12T10:23:10.503Z">
 <meta property="article:author" content="S1mpleWind">
 <meta property="article:tag" content="LLM-inferrence">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://s1mplewind.github.io/2026/02/12/Speculative-Decoding/medusa-1770779280396-1.png">
+<meta name="twitter:image" content="http://s1mplewind.github.io/2026/02/12/Speculative-Decoding/medusa.png">
 
 
 <link rel="canonical" href="http://s1mplewind.github.io/2026/02/12/Speculative-Decoding/">
@@ -264,8 +264,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
+      
 
-      <time title="Created: 2026-02-12 18:06:56" itemprop="dateCreated datePublished" datetime="2026-02-12T18:06:56+08:00">2026-02-12</time>
+      <time title="Created: 2026-02-12 18:06:56 / Modified: 18:23:10" itemprop="dateCreated datePublished" datetime="2026-02-12T18:06:56+08:00">2026-02-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -312,6 +313,7 @@
 <p>这篇文章简单介绍一下我学习spec-decoding的过程，以及一些学习笔记</p>
 <h2 id="speculative-decoding"><a class="markdownIt-Anchor" href="#speculative-decoding"></a> Speculative Decoding</h2>
 <p>Speculative decoding 是使用轻量的<strong>draft model</strong>去<em>一次性生成多个</em>token,然后交给原本的llm去进行<em>验证</em>。</p>
+<span id="more"></span>
 <p>假设我们一次性生成<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span>个token，那么整个过程的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mi>o</mi><mi>s</mi><mi>t</mi><mo>=</mo><mi>d</mi><mi>e</mi><mi>c</mi><mi>o</mi><mi>d</mi><mi>i</mi><mi>n</mi><msub><mi>g</mi><mrow><mi>d</mi><mi>r</mi><mi>a</mi><mi>f</mi><mi>t</mi></mrow></msub><mo>∗</mo><mi>k</mi><mo>+</mo><mi>f</mi><mi>o</mi><mi>r</mi><mi>w</mi><mi>a</mi><mi>r</mi><msub><mi>d</mi><mrow><mi>l</mi><mi>l</mi><mi>m</mi></mrow></msub></mrow><annotation encoding="application/x-tex">cost = decoding_{draft} * k + forward_{llm}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61508em;vertical-align:0em;"></span><span class="mord mathnormal">c</span><span class="mord mathnormal">o</span><span class="mord mathnormal">s</span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.980548em;vertical-align:-0.286108em;"></span><span class="mord mathnormal">d</span><span class="mord mathnormal">e</span><span class="mord mathnormal">c</span><span class="mord mathnormal">o</span><span class="mord mathnormal">d</span><span class="mord mathnormal">i</span><span class="mord mathnormal">n</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">m</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></p>
 <p>这里验证阶段我用的是<code>forward</code>而不是<code>decoding</code>，这里是利用了forward的<em>并行</em>特点，类似于训练过程</p>
 <p>所以要想拥有加速收益，就要有</p>
@@ -327,11 +329,12 @@
 <p>但是一般来说，越轻量的 Draft 模型，overhead 越低，但模型效果越差，导致接受率越低；越重的轻量模型，overhead 可能又过高，反而对性能造成伤害</p>
 <p>所以寻找<strong>draft-model</strong>的成本可能很高。一般来说可能选择同一模型家族的小规格比较合适，但是对于一些已经是<strong>7B/13B</strong>的模型，家族里更小的很难找到。而且直接预训练一个更小的模型，除了训练成本较高以外，还因为无法获得与原始模型相同分布的预训练数据使得 Tokens 生成概率分布很难接近，接受率低</p>
 <p>此外，纯Spec的方法是建立在<code>token-level</code>的采样之上的，是根据draft生成的token进行推理并验证。限制了轻量模型的准确率，影响 Draft Token 的接收率</p>
+<hr />
 <h2 id="medusa"><a class="markdownIt-Anchor" href="#medusa"></a> Medusa</h2>
 <p>原始的Spec Decoding的一大难点就在于获取<code>draft model</code>这个独立的小模型</p>
 <p>所以一个的思路就是通过复用原始 LLM 已有的权重，训练出参数规模较小的增量权重，这些增量的权重可以视作原始 LLM 的偏差，用于预测 Draft Token，也就是<code>medusa</code>干的，用多个’LM Head’去预测不同位置的token</p>
 <h3 id="一-pipeline"><a class="markdownIt-Anchor" href="#一-pipeline"></a> 一、pipeline</h3>
-<p><img src="medusa-1770779280396-1.png" alt="medusa-pipeline" /></p>
+<p><img src="medusa.png" alt="medusa-pipeline" /></p>
 <p>如上图所示，不同的head由<code>Last Hidden</code>生成了不同位置的token。</p>
 <p>规定<em>next token</em>为第<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>个token。第<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi></mrow><annotation encoding="application/x-tex">i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.65952em;vertical-align:0em;"></span><span class="mord mathnormal">i</span></span></span></span>个位置生成的候选token是一个hyper parameter，是从生成的logits中选择<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mi>o</mi><mi>p</mi><mo>−</mo><msub><mi>s</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">top-s_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.80952em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">t</span><span class="mord mathnormal">o</span><span class="mord mathnormal">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，最终得到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>s</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">s_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>个token。这样将构建出一个树</p>
 <p>从这个<em>Candidate</em>树中，验证是否符合原先的LLM，最后再输出</p>
@@ -367,7 +370,7 @@ feed-forward network with a residual connection)来作为 medusa head</p>
 </li>
 </ol>
 <p>可以看出在固定节点数量的情况下，想要最后的期望能尽量大，就要选择accuracy高的节点。按照这个算法就可以剪枝，下图为选取64nodes的<em>sparse tree</em></p>
-<p><img src="sparse-tree.png" alt="sparse-tree" /></p>
+<p><img src="sparse_tree.png" alt="sparse-tree" /></p>
 <h3 id="五-训练"><a class="markdownIt-Anchor" href="#五-训练"></a> 五、训练</h3>
 <p>To be continued</p>
 
