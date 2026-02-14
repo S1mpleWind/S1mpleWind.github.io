@@ -1,80 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>EAGLE</title>
-    <url>/2026/02/13/EAGLE/</url>
-    <content><![CDATA[<h1 id="extrapolation-algorithm-for-greater-language-model-efficiency-eagle-算法学习"><a class="markdownIt-Anchor" href="#extrapolation-algorithm-for-greater-language-model-efficiency-eagle-算法学习"></a> Extrapolation Algorithm for Greater Language-model Efficiency  , EAGLE 算法学习</h1>
-<p>前面看完了<code>Medusa</code>方法，再看加速效果更好的<code>EAGLE</code></p>
-<p>下图是这几种方法的对比：</p>
-<ul>
-<li>spec sampling 是 token-level</li>
-<li>Medusa 是利用一个 feature 用不同的 head 去预测不同位置的 token</li>
-<li>EAGLE 是将 token 和 feature 混合输入</li>
-</ul>
-<p><img src="contrast.png" alt="contrast" /></p>
-<p>论文首先指出这个方法的提出和实现基于两个观察：</p>
-<ul>
-<li>feature-level 的自回归比 token-level 要容易，因为token的采样是随机的</li>
-<li>sampling 过程中产生的随机性会显著限制预测 next feature 的表现，而在输入中加入上次采样得到的 token ，能有效消除这种不确定性</li>
-</ul>
-<h2 id="提炼"><a class="markdownIt-Anchor" href="#提炼"></a> 提炼</h2>
-<p>看完整篇论文，我认为相较于 Medusa 利用多头去处理 feature ，EAGLE则是训练了一个针对 feature 的 draft model 。</p>
-<p>针对上面的<em>观察一</em>，我的理解是：一个标准的 llm 输入输出都是 token ，而 token 采样的时候引入了不确定性，这会要求模型有更多的参数和计算来提升精度，因此很难获取一个非常理想的 token-level 的 draft model  。并且由于 token-level 的问题是<strong>离散空间里稀疏变量</strong>的问题，而 feature 则是一个<strong>高维的连续向量</strong>。因此 feature 的变化是容易学习的，针对他设计的模型也更简单，推理也快得多</p>
-<p>而针对上面的<em>观察二</em>，我的理解是：在常规llm流程中，一般是 hidden_states -&gt; logits -&gt; 采样得到token -&gt; hidden_state，也就是说采样这一步给feature引入了不确定性。为了消除这个不确定性，可以把采样完的 token 和 hidden_state(feature) 一并输入；换句话说，从 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">f_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 出发，当前的 feature 并不知道自己要往哪个方向进行变化，因为是 token 的采样决定了它这一轮的变化，所以将采样完的 token 一并作为数据，相当于告诉了 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">f_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 一个走向 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">f_{i+1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.902771em;vertical-align:-0.208331em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span></span></span></span>的方向，可以极大消除的不确定性，提高接受率。</p>
-<hr />
-<h2 id="论文节选"><a class="markdownIt-Anchor" href="#论文节选"></a> 论文节选</h2>
-<h3 id="1-eagle-pipeline-draft-model"><a class="markdownIt-Anchor" href="#1-eagle-pipeline-draft-model"></a> 1. EAGLE pipeline / Draft Model</h3>
-<p>下图为 EAGLE 推理的流程：</p>
-<ul>
-<li>green : embedding</li>
-<li>orange : feature</li>
-<li>red : prediction of draft model</li>
-<li>blue (with snow icon) : target LLM parameter</li>
-</ul>
-<p><img src="pipeline1.png" alt="pipeline1" /></p>
-<p>可以看到这里 Draft Model 由三部分组成：</p>
-<ol>
-<li>Embedding Layer : 与目标 LLM 共享</li>
-<li>LM Head : 与目标 LLM 共享</li>
-<li>Autoregression Head ：由一层 FC layer 和一层 decoder 构成</li>
-</ol>
-<p>Draft Model 的输入是一个形状为 (bs, seq_len, hidden_size) 的 feature 和一个形状为 (bs, seq_len) 的 token 。token 序列会被 <code>embedding</code>层转换成 embedding ，最后合并成形状为 (bs, seq_len, 2*hidden_size) 的输入</p>
-<p>FC 层的作用是将 (bs, seq_len, 2*hidden_size) 降维成 (bs, seq_len, hidden_size)</p>
-<p>在计算 draft 的时候，EAGLE 使用 tree-attention 构建了一颗树（和 Medusa 的不一样，那个是 verify 阶段的）。这棵 Draft Tree 的深度是 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">m</span></span></span></span> ，拥有超过 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">m</span></span></span></span> 个的 token 数，只会执行 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">m</span></span></span></span> 步 forward。</p>
-<p>例如，下图是草稿生成的过程中构建的树，可以看到天然的不含有 Medusa 中那种没有逻辑性的分支。 这里深度为3，token数为10</p>
-<p><img src="pipeline2.png" alt="pipeline2" /></p>
-<p>对于这颗树的构建规则，附录中有提到一些：</p>
-<ul>
-<li>greedy：每个节点选择 top k 作为儿子</li>
-<li>intuition：高概率的分支应该更深/更广</li>
-</ul>
-<p>具体的后面看完代码之后可能我会来补</p>
-<p>（EAGLE-2好像改成动态树了，也可能不详细看这一块了）</p>
-<h3 id="2training"><a class="markdownIt-Anchor" href="#2training"></a> 2.Training</h3>
-<p>这是草稿模型进行一次前向传播$$\hat{f}_{i+1} = DraftModel([f_i; e(t_i)])$$</p>
-<p>预测下一个 feature 使用了残差的方式，并使用了 <em>Smooth L1</em> 作为损失</p>
-<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>L</mi><mrow><mi>r</mi><mi>e</mi><mi>g</mi></mrow></msub><mo>=</mo><mi>S</mi><mi>m</mi><mi>o</mi><mi>o</mi><mi>t</mi><mi>h</mi><mtext> </mtext><mi>L</mi><mn>1</mn><mo stretchy="false">(</mo><msub><mi>f</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo separator="true">,</mo><mi>D</mi><mi>r</mi><mi>a</mi><mi>f</mi><mi>t</mi><mi mathvariant="normal">_</mi><mi>M</mi><mi>o</mi><mi>d</mi><mi>e</mi><mi>l</mi><mo stretchy="false">(</mo><msub><mi>T</mi><mrow><mn>2</mn><mo>:</mo><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo separator="true">,</mo><msub><mi>F</mi><mrow><mn>1</mn><mo>:</mo><mi>i</mi></mrow></msub><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">L_{reg} = Smooth \space L1 (f_{i+1} , Draft\_Model(T_{2:i+1}, F_{1:i}))
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.06em;vertical-align:-0.31em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord mathnormal">m</span><span class="mord mathnormal">o</span><span class="mord mathnormal">o</span><span class="mord mathnormal">t</span><span class="mord mathnormal">h</span><span class="mspace"> </span><span class="mord mathnormal">L</span><span class="mord">1</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mord mathnormal">t</span><span class="mord" style="margin-right:0.02778em;">_</span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mord mathnormal">o</span><span class="mord mathnormal">d</span><span class="mord mathnormal">e</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mrel mtight">:</span><span class="mord mathnormal mtight">i</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mrel mtight">:</span><span class="mord mathnormal mtight">i</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mclose">)</span></span></span></span></span></p>
-<p>而预测下一个 token 则是一个 <em>Classification loss</em></p>
-<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>p</mi><mrow><mi>i</mi><mo>+</mo><mn>2</mn></mrow></msub><mo>=</mo><mi>S</mi><mi>o</mi><mi>f</mi><mi>t</mi><mi>m</mi><mi>a</mi><mi>x</mi><mo stretchy="false">(</mo><mi>L</mi><mi>M</mi><mi>H</mi><mi>e</mi><mi>a</mi><mi>d</mi><mo stretchy="false">(</mo><msub><mi>f</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">p_{i+2} = Softmax(LM Head(f_{i+1}))
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.638891em;vertical-align:-0.208331em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">+</span><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mord mathnormal">t</span><span class="mord mathnormal">m</span><span class="mord mathnormal">a</span><span class="mord mathnormal">x</span><span class="mopen">(</span><span class="mord mathnormal">L</span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="mord mathnormal">e</span><span class="mord mathnormal">a</span><span class="mord mathnormal">d</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mclose">)</span></span></span></span></span></p>
-<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mover accent="true"><mi>p</mi><mo>^</mo></mover><mo>∗</mo><mrow><mi>i</mi><mo>+</mo><mn>2</mn></mrow><mo>=</mo><mi>S</mi><mi>o</mi><mi>f</mi><mi>t</mi><mi>m</mi><mi>a</mi><mi>x</mi><mo stretchy="false">(</mo><mi>L</mi><mi>M</mi><mi>H</mi><mi>e</mi><mi>a</mi><mi>d</mi><mo stretchy="false">(</mo><mover accent="true"><mi>f</mi><mo>^</mo></mover><mo>∗</mo><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\hat{p}*{i+2} = Softmax(LM Head(\hat{f}*{i+1}))
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.69444em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">p</span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.16666em;"><span class="mord">^</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.19444em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.74285em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord">2</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.2078799999999998em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mord mathnormal">t</span><span class="mord mathnormal">m</span><span class="mord mathnormal">a</span><span class="mord mathnormal">x</span><span class="mopen">(</span><span class="mord mathnormal">L</span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="mord mathnormal">e</span><span class="mord mathnormal">a</span><span class="mord mathnormal">d</span><span class="mopen">(</span><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9578799999999998em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span><span style="top:-3.26344em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.08332999999999999em;"><span class="mord">^</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.19444em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord">1</span></span><span class="mclose">)</span><span class="mclose">)</span></span></span></span></span></p>
-<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>L</mi><mrow><mi>c</mi><mi>l</mi><mi>s</mi></mrow></msub><mo>=</mo><mi>C</mi><mi>r</mi><mi>o</mi><mi>s</mi><mi>s</mi><mi>E</mi><mi>n</mi><mi>t</mi><mi>r</mi><mi>o</mi><mi>p</mi><mi>y</mi><mo stretchy="false">(</mo><msub><mi>p</mi><mrow><mi>i</mi><mo>+</mo><mn>2</mn></mrow></msub><mo separator="true">,</mo><msub><mover accent="true"><mi>p</mi><mo>^</mo></mover><mrow><mi>i</mi><mo>+</mo><mn>2</mn></mrow></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">L_{cls} = CrossEntropy(p_{i+2}, \hat{p}_{i+2})
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">c</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">s</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">o</span><span class="mord mathnormal">s</span><span class="mord mathnormal">s</span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="mord mathnormal">n</span><span class="mord mathnormal">t</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">o</span><span class="mord mathnormal">p</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">+</span><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.69444em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">p</span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.16666em;"><span class="mord">^</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.19444em;"><span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">+</span><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
-<p>最后联合回归损失和分类损失，得到 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>=</mo><msub><mi>L</mi><mrow><mi>r</mi><mi>e</mi><mi>g</mi></mrow></msub><mo>+</mo><msub><mi>w</mi><mrow><mi>c</mi><mi>l</mi><mi>s</mi></mrow></msub><mo>∗</mo><msub><mi>L</mi><mrow><mi>c</mi><mi>l</mi><mi>s</mi></mrow></msub></mrow><annotation encoding="application/x-tex">L = L_{reg} + w_{cls}*L_{cls}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal">L</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.61528em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.02691em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">c</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">s</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">c</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">s</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></p>
-<p>通常分类损失是显著大的，所以论文中将权重<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span></span></span></span>设置为了 0.1</p>
-<h3 id="3verify"><a class="markdownIt-Anchor" href="#3verify"></a> 3.Verify</h3>
-<p>使用了和 <code>Medusa</code>中类似的 Tree Attention</p>
-]]></content>
-      <categories>
-        <category>LLM-inferrence</category>
-      </categories>
-      <tags>
-        <tag>LLM-inferrence</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>3D Donut</title>
     <url>/2026/01/19/3D-donut/</url>
     <content><![CDATA[<h1 id="3d旋转甜甜圈算法"><a class="markdownIt-Anchor" href="#3d旋转甜甜圈算法"></a> 3D旋转甜甜圈算法</h1>
@@ -468,75 +394,79 @@ L &amp;= N_x \cdot 0 + N_y \cdot 1 + N_z \cdot (-1) = N_y - N_z \\
       </tags>
   </entry>
   <entry>
-    <title>南京博物院</title>
-    <url>/2026/02/13/NanjingMuseum/</url>
-    <content><![CDATA[<h1 id="南京博物院"><a class="markdownIt-Anchor" href="#南京博物院"></a> 南京博物院</h1>
-<p>本南京人第一次来南京博物院</p>
-<span id="more"></span>
-<p><img src="gate.jpg" alt="gate" /></p>
-<p>今天天气挺好的，南博有不少人</p>
-<p>南京博物院有好几个馆：</p>
+    <title>EAGLE</title>
+    <url>/2026/02/13/EAGLE/</url>
+    <content><![CDATA[<h1 id="extrapolation-algorithm-for-greater-language-model-efficiency-eagle-算法学习"><a class="markdownIt-Anchor" href="#extrapolation-algorithm-for-greater-language-model-efficiency-eagle-算法学习"></a> Extrapolation Algorithm for Greater Language-model Efficiency  , EAGLE 算法学习</h1>
+<p>前面看完了<code>Medusa</code>方法，再看加速效果更好的<code>EAGLE</code></p>
+<p>下图是这几种方法的对比：</p>
 <ul>
-<li>
-<p>历史馆</p>
-</li>
-<li>
-<p>数字馆</p>
-</li>
-<li>
-<p>民国馆</p>
-</li>
-<li>
-<p>艺术馆</p>
-</li>
-<li>
-<p>非遗馆</p>
-</li>
+<li>spec sampling 是 token-level</li>
+<li>Medusa 是利用一个 feature 用不同的 head 去预测不同位置的 token</li>
+<li>EAGLE 是将 token 和 feature 混合输入</li>
 </ul>
-<p>历史馆就是最传统的博物馆，也最有意思</p>
-<h2 id="历史馆"><a class="markdownIt-Anchor" href="#历史馆"></a> 历史馆</h2>
-<p>历史馆从史前时期开始介绍江苏地区的历史，一直到民国前</p>
-<p><img src="elephant.jpg" alt="elephant" /></p>
-<p>大猛犸象</p>
-<p><img src="spoon.jpg" alt="spoon" /></p>
-<p>一个好像没有使用功能的小勺子</p>
-<p><img src="bronzepot.jpg" alt="bronzepot" /></p>
-<p>青铜壶</p>
-<p><img src="bronze-crossbow.jpg" alt="bronze-crossbow" /></p>
-<p>西汉示器的铜弩机</p>
-<p>这里的<em>错金银</em>工艺，指的就是把金丝/银丝嵌到器具里开好的槽中</p>
-<p><img src="Ox-shape-lamp.jpg" alt="Ox-shape-lamp" /></p>
-<p>铜牛灯，虽然看着很像羊</p>
-<p><img src="pillow.jpg" alt="pillow" /></p>
-<p>宋朝的瓷枕，感觉直接枕的话有点高<img src="bow.jpg" alt="bow" /></p>
-<p>纹路很精美的茶盏</p>
-<p><img src="lion.jpg" alt="lion" /></p>
-<p>狮子砖雕</p>
-<p><img src="horse.jpg" alt="horse" /></p>
-<p>某个马头的复制品</p>
-<p><img src="seat.jpg" alt="seat" /></p>
-<p>气派的座位和屏风，好像使用的珐琅工艺</p>
-<h2 id="数字馆"><a class="markdownIt-Anchor" href="#数字馆"></a> 数字馆</h2>
-<p>没意思，放了点数字影像，不如在家看</p>
-<h2 id="民国馆"><a class="markdownIt-Anchor" href="#民国馆"></a> 民国馆</h2>
-<p>感觉各地的民国馆都是这种交互式的商业街，<img src="street.jpg" alt="street" /></p>
-<p>火车头模型<img src="train.jpg" alt="train" /></p>
-<h2 id="非遗馆"><a class="markdownIt-Anchor" href="#非遗馆"></a> 非遗馆</h2>
-<p>介绍了种种非遗，并且有相应的商品柜台</p>
-<h2 id="艺术馆"><a class="markdownIt-Anchor" href="#艺术馆"></a> 艺术馆</h2>
-<p>有一大半的展厅都没开，就看了几个</p>
-<h4 id="傅抱石-毛主席诗词画展"><a class="markdownIt-Anchor" href="#傅抱石-毛主席诗词画展"></a> 傅抱石 毛主席诗词画展</h4>
-<p>展示了傅抱石为毛主席的诗词做的创作 下为《更喜岷山千里雪》</p>
-<p><img src="qianlixue.jpg" alt="qianlixue" /></p>
-<h4 id="吴为山雕塑展"><a class="markdownIt-Anchor" href="#吴为山雕塑展"></a> 吴为山雕塑展</h4>
-<p><em>写意雕塑</em>，感觉很有意思，鲁迅的青铜雕塑就很简洁有力</p>
-<p>这个《老子出关》非常写意了<img src="laozi.jpg" alt="laozi" /></p>
-<h4 id="荷花专题展"><a class="markdownIt-Anchor" href="#荷花专题展"></a> 荷花专题展</h4>
-<p><img src="lutos.jpg" alt="lutos" /></p>
-<h2 id="后记"><a class="markdownIt-Anchor" href="#后记"></a> 后记</h2>
-<p>旁边的明故宫遗址有好多人逛公园，天气确实好<img src="whether.jpg" alt="whether" /></p>
-<p>有大爷在练书法<img src="calligraphy.jpg" alt="calligraphy" /></p>
+<span id="more"></span>
+<p><img src="contrast.png" alt="contrast" /></p>
+<p>论文首先指出这个方法的提出和实现基于两个观察：</p>
+<ul>
+<li>feature-level 的自回归比 token-level 要容易，因为token的采样是随机的</li>
+<li>sampling 过程中产生的随机性会显著限制预测 next feature 的表现，而在输入中加入上次采样得到的 token ，能有效消除这种不确定性</li>
+</ul>
+<h2 id="提炼"><a class="markdownIt-Anchor" href="#提炼"></a> 提炼</h2>
+<p>看完整篇论文，我认为相较于 Medusa 利用多头去处理 feature ，EAGLE则是训练了一个针对 feature 的 draft model 。</p>
+<p>针对上面的<em>观察一</em>，我的理解是：一个标准的 llm 输入输出都是 token ，而 token 采样的时候引入了不确定性，这会要求模型有更多的参数和计算来提升精度，因此很难获取一个非常理想的 token-level 的 draft model  。并且由于 token-level 的问题是<strong>离散空间里稀疏变量</strong>的问题，而 feature 则是一个<strong>高维的连续向量</strong>。因此 feature 的变化是容易学习的，针对他设计的模型也更简单，推理也快得多</p>
+<p>而针对上面的<em>观察二</em>，我的理解是：在常规llm流程中，一般是 hidden_states -&gt; logits -&gt; 采样得到token -&gt; hidden_state，也就是说采样这一步给feature引入了不确定性。为了消除这个不确定性，可以把采样完的 token 和 hidden_state(feature) 一并输入；换句话说，从 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">f_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 出发，当前的 feature 并不知道自己要往哪个方向进行变化，因为是 token 的采样决定了它这一轮的变化，所以将采样完的 token 一并作为数据，相当于告诉了 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">f_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 一个走向 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">f_{i+1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.902771em;vertical-align:-0.208331em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span></span></span></span>的方向，可以极大消除的不确定性，提高接受率。</p>
+<hr />
+<h2 id="论文节选"><a class="markdownIt-Anchor" href="#论文节选"></a> 论文节选</h2>
+<h3 id="1-eagle-pipeline-draft-model"><a class="markdownIt-Anchor" href="#1-eagle-pipeline-draft-model"></a> 1. EAGLE pipeline / Draft Model</h3>
+<p>下图为 EAGLE 推理的流程：</p>
+<ul>
+<li>green : embedding</li>
+<li>orange : feature</li>
+<li>red : prediction of draft model</li>
+<li>blue (with snow icon) : target LLM parameter</li>
+</ul>
+<p><img src="pipeline1.png" alt="pipeline1" /></p>
+<p>可以看到这里 Draft Model 由三部分组成：</p>
+<ol>
+<li>Embedding Layer : 与目标 LLM 共享</li>
+<li>LM Head : 与目标 LLM 共享</li>
+<li>Autoregression Head ：由一层 FC layer 和一层 decoder 构成</li>
+</ol>
+<p>Draft Model 的输入是一个形状为 (bs, seq_len, hidden_size) 的 feature 和一个形状为 (bs, seq_len) 的 token 。token 序列会被 <code>embedding</code>层转换成 embedding ，最后合并成形状为 (bs, seq_len, 2*hidden_size) 的输入</p>
+<p>FC 层的作用是将 (bs, seq_len, 2*hidden_size) 降维成 (bs, seq_len, hidden_size)</p>
+<p>在计算 draft 的时候，EAGLE 使用 tree-attention 构建了一颗树（和 Medusa 的不一样，那个是 verify 阶段的）。这棵 Draft Tree 的深度是 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">m</span></span></span></span> ，拥有超过 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">m</span></span></span></span> 个的 token 数，只会执行 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">m</span></span></span></span> 步 forward。</p>
+<p>例如，下图是草稿生成的过程中构建的树，可以看到天然的不含有 Medusa 中那种没有逻辑性的分支。 这里深度为3，token数为10</p>
+<p><img src="pipeline2.png" alt="pipeline2" /></p>
+<p>对于这颗树的构建规则，附录中有提到一些：</p>
+<ul>
+<li>greedy：每个节点选择 top k 作为儿子</li>
+<li>intuition：高概率的分支应该更深/更广</li>
+</ul>
+<p>具体的后面看完代码之后可能我会来补</p>
+<p>（EAGLE-2好像改成动态树了，也可能不详细看这一块了）</p>
+<h3 id="2training"><a class="markdownIt-Anchor" href="#2training"></a> 2.Training</h3>
+<p>这是草稿模型进行一次前向传播$$\hat{f}_{i+1} = DraftModel([f_i; e(t_i)])$$</p>
+<p>预测下一个 feature 使用了残差的方式，并使用了 <em>Smooth L1</em> 作为损失</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>L</mi><mrow><mi>r</mi><mi>e</mi><mi>g</mi></mrow></msub><mo>=</mo><mi>S</mi><mi>m</mi><mi>o</mi><mi>o</mi><mi>t</mi><mi>h</mi><mtext> </mtext><mi>L</mi><mn>1</mn><mo stretchy="false">(</mo><msub><mi>f</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo separator="true">,</mo><mi>D</mi><mi>r</mi><mi>a</mi><mi>f</mi><mi>t</mi><mi mathvariant="normal">_</mi><mi>M</mi><mi>o</mi><mi>d</mi><mi>e</mi><mi>l</mi><mo stretchy="false">(</mo><msub><mi>T</mi><mrow><mn>2</mn><mo>:</mo><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo separator="true">,</mo><msub><mi>F</mi><mrow><mn>1</mn><mo>:</mo><mi>i</mi></mrow></msub><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">L_{reg} = Smooth \space L1 (f_{i+1} , Draft\_Model(T_{2:i+1}, F_{1:i}))
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.06em;vertical-align:-0.31em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord mathnormal">m</span><span class="mord mathnormal">o</span><span class="mord mathnormal">o</span><span class="mord mathnormal">t</span><span class="mord mathnormal">h</span><span class="mspace"> </span><span class="mord mathnormal">L</span><span class="mord">1</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mord mathnormal">t</span><span class="mord" style="margin-right:0.02778em;">_</span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mord mathnormal">o</span><span class="mord mathnormal">d</span><span class="mord mathnormal">e</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mrel mtight">:</span><span class="mord mathnormal mtight">i</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mrel mtight">:</span><span class="mord mathnormal mtight">i</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mclose">)</span></span></span></span></span></p>
+<p>而预测下一个 token 则是一个 <em>Classification loss</em></p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>p</mi><mrow><mi>i</mi><mo>+</mo><mn>2</mn></mrow></msub><mo>=</mo><mi>S</mi><mi>o</mi><mi>f</mi><mi>t</mi><mi>m</mi><mi>a</mi><mi>x</mi><mo stretchy="false">(</mo><mi>L</mi><mi>M</mi><mi>H</mi><mi>e</mi><mi>a</mi><mi>d</mi><mo stretchy="false">(</mo><msub><mi>f</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">p_{i+2} = Softmax(LM Head(f_{i+1}))
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.638891em;vertical-align:-0.208331em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">+</span><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mord mathnormal">t</span><span class="mord mathnormal">m</span><span class="mord mathnormal">a</span><span class="mord mathnormal">x</span><span class="mopen">(</span><span class="mord mathnormal">L</span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="mord mathnormal">e</span><span class="mord mathnormal">a</span><span class="mord mathnormal">d</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mclose">)</span></span></span></span></span></p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mover accent="true"><mi>p</mi><mo>^</mo></mover><mo>∗</mo><mrow><mi>i</mi><mo>+</mo><mn>2</mn></mrow><mo>=</mo><mi>S</mi><mi>o</mi><mi>f</mi><mi>t</mi><mi>m</mi><mi>a</mi><mi>x</mi><mo stretchy="false">(</mo><mi>L</mi><mi>M</mi><mi>H</mi><mi>e</mi><mi>a</mi><mi>d</mi><mo stretchy="false">(</mo><mover accent="true"><mi>f</mi><mo>^</mo></mover><mo>∗</mo><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\hat{p}*{i+2} = Softmax(LM Head(\hat{f}*{i+1}))
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.69444em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">p</span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.16666em;"><span class="mord">^</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.19444em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.74285em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord">2</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.2078799999999998em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mord mathnormal">t</span><span class="mord mathnormal">m</span><span class="mord mathnormal">a</span><span class="mord mathnormal">x</span><span class="mopen">(</span><span class="mord mathnormal">L</span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="mord mathnormal">e</span><span class="mord mathnormal">a</span><span class="mord mathnormal">d</span><span class="mopen">(</span><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9578799999999998em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span><span style="top:-3.26344em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.08332999999999999em;"><span class="mord">^</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.19444em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord">1</span></span><span class="mclose">)</span><span class="mclose">)</span></span></span></span></span></p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>L</mi><mrow><mi>c</mi><mi>l</mi><mi>s</mi></mrow></msub><mo>=</mo><mi>C</mi><mi>r</mi><mi>o</mi><mi>s</mi><mi>s</mi><mi>E</mi><mi>n</mi><mi>t</mi><mi>r</mi><mi>o</mi><mi>p</mi><mi>y</mi><mo stretchy="false">(</mo><msub><mi>p</mi><mrow><mi>i</mi><mo>+</mo><mn>2</mn></mrow></msub><mo separator="true">,</mo><msub><mover accent="true"><mi>p</mi><mo>^</mo></mover><mrow><mi>i</mi><mo>+</mo><mn>2</mn></mrow></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">L_{cls} = CrossEntropy(p_{i+2}, \hat{p}_{i+2})
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">c</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">s</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">o</span><span class="mord mathnormal">s</span><span class="mord mathnormal">s</span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="mord mathnormal">n</span><span class="mord mathnormal">t</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">o</span><span class="mord mathnormal">p</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">+</span><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.69444em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">p</span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.16666em;"><span class="mord">^</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.19444em;"><span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">+</span><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
+<p>最后联合回归损失和分类损失，得到 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>=</mo><msub><mi>L</mi><mrow><mi>r</mi><mi>e</mi><mi>g</mi></mrow></msub><mo>+</mo><msub><mi>w</mi><mrow><mi>c</mi><mi>l</mi><mi>s</mi></mrow></msub><mo>∗</mo><msub><mi>L</mi><mrow><mi>c</mi><mi>l</mi><mi>s</mi></mrow></msub></mrow><annotation encoding="application/x-tex">L = L_{reg} + w_{cls}*L_{cls}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal">L</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.61528em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.02691em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">c</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">s</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">c</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">s</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></p>
+<p>通常分类损失是显著大的，所以论文中将权重<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span></span></span></span>设置为了 0.1</p>
+<h3 id="3verify"><a class="markdownIt-Anchor" href="#3verify"></a> 3.Verify</h3>
+<p>使用了和 <code>Medusa</code>中类似的 Tree Attention</p>
 ]]></content>
+      <categories>
+        <category>LLM-inferrence</category>
+      </categories>
+      <tags>
+        <tag>LLM-inferrence</tag>
+      </tags>
   </entry>
   <entry>
     <title>Git-Guide</title>
@@ -1590,6 +1520,91 @@ Git 现在用 <code>refs/heads/</code> 和 <code>refs/remotes/</code> 来管理�
       </tags>
   </entry>
   <entry>
+    <title>南京博物院</title>
+    <url>/2026/02/13/NanjingMuseum/</url>
+    <content><![CDATA[<h1 id="南京博物院"><a class="markdownIt-Anchor" href="#南京博物院"></a> 南京博物院</h1>
+<p>本南京人第一次来南京博物院</p>
+<span id="more"></span>
+<p><img src="gate.jpg" alt="gate" /></p>
+<p>今天天气挺好的，南博有不少人</p>
+<p>南京博物院有好几个馆：</p>
+<ul>
+<li>
+<p>历史馆</p>
+</li>
+<li>
+<p>数字馆</p>
+</li>
+<li>
+<p>民国馆</p>
+</li>
+<li>
+<p>艺术馆</p>
+</li>
+<li>
+<p>非遗馆</p>
+</li>
+</ul>
+<p>历史馆就是最传统的博物馆，也最有意思</p>
+<h2 id="历史馆"><a class="markdownIt-Anchor" href="#历史馆"></a> 历史馆</h2>
+<p>历史馆从史前时期开始介绍江苏地区的历史，一直到民国前</p>
+<p><img src="elephant.jpg" alt="elephant" /></p>
+<p>大猛犸象</p>
+<p><img src="spoon.jpg" alt="spoon" /></p>
+<p>一个好像没有使用功能的小勺子</p>
+<p><img src="bronzepot.jpg" alt="bronzepot" /></p>
+<p>青铜壶</p>
+<p><img src="bronze-crossbow.jpg" alt="bronze-crossbow" /></p>
+<p>西汉示器的铜弩机</p>
+<p>这里的<em>错金银</em>工艺，指的就是把金丝/银丝嵌到器具里开好的槽中</p>
+<p><img src="Ox-shape-lamp.jpg" alt="Ox-shape-lamp" /></p>
+<p>铜牛灯，虽然看着很像羊</p>
+<p><img src="pillow.jpg" alt="pillow" /></p>
+<p>宋朝的瓷枕，感觉直接枕的话有点高<img src="bow.jpg" alt="bow" /></p>
+<p>纹路很精美的茶盏</p>
+<p><img src="lion.jpg" alt="lion" /></p>
+<p>狮子砖雕</p>
+<p><img src="horse.jpg" alt="horse" /></p>
+<p>某个马头的复制品</p>
+<p><img src="seat.jpg" alt="seat" /></p>
+<p>气派的座位和屏风，好像使用的珐琅工艺</p>
+<h2 id="数字馆"><a class="markdownIt-Anchor" href="#数字馆"></a> 数字馆</h2>
+<p>没意思，放了点数字影像，不如在家看</p>
+<h2 id="民国馆"><a class="markdownIt-Anchor" href="#民国馆"></a> 民国馆</h2>
+<p>感觉各地的民国馆都是这种交互式的商业街，<img src="street.jpg" alt="street" /></p>
+<p>火车头模型<img src="train.jpg" alt="train" /></p>
+<h2 id="非遗馆"><a class="markdownIt-Anchor" href="#非遗馆"></a> 非遗馆</h2>
+<p>介绍了种种非遗，并且有相应的商品柜台</p>
+<h2 id="艺术馆"><a class="markdownIt-Anchor" href="#艺术馆"></a> 艺术馆</h2>
+<p>有一大半的展厅都没开，就看了几个</p>
+<h4 id="傅抱石-毛主席诗词画展"><a class="markdownIt-Anchor" href="#傅抱石-毛主席诗词画展"></a> 傅抱石 毛主席诗词画展</h4>
+<p>展示了傅抱石为毛主席的诗词做的创作 下为《更喜岷山千里雪》</p>
+<p><img src="qianlixue.jpg" alt="qianlixue" /></p>
+<h4 id="吴为山雕塑展"><a class="markdownIt-Anchor" href="#吴为山雕塑展"></a> 吴为山雕塑展</h4>
+<p><em>写意雕塑</em>，感觉很有意思，鲁迅的青铜雕塑就很简洁有力</p>
+<p>这个《老子出关》非常写意了<img src="laozi.jpg" alt="laozi" /></p>
+<h4 id="荷花专题展"><a class="markdownIt-Anchor" href="#荷花专题展"></a> 荷花专题展</h4>
+<p><img src="lutos.jpg" alt="lutos" /></p>
+<h2 id="后记"><a class="markdownIt-Anchor" href="#后记"></a> 后记</h2>
+<p>旁边的明故宫遗址有好多人逛公园，天气确实好<img src="whether.jpg" alt="whether" /></p>
+<p>有大爷在练书法<img src="calligraphy.jpg" alt="calligraphy" /></p>
+]]></content>
+      <categories>
+        <category>游记</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Singapore-pt1</title>
+    <url>/2025/08/14/Singapore-pt1/</url>
+    <content><![CDATA[<h1 id="新加坡"><a class="markdownIt-Anchor" href="#新加坡"></a> 新加坡</h1>
+<p>发现好像可以补一下之前的游记<br />
+有空填上</p>
+]]></content>
+      <categories>
+        <category>游记</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Speculative-Decoding</title>
     <url>/2026/02/12/Speculative-Decoding/</url>
     <content><![CDATA[<h1 id="speculative-decoding-llm推理的加速-medusa-方法阅读"><a class="markdownIt-Anchor" href="#speculative-decoding-llm推理的加速-medusa-方法阅读"></a> Speculative-Decoding , LLM推理的加速 / Medusa 方法阅读</h1>
@@ -1678,18 +1693,6 @@ feed-forward network with a residual connection)来作为 medusa head</p>
       <tags>
         <tag>LLM-inferrence</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Hello world!</title>
-    <url>/2025/12/06/hello-world/</url>
-    <content><![CDATA[<h1 id="hello-world"><a class="markdownIt-Anchor" href="#hello-world"></a> Hello world !</h1>
-<p>this is gonna be my first blog, wish I‘ll have fun building it hh.</p>
-<h2 id="创建博客的原因"><a class="markdownIt-Anchor" href="#创建博客的原因"></a> 创建博客的原因</h2>
-<p>在这个社交媒体的时代，博客似乎已经丧失了他原本的社交属性（或许本来就没什么属性）。</p>
-<p>它变得更加像是日记一类私人的记录，但是也为了愿意来探访的人打开了一扇门</p>
-<p>anyway，我的博客从今天启程，以后可能用来记录生活或者技术</p>
-<h2 id="end"><a class="markdownIt-Anchor" href="#end"></a> END</h2>
-]]></content>
   </entry>
   <entry>
     <title>TimeScope,一个简单的桌面活动记录器</title>
@@ -1873,5 +1876,17 @@ c-16-25.333-24-45-24-59z'/></svg></span></span></span></span><span class="vlist-
         <tag>azure</tag>
         <tag>vpn</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Hello world!</title>
+    <url>/2025/12/06/hello-world/</url>
+    <content><![CDATA[<h1 id="hello-world"><a class="markdownIt-Anchor" href="#hello-world"></a> Hello world !</h1>
+<p>this is gonna be my first blog, wish I‘ll have fun building it hh.</p>
+<h2 id="创建博客的原因"><a class="markdownIt-Anchor" href="#创建博客的原因"></a> 创建博客的原因</h2>
+<p>在这个社交媒体的时代，博客似乎已经丧失了他原本的社交属性（或许本来就没什么属性）。</p>
+<p>它变得更加像是日记一类私人的记录，但是也为了愿意来探访的人打开了一扇门</p>
+<p>anyway，我的博客从今天启程，以后可能用来记录生活或者技术</p>
+<h2 id="end"><a class="markdownIt-Anchor" href="#end"></a> END</h2>
+]]></content>
   </entry>
 </search>
