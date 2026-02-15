@@ -398,6 +398,7 @@ L &amp;= N_x \cdot 0 + N_y \cdot 1 + N_z \cdot (-1) = N_y - N_z \\
     <url>/2026/02/13/EAGLE/</url>
     <content><![CDATA[<h1 id="extrapolation-algorithm-for-greater-language-model-efficiency-eagle-算法学习"><a class="markdownIt-Anchor" href="#extrapolation-algorithm-for-greater-language-model-efficiency-eagle-算法学习"></a> Extrapolation Algorithm for Greater Language-model Efficiency  , EAGLE 算法学习</h1>
 <p>前面看完了<code>Medusa</code>方法，再看加速效果更好的<code>EAGLE</code></p>
+<h2 id="eagle"><a class="markdownIt-Anchor" href="#eagle"></a> EAGLE</h2>
 <p>下图是这几种方法的对比：</p>
 <ul>
 <li>spec sampling 是 token-level</li>
@@ -411,13 +412,13 @@ L &amp;= N_x \cdot 0 + N_y \cdot 1 + N_z \cdot (-1) = N_y - N_z \\
 <li>feature-level 的自回归比 token-level 要容易，因为token的采样是随机的</li>
 <li>sampling 过程中产生的随机性会显著限制预测 next feature 的表现，而在输入中加入上次采样得到的 token ，能有效消除这种不确定性</li>
 </ul>
-<h2 id="提炼"><a class="markdownIt-Anchor" href="#提炼"></a> 提炼</h2>
+<h3 id="提炼"><a class="markdownIt-Anchor" href="#提炼"></a> 提炼</h3>
 <p>看完整篇论文，我认为相较于 Medusa 利用多头去处理 feature ，EAGLE则是训练了一个针对 feature 的 draft model 。</p>
 <p>针对上面的<em>观察一</em>，我的理解是：一个标准的 llm 输入输出都是 token ，而 token 采样的时候引入了不确定性，这会要求模型有更多的参数和计算来提升精度，因此很难获取一个非常理想的 token-level 的 draft model  。并且由于 token-level 的问题是<strong>离散空间里稀疏变量</strong>的问题，而 feature 则是一个<strong>高维的连续向量</strong>。因此 feature 的变化是容易学习的，针对他设计的模型也更简单，推理也快得多</p>
 <p>而针对上面的<em>观察二</em>，我的理解是：在常规llm流程中，一般是 hidden_states -&gt; logits -&gt; 采样得到token -&gt; hidden_state，也就是说采样这一步给feature引入了不确定性。为了消除这个不确定性，可以把采样完的 token 和 hidden_state(feature) 一并输入；换句话说，从 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">f_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 出发，当前的 feature 并不知道自己要往哪个方向进行变化，因为是 token 的采样决定了它这一轮的变化，所以将采样完的 token 一并作为数据，相当于告诉了 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">f_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 一个走向 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">f_{i+1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.902771em;vertical-align:-0.208331em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span></span></span></span>的方向，可以极大消除的不确定性，提高接受率。</p>
 <hr />
-<h2 id="论文节选"><a class="markdownIt-Anchor" href="#论文节选"></a> 论文节选</h2>
-<h3 id="1-eagle-pipeline-draft-model"><a class="markdownIt-Anchor" href="#1-eagle-pipeline-draft-model"></a> 1. EAGLE pipeline / Draft Model</h3>
+<h3 id="论文节选"><a class="markdownIt-Anchor" href="#论文节选"></a> 论文节选</h3>
+<h4 id="1-eagle-pipeline-draft-model"><a class="markdownIt-Anchor" href="#1-eagle-pipeline-draft-model"></a> 1. EAGLE pipeline / Draft Model</h4>
 <p>下图为 EAGLE 推理的流程：</p>
 <ul>
 <li>green : embedding</li>
@@ -444,7 +445,7 @@ L &amp;= N_x \cdot 0 + N_y \cdot 1 + N_z \cdot (-1) = N_y - N_z \\
 </ul>
 <p>具体的后面看完代码之后可能我会来补</p>
 <p>（EAGLE-2好像改成动态树了，也可能不详细看这一块了）</p>
-<h3 id="2training"><a class="markdownIt-Anchor" href="#2training"></a> 2.Training</h3>
+<h4 id="2training"><a class="markdownIt-Anchor" href="#2training"></a> 2.Training</h4>
 <p>这是草稿模型进行一次前向传播$$\hat{f}_{i+1} = DraftModel([f_i; e(t_i)])$$</p>
 <p>预测下一个 feature 使用了残差的方式，并使用了 <em>Smooth L1</em> 作为损失</p>
 <p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>L</mi><mrow><mi>r</mi><mi>e</mi><mi>g</mi></mrow></msub><mo>=</mo><mi>S</mi><mi>m</mi><mi>o</mi><mi>o</mi><mi>t</mi><mi>h</mi><mtext> </mtext><mi>L</mi><mn>1</mn><mo stretchy="false">(</mo><msub><mi>f</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo separator="true">,</mo><mi>D</mi><mi>r</mi><mi>a</mi><mi>f</mi><mi>t</mi><mi mathvariant="normal">_</mi><mi>M</mi><mi>o</mi><mi>d</mi><mi>e</mi><mi>l</mi><mo stretchy="false">(</mo><msub><mi>T</mi><mrow><mn>2</mn><mo>:</mo><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo separator="true">,</mo><msub><mi>F</mi><mrow><mn>1</mn><mo>:</mo><mi>i</mi></mrow></msub><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">L_{reg} = Smooth \space L1 (f_{i+1} , Draft\_Model(T_{2:i+1}, F_{1:i}))
@@ -458,8 +459,11 @@ L &amp;= N_x \cdot 0 + N_y \cdot 1 + N_z \cdot (-1) = N_y - N_z \\
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">c</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">s</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">o</span><span class="mord mathnormal">s</span><span class="mord mathnormal">s</span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="mord mathnormal">n</span><span class="mord mathnormal">t</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">o</span><span class="mord mathnormal">p</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">+</span><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.69444em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">p</span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.16666em;"><span class="mord">^</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.19444em;"><span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">+</span><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
 <p>最后联合回归损失和分类损失，得到 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>=</mo><msub><mi>L</mi><mrow><mi>r</mi><mi>e</mi><mi>g</mi></mrow></msub><mo>+</mo><msub><mi>w</mi><mrow><mi>c</mi><mi>l</mi><mi>s</mi></mrow></msub><mo>∗</mo><msub><mi>L</mi><mrow><mi>c</mi><mi>l</mi><mi>s</mi></mrow></msub></mrow><annotation encoding="application/x-tex">L = L_{reg} + w_{cls}*L_{cls}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal">L</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.61528em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.02691em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">c</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">s</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">c</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">s</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></p>
 <p>通常分类损失是显著大的，所以论文中将权重<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span></span></span></span>设置为了 0.1</p>
-<h3 id="3verify"><a class="markdownIt-Anchor" href="#3verify"></a> 3.Verify</h3>
+<h4 id="3verify"><a class="markdownIt-Anchor" href="#3verify"></a> 3.Verify</h4>
 <p>使用了和 <code>Medusa</code>中类似的 Tree Attention</p>
+<hr />
+<h2 id="eagle-2"><a class="markdownIt-Anchor" href="#eagle-2"></a> EAGLE-2</h2>
+<p>和第一版的主要区别是<em><strong>树</strong></em>的变化</p>
 ]]></content>
       <categories>
         <category>LLM-inferrence</category>
@@ -1847,16 +1851,26 @@ c-16-25.333-24-45-24-59z'/></svg></span></span></span></span><span class="vlist-
 <h3 id="2azure"><a class="markdownIt-Anchor" href="#2azure"></a> 2）azure</h3>
 <p>然后就是去登录azure账号，搜一下azure，登录账号的时候选择<strong>sign in with Github</strong>即可</p>
 <p>（如果直接用GitHub登录失败，可能是没识别绑定的邮箱，比如你github用的<strong>主邮箱</strong>不是教育邮箱，这个时候用主邮箱注册一个微软账户，然后再用GitHub登录azure就行了）</p>
-<h3 id="3域名"><a class="markdownIt-Anchor" href="#3域名"></a> 3）域名</h3>
+<h3 id="3域名可选"><a class="markdownIt-Anchor" href="#3域名可选"></a> 3）域名（可选）</h3>
 <p>GitHub教育包提供了一年的免费域名，进入<a href="https://education.github.com/pack#namecheap">student dev pack</a>，找到·namecheap·，就可以搜索一个你喜欢的域名，领取一年免费的使用权</p>
+<p>如果要在服务器上部署网页的话，</p>
 <hr />
 <h2 id="1-搭建服务器"><a class="markdownIt-Anchor" href="#1-搭建服务器"></a> 1. 搭建服务器</h2>
 <p>搭建服务器就是在azure里面创建一个虚拟机，然后就可以玩了</p>
-<p>这一步网上有很多教程，这里贴一个<a href="https://zhuanlan.zhihu.com/p/629609870">知乎教程</a>，可惜好像以后basic里不能免费给公网ip了</p>
+<p>这一步网上有很多教程，这里贴一个<a href="https://zhuanlan.zhihu.com/p/629609870">知乎教程</a>，<s>可惜好像以后basic里不能免费给公网ip了</s></p>
+<ul>
+<li>
+<p>如果在注册的时候有选择地区的话，最好开梯子并选一个<strong>海外的地区</strong>，因为海外地区每月的出站流量免费额度更多，好像是每月能多<strong>15+100G</strong>，不过我现在也没搞清楚。国内的话则是只有<strong>15G</strong></p>
+</li>
+<li>
+<p>注意教程里说的 选择<em>标准SKU</em>，<em>静态</em>ip。虽然会额外收费（每年要花掉 43.8 美元）但是也没有什么别的办法。而且静态ip确实方便一点</p>
+</li>
+</ul>
 <p>以下是我的虚拟机<img src="vm.png" alt="vm" /></p>
 <hr />
 <h2 id="2域名"><a class="markdownIt-Anchor" href="#2域名"></a> 2.域名</h2>
-<p>注册完虚拟机之后，他给我们的是动态ip，所以不能直接在我们的域名里加一个<code>A record</code>，因为ip变了之后就会解析失败</p>
+<p>如果要部署网站的话，可以把刚刚买到的域名绑定一下</p>
+<p>注册完虚拟机之后，直接在我们的域名里加一个<code>A record</code>，并且填入我们的ip就行</p>
 <p>可以看到<strong>上图</strong>中有一个<code>DNS 名称</code>,这里刚创立的时候其实是没有的，你可以输一个自己喜欢的，然后azure会帮你用 <strong>Fully Qualified Domain Name (FQDN)</strong> 来绑到这个域名。</p>
 <p>这样之后就可以在我们刚刚“买”的域名中配置一个<code>CNAME</code>,如下图所示，添加一条记录即可</p>
 <p><img src="namecheap.png" alt="namecheap" /></p>
@@ -1864,6 +1878,7 @@ c-16-25.333-24-45-24-59z'/></svg></span></span></span></span><span class="vlist-
 <h2 id="3搭网站"><a class="markdownIt-Anchor" href="#3搭网站"></a> 3.搭网站</h2>
 <p>到这就可以在上面搭建你的网页了</p>
 <p>但是我发现我有<code>github.io</code>了，不需要一个再部署静态网页的地方，这里就没有写网站</p>
+<p>所以最后把域名绑到<code>github.io</code>上了</p>
 <hr />
 <h2 id="4-vpn"><a class="markdownIt-Anchor" href="#4-vpn"></a> 4. vpn</h2>
 <p>本着不浪费的原则，打算当梯子用</p>
@@ -1874,6 +1889,39 @@ c-16-25.333-24-45-24-59z'/></svg></span></span></span></span><span class="vlist-
       </categories>
       <tags>
         <tag>azure</tag>
+        <tag>vpn</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>将az100用作vpn</title>
+    <url>/2026/02/15/azure-vpn/</url>
+    <content><![CDATA[<h1 id="将az100用作vpn"><a class="markdownIt-Anchor" href="#将az100用作vpn"></a> 将az100用作vpn</h1>
+<p>之前注册了一个Azure学生100额度的账号（简称az100）并设立了虚拟机当服务器</p>
+<p>发现我好像不需要用它部署网页之后，利用剩下的额度去做一个vpn</p>
+<p>技术要点：</p>
+<ul>
+<li>Xray-core</li>
+<li>Reality</li>
+</ul>
+<p>（有关技术方面还在学习中）</p>
+<h2 id="xray"><a class="markdownIt-Anchor" href="#xray"></a> Xray</h2>
+<p><a href="https://www.v2ray-agent.com/archives/1682491479771">教程</a></p>
+<p>按照教程里的<em>Reality快速搭建-Xray</em>一路搭建就行</p>
+<p>注意配置的时候会随机生成一个端口，<strong>把它记下来</strong>，我们叫他<em>portA</em>，他是<em>VLESS 监听端口</em>，负责处理加密流量</p>
+<h2 id="clash-verge"><a class="markdownIt-Anchor" href="#clash-verge"></a> Clash-verge</h2>
+<p><a href="https://www.v2ray-agent.com/archives/1695534611317">教程</a></p>
+<p>按照教程里的添加订阅就行</p>
+<p>教程里显示的内核还是<code>clash-meta</code>现在应该是<code>mihomo</code>了，不用管他</p>
+<p>在下载订阅的这一步，找到<code>clash-meta</code>对应的网址并复制。这个网址的开头应该有一个<code>ip:port</code>的格式，例如<code>12.123.123:66666</code>。把这个端口也记下来，叫他<em>portB</em></p>
+<p>这个时候直接按照教程创建订阅是不行的，因为提供的订阅的网址使用的<em>portB</em>并没有在azure的服务器上开放。这个订阅的网址实际上是一个在你服务器上提供的一个文件。而<code>clash-verge</code>读取了这个配置文件之后，会把你的流量从<code>portA</code>传出去。</p>
+<p>所以我们要把这两个端口都开放<img src="port.png" alt="port" /></p>
+<p>在虚拟机-&gt;网络-&gt;网络设置里，点击新建网络端口，把<em>portA</em>，<em>portB</em>加进去并保存就行了</p>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<p>至此开启clash-verge的时候，流量就从我们的服务器走了，延迟很低而且网速很快</p>
+<p>目前 Azure 的政策是每个月至少有 15G 的额度。如果注册的地区成功是海外，在 <code>Subscription</code> 里查到的订阅方式是 <code>MCA</code> 而不是 <code>MOSP</code>，那很有可能额外的 100G 免费流量也是包含的 （这个我用一段时间看看到底怎么个事）</p>
+<p>实在不行扣费多的话，能piao一点是一点，每个月只用 LLM 的话应该也用不了多少 ，反正也不收钱。而且这个节点只有自己一个人用，而且十分纯净，没有什么风险</p>
+]]></content>
+      <tags>
         <tag>vpn</tag>
       </tags>
   </entry>

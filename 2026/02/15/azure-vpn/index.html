@@ -21,24 +21,29 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"s1mplewind.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.26.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="If you don&#39;t play , you won&#39;t learn.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="S1mpleWind&#39;s blog">
-<meta property="og:url" content="http://s1mplewind.github.io/tags/vpn/index.html">
+    <meta name="description" content="将az100用作vpn 之前注册了一个Azure学生100额度的账号（简称az100）并设立了虚拟机当服务器 发现我好像不需要用它部署网页之后，利用剩下的额度去做一个vpn 技术要点：  Xray-core Reality  （有关技术方面还在学习中）  Xray 教程 按照教程里的Reality快速搭建-Xray一路搭建就行 注意配置的时候会随机生成一个端口，把它记下来，我们叫他portA，他">
+<meta property="og:type" content="article">
+<meta property="og:title" content="将az100用作vpn">
+<meta property="og:url" content="http://s1mplewind.github.io/2026/02/15/azure-vpn/index.html">
 <meta property="og:site_name" content="S1mpleWind&#39;s blog">
-<meta property="og:description" content="If you don&#39;t play , you won&#39;t learn.">
+<meta property="og:description" content="将az100用作vpn 之前注册了一个Azure学生100额度的账号（简称az100）并设立了虚拟机当服务器 发现我好像不需要用它部署网页之后，利用剩下的额度去做一个vpn 技术要点：  Xray-core Reality  （有关技术方面还在学习中）  Xray 教程 按照教程里的Reality快速搭建-Xray一路搭建就行 注意配置的时候会随机生成一个端口，把它记下来，我们叫他portA，他">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/02/15/azure-vpn/port.png">
+<meta property="article:published_time" content="2026-02-15T10:16:57.000Z">
+<meta property="article:modified_time" content="2026-02-15T10:45:24.511Z">
 <meta property="article:author" content="S1mpleWind">
+<meta property="article:tag" content="vpn">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://s1mplewind.github.io/2026/02/15/azure-vpn/port.png">
 
 
-<link rel="canonical" href="http://s1mplewind.github.io/tags/vpn/">
+<link rel="canonical" href="http://s1mplewind.github.io/2026/02/15/azure-vpn/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"en","comments":"","permalink":"","path":"tags/vpn/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://s1mplewind.github.io/2026/02/15/azure-vpn/","path":"2026/02/15/azure-vpn/","title":"将az100用作vpn"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Tag: vpn | S1mpleWind's blog</title>
+<title>将az100用作vpn | S1mpleWind's blog</title>
   
 
 
@@ -155,7 +160,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           Table of Contents
@@ -168,6 +173,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%86az100%E7%94%A8%E4%BD%9Cvpn"><span class="nav-number">1.</span> <span class="nav-text"> 将az100用作vpn</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#xray"><span class="nav-number">1.1.</span> <span class="nav-text"> Xray</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#clash-verge"><span class="nav-number">1.2.</span> <span class="nav-text"> Clash-verge</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.3.</span> <span class="nav-text"> 总结</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -217,70 +223,154 @@
 
     </div>
 
-    <div class="main-inner tag posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
+
+
+<div class="post-block">
   
   
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <h1 class="collection-header">vpn
-          <small>Tag</small>
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/02/15/azure-vpn/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="S1mpleWind">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="S1mpleWind's blog">
+      <meta itemprop="description" content="If you don't play , you won't learn.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="将az100用作vpn | S1mpleWind's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          将az100用作vpn
         </h1>
-      </div>
 
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
       
-    <div class="collection-year">
-      <span class="collection-header">2026</span>
+
+      <time title="Created: 2026-02-15 18:16:57 / Modified: 18:45:24" itemprop="dateCreated datePublished" datetime="2026-02-15T18:16:57+08:00">2026-02-15</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>772</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>1 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="将az100用作vpn"><a class="markdownIt-Anchor" href="#将az100用作vpn"></a> 将az100用作vpn</h1>
+<p>之前注册了一个Azure学生100额度的账号（简称az100）并设立了虚拟机当服务器</p>
+<p>发现我好像不需要用它部署网页之后，利用剩下的额度去做一个vpn</p>
+<p>技术要点：</p>
+<ul>
+<li>Xray-core</li>
+<li>Reality</li>
+</ul>
+<p>（有关技术方面还在学习中）</p>
+<h2 id="xray"><a class="markdownIt-Anchor" href="#xray"></a> Xray</h2>
+<p><a target="_blank" rel="noopener" href="https://www.v2ray-agent.com/archives/1682491479771">教程</a></p>
+<p>按照教程里的<em>Reality快速搭建-Xray</em>一路搭建就行</p>
+<p>注意配置的时候会随机生成一个端口，<strong>把它记下来</strong>，我们叫他<em>portA</em>，他是<em>VLESS 监听端口</em>，负责处理加密流量</p>
+<h2 id="clash-verge"><a class="markdownIt-Anchor" href="#clash-verge"></a> Clash-verge</h2>
+<p><a target="_blank" rel="noopener" href="https://www.v2ray-agent.com/archives/1695534611317">教程</a></p>
+<p>按照教程里的添加订阅就行</p>
+<p>教程里显示的内核还是<code>clash-meta</code>现在应该是<code>mihomo</code>了，不用管他</p>
+<p>在下载订阅的这一步，找到<code>clash-meta</code>对应的网址并复制。这个网址的开头应该有一个<code>ip:port</code>的格式，例如<code>12.123.123:66666</code>。把这个端口也记下来，叫他<em>portB</em></p>
+<p>这个时候直接按照教程创建订阅是不行的，因为提供的订阅的网址使用的<em>portB</em>并没有在azure的服务器上开放。这个订阅的网址实际上是一个在你服务器上提供的一个文件。而<code>clash-verge</code>读取了这个配置文件之后，会把你的流量从<code>portA</code>传出去。</p>
+<p>所以我们要把这两个端口都开放<img src="port.png" alt="port" /></p>
+<p>在虚拟机-&gt;网络-&gt;网络设置里，点击新建网络端口，把<em>portA</em>，<em>portB</em>加进去并保存就行了</p>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<p>至此开启clash-verge的时候，流量就从我们的服务器走了，延迟很低而且网速很快</p>
+<p>目前 Azure 的政策是每个月至少有 15G 的额度。如果注册的地区成功是海外，在 <code>Subscription</code> 里查到的订阅方式是 <code>MCA</code> 而不是 <code>MOSP</code>，那很有可能额外的 100G 免费流量也是包含的 （这个我用一段时间看看到底怎么个事）</p>
+<p>实在不行扣费多的话，能piao一点是一点，每个月只用 LLM 的话应该也用不了多少 ，反正也不收钱。而且这个节点只有自己一个人用，而且十分纯净，没有什么风险</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2026-02-15T18:16:57+08:00"
-              content="2026-02-15">
-          02-15
-        </time>
-      </div>
+    
+    
+    
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2026/02/15/azure-vpn/" itemprop="url">
-            <span itemprop="name">将az100用作vpn</span>
+    <footer class="post-footer">
+          <div class="followme">
+  <span>Welcome to my other publishing channels</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/S1mpleWind">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">Github</span>
           </a>
       </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2026-02-08T20:40:13+08:00"
-              content="2026-02-08">
-          02-08
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2026/02/08/azure-server/" itemprop="url">
-            <span itemprop="name">azure-server</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-    </div>
   </div>
-  
-  
-  
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/vpn/" rel="tag"># vpn</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/02/13/NanjingMuseum/" rel="next" title="南京博物院">
+                  南京博物院 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
 
 </div>
   </main>
