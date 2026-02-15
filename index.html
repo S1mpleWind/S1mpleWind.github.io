@@ -257,7 +257,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2026-02-15 18:16:57 / Modified: 18:45:24" itemprop="dateCreated datePublished" datetime="2026-02-15T18:16:57+08:00">2026-02-15</time>
+      <time title="Created: 2026-02-15 18:16:57 / Modified: 18:47:43" itemprop="dateCreated datePublished" datetime="2026-02-15T18:16:57+08:00">2026-02-15</time>
     </span>
 
   
@@ -294,23 +294,14 @@
 <li>Reality</li>
 </ul>
 <p>（有关技术方面还在学习中）</p>
-<h2 id="xray"><a class="markdownIt-Anchor" href="#xray"></a> Xray</h2>
-<p><a target="_blank" rel="noopener" href="https://www.v2ray-agent.com/archives/1682491479771">教程</a></p>
-<p>按照教程里的<em>Reality快速搭建-Xray</em>一路搭建就行</p>
-<p>注意配置的时候会随机生成一个端口，<strong>把它记下来</strong>，我们叫他<em>portA</em>，他是<em>VLESS 监听端口</em>，负责处理加密流量</p>
-<h2 id="clash-verge"><a class="markdownIt-Anchor" href="#clash-verge"></a> Clash-verge</h2>
-<p><a target="_blank" rel="noopener" href="https://www.v2ray-agent.com/archives/1695534611317">教程</a></p>
-<p>按照教程里的添加订阅就行</p>
-<p>教程里显示的内核还是<code>clash-meta</code>现在应该是<code>mihomo</code>了，不用管他</p>
-<p>在下载订阅的这一步，找到<code>clash-meta</code>对应的网址并复制。这个网址的开头应该有一个<code>ip:port</code>的格式，例如<code>12.123.123:66666</code>。把这个端口也记下来，叫他<em>portB</em></p>
-<p>这个时候直接按照教程创建订阅是不行的，因为提供的订阅的网址使用的<em>portB</em>并没有在azure的服务器上开放。这个订阅的网址实际上是一个在你服务器上提供的一个文件。而<code>clash-verge</code>读取了这个配置文件之后，会把你的流量从<code>portA</code>传出去。</p>
-<p>所以我们要把这两个端口都开放<img src="port.png" alt="port" /></p>
-<p>在虚拟机-&gt;网络-&gt;网络设置里，点击新建网络端口，把<em>portA</em>，<em>portB</em>加进去并保存就行了</p>
-<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
-<p>至此开启clash-verge的时候，流量就从我们的服务器走了，延迟很低而且网速很快</p>
-<p>目前 Azure 的政策是每个月至少有 15G 的额度。如果注册的地区成功是海外，在 <code>Subscription</code> 里查到的订阅方式是 <code>MCA</code> 而不是 <code>MOSP</code>，那很有可能额外的 100G 免费流量也是包含的 （这个我用一段时间看看到底怎么个事）</p>
-<p>实在不行扣费多的话，能piao一点是一点，每个月只用 LLM 的话应该也用不了多少 ，反正也不收钱。而且这个节点只有自己一个人用，而且十分纯净，没有什么风险</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/02/15/azure-vpn/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -818,7 +809,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-02-15 18:16:18" itemprop="dateModified" datetime="2026-02-15T18:16:18+08:00">2026-02-15</time>
+      <time title="Modified: 2026-02-15 18:47:20" itemprop="dateModified" datetime="2026-02-15T18:47:20+08:00">2026-02-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -837,7 +828,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">Word count in article: </span>
-      <span>966</span>
+      <span>969</span>
     </span>
     <span class="post-meta-item" title="Reading time">
       <span class="post-meta-item-icon">

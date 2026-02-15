@@ -1840,6 +1840,52 @@ c-16-25.333-24-45-24-59z'/></svg></span></span></span></span><span class="vlist-
       </tags>
   </entry>
   <entry>
+    <title>将az100用作vpn</title>
+    <url>/2026/02/15/azure-vpn/</url>
+    <content><![CDATA[<h1 id="将az100用作vpn"><a class="markdownIt-Anchor" href="#将az100用作vpn"></a> 将az100用作vpn</h1>
+<p>之前注册了一个Azure学生100额度的账号（简称az100）并设立了虚拟机当服务器</p>
+<p>发现我好像不需要用它部署网页之后，利用剩下的额度去做一个vpn</p>
+<p>技术要点：</p>
+<ul>
+<li>Xray-core</li>
+<li>Reality</li>
+</ul>
+<p>（有关技术方面还在学习中）</p>
+<span id="more"></span>
+<h2 id="xray"><a class="markdownIt-Anchor" href="#xray"></a> Xray</h2>
+<p><a href="https://www.v2ray-agent.com/archives/1682491479771">教程</a></p>
+<p>按照教程里的<em>Reality快速搭建-Xray</em>一路搭建就行</p>
+<p>注意配置的时候会随机生成一个端口，<strong>把它记下来</strong>，我们叫他<em>portA</em>，他是<em>VLESS 监听端口</em>，负责处理加密流量</p>
+<h2 id="clash-verge"><a class="markdownIt-Anchor" href="#clash-verge"></a> Clash-verge</h2>
+<p><a href="https://www.v2ray-agent.com/archives/1695534611317">教程</a></p>
+<p>按照教程里的添加订阅就行</p>
+<p>教程里显示的内核还是<code>clash-meta</code>现在应该是<code>mihomo</code>了，不用管他</p>
+<p>在下载订阅的这一步，找到<code>clash-meta</code>对应的网址并复制。这个网址的开头应该有一个<code>ip:port</code>的格式，例如<code>12.123.123:66666</code>。把这个端口也记下来，叫他<em>portB</em></p>
+<p>这个时候直接按照教程创建订阅是不行的，因为提供的订阅的网址使用的<em>portB</em>并没有在azure的服务器上开放。这个订阅的网址实际上是一个在你服务器上提供的一个文件。而<code>clash-verge</code>读取了这个配置文件之后，会把你的流量从<code>portA</code>传出去。</p>
+<p>所以我们要把这两个端口都开放<img src="port.png" alt="port" /></p>
+<p>在虚拟机-&gt;网络-&gt;网络设置里，点击新建网络端口，把<em>portA</em>，<em>portB</em>加进去并保存就行了</p>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<p>至此开启clash-verge的时候，流量就从我们的服务器走了，延迟很低而且网速很快</p>
+<p>目前 Azure 的政策是每个月至少有 15G 的额度。如果注册的地区成功是海外，在 <code>Subscription</code> 里查到的订阅方式是 <code>MCA</code> 而不是 <code>MOSP</code>，那很有可能额外的 100G 免费流量也是包含的 （这个我用一段时间看看到底怎么个事）</p>
+<p>实在不行扣费多的话，能piao一点是一点，每个月只用 LLM 的话应该也用不了多少 ，反正也不收钱。而且这个节点只有自己一个人用，而且十分纯净，没有什么风险</p>
+]]></content>
+      <tags>
+        <tag>vpn</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello world!</title>
+    <url>/2025/12/06/hello-world/</url>
+    <content><![CDATA[<h1 id="hello-world"><a class="markdownIt-Anchor" href="#hello-world"></a> Hello world !</h1>
+<p>this is gonna be my first blog, wish I‘ll have fun building it hh.</p>
+<h2 id="创建博客的原因"><a class="markdownIt-Anchor" href="#创建博客的原因"></a> 创建博客的原因</h2>
+<p>在这个社交媒体的时代，博客似乎已经丧失了他原本的社交属性（或许本来就没什么属性）。</p>
+<p>它变得更加像是日记一类私人的记录，但是也为了愿意来探访的人打开了一扇门</p>
+<p>anyway，我的博客从今天启程，以后可能用来记录生活或者技术</p>
+<h2 id="end"><a class="markdownIt-Anchor" href="#end"></a> END</h2>
+]]></content>
+  </entry>
+  <entry>
     <title>azure-server</title>
     <url>/2026/02/08/azure-server/</url>
     <content><![CDATA[<h1 id="使用azure搭建服务器"><a class="markdownIt-Anchor" href="#使用azure搭建服务器"></a> 使用azure搭建服务器</h1>
@@ -1882,59 +1928,15 @@ c-16-25.333-24-45-24-59z'/></svg></span></span></span></span><span class="vlist-
 <hr />
 <h2 id="4-vpn"><a class="markdownIt-Anchor" href="#4-vpn"></a> 4. vpn</h2>
 <p>本着不浪费的原则，打算当梯子用</p>
-<p>正在更新中</p>
+<p>正在更新中<br />
+见<a href="https://s1mplewind.github.io/2026/02/15/azure-vpn/">博客</a></p>
 ]]></content>
       <categories>
         <category>server</category>
       </categories>
       <tags>
+        <tag>vpn</tag>
         <tag>azure</tag>
-        <tag>vpn</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>将az100用作vpn</title>
-    <url>/2026/02/15/azure-vpn/</url>
-    <content><![CDATA[<h1 id="将az100用作vpn"><a class="markdownIt-Anchor" href="#将az100用作vpn"></a> 将az100用作vpn</h1>
-<p>之前注册了一个Azure学生100额度的账号（简称az100）并设立了虚拟机当服务器</p>
-<p>发现我好像不需要用它部署网页之后，利用剩下的额度去做一个vpn</p>
-<p>技术要点：</p>
-<ul>
-<li>Xray-core</li>
-<li>Reality</li>
-</ul>
-<p>（有关技术方面还在学习中）</p>
-<h2 id="xray"><a class="markdownIt-Anchor" href="#xray"></a> Xray</h2>
-<p><a href="https://www.v2ray-agent.com/archives/1682491479771">教程</a></p>
-<p>按照教程里的<em>Reality快速搭建-Xray</em>一路搭建就行</p>
-<p>注意配置的时候会随机生成一个端口，<strong>把它记下来</strong>，我们叫他<em>portA</em>，他是<em>VLESS 监听端口</em>，负责处理加密流量</p>
-<h2 id="clash-verge"><a class="markdownIt-Anchor" href="#clash-verge"></a> Clash-verge</h2>
-<p><a href="https://www.v2ray-agent.com/archives/1695534611317">教程</a></p>
-<p>按照教程里的添加订阅就行</p>
-<p>教程里显示的内核还是<code>clash-meta</code>现在应该是<code>mihomo</code>了，不用管他</p>
-<p>在下载订阅的这一步，找到<code>clash-meta</code>对应的网址并复制。这个网址的开头应该有一个<code>ip:port</code>的格式，例如<code>12.123.123:66666</code>。把这个端口也记下来，叫他<em>portB</em></p>
-<p>这个时候直接按照教程创建订阅是不行的，因为提供的订阅的网址使用的<em>portB</em>并没有在azure的服务器上开放。这个订阅的网址实际上是一个在你服务器上提供的一个文件。而<code>clash-verge</code>读取了这个配置文件之后，会把你的流量从<code>portA</code>传出去。</p>
-<p>所以我们要把这两个端口都开放<img src="port.png" alt="port" /></p>
-<p>在虚拟机-&gt;网络-&gt;网络设置里，点击新建网络端口，把<em>portA</em>，<em>portB</em>加进去并保存就行了</p>
-<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
-<p>至此开启clash-verge的时候，流量就从我们的服务器走了，延迟很低而且网速很快</p>
-<p>目前 Azure 的政策是每个月至少有 15G 的额度。如果注册的地区成功是海外，在 <code>Subscription</code> 里查到的订阅方式是 <code>MCA</code> 而不是 <code>MOSP</code>，那很有可能额外的 100G 免费流量也是包含的 （这个我用一段时间看看到底怎么个事）</p>
-<p>实在不行扣费多的话，能piao一点是一点，每个月只用 LLM 的话应该也用不了多少 ，反正也不收钱。而且这个节点只有自己一个人用，而且十分纯净，没有什么风险</p>
-]]></content>
-      <tags>
-        <tag>vpn</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hello world!</title>
-    <url>/2025/12/06/hello-world/</url>
-    <content><![CDATA[<h1 id="hello-world"><a class="markdownIt-Anchor" href="#hello-world"></a> Hello world !</h1>
-<p>this is gonna be my first blog, wish I‘ll have fun building it hh.</p>
-<h2 id="创建博客的原因"><a class="markdownIt-Anchor" href="#创建博客的原因"></a> 创建博客的原因</h2>
-<p>在这个社交媒体的时代，博客似乎已经丧失了他原本的社交属性（或许本来就没什么属性）。</p>
-<p>它变得更加像是日记一类私人的记录，但是也为了愿意来探访的人打开了一扇门</p>
-<p>anyway，我的博客从今天启程，以后可能用来记录生活或者技术</p>
-<h2 id="end"><a class="markdownIt-Anchor" href="#end"></a> END</h2>
-]]></content>
   </entry>
 </search>
