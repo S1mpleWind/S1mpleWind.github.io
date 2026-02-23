@@ -21,24 +21,26 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"s1mplewind.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.26.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="If you don&#39;t play , you won&#39;t learn.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="S1mpleWind&#39;s blog">
-<meta property="og:url" content="http://s1mplewind.github.io/categories/Arcitecture/index.html">
+    <meta name="description" content="Pytorch框架学习用 Pytorch 的时候都是用 llm 生成的代码，只会往nn模块里加点功能层，调用它提供的 Loss 现在有空了多了解一点 Pytorch中重要的元素1. Tensortensor，张量，是记录一个多维空间里的点或向量的容器 它可以是 标量-&gt;向量-&gt;矩阵-&gt;张量 3.AutogradPytorch 最特色的就是它的自动求导，他会在前向传播的时候">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pytorch框架">
+<meta property="og:url" content="http://s1mplewind.github.io/2026/02/23/pytorch/index.html">
 <meta property="og:site_name" content="S1mpleWind&#39;s blog">
-<meta property="og:description" content="If you don&#39;t play , you won&#39;t learn.">
+<meta property="og:description" content="Pytorch框架学习用 Pytorch 的时候都是用 llm 生成的代码，只会往nn模块里加点功能层，调用它提供的 Loss 现在有空了多了解一点 Pytorch中重要的元素1. Tensortensor，张量，是记录一个多维空间里的点或向量的容器 它可以是 标量-&gt;向量-&gt;矩阵-&gt;张量 3.AutogradPytorch 最特色的就是它的自动求导，他会在前向传播的时候">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-02-23T06:55:42.000Z">
+<meta property="article:modified_time" content="2026-02-23T09:14:37.276Z">
 <meta property="article:author" content="S1mpleWind">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://s1mplewind.github.io/categories/Arcitecture/">
+<link rel="canonical" href="http://s1mplewind.github.io/2026/02/23/pytorch/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"en","comments":"","permalink":"","path":"categories/Arcitecture/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://s1mplewind.github.io/2026/02/23/pytorch/","path":"2026/02/23/pytorch/","title":"pytorch框架"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Category: Arcitecture | S1mpleWind's blog</title>
+<title>pytorch框架 | S1mpleWind's blog</title>
   
 
 
@@ -156,7 +158,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           Table of Contents
@@ -169,6 +171,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pytorch%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0"><span class="nav-number">1.</span> <span class="nav-text">Pytorch框架学习</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Pytorch%E4%B8%AD%E9%87%8D%E8%A6%81%E7%9A%84%E5%85%83%E7%B4%A0"><span class="nav-number">1.1.</span> <span class="nav-text">Pytorch中重要的元素</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Tensor"><span class="nav-number">1.1.1.</span> <span class="nav-text">1. Tensor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Autograd"><span class="nav-number">1.1.2.</span> <span class="nav-text">3.Autograd</span></a></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -218,50 +221,140 @@
 
     </div>
 
-    <div class="main-inner category posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
+
+
+<div class="post-block">
   
   
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <h1 class="collection-header">Arcitecture
-          <small>Category</small>
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/02/23/pytorch/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="S1mpleWind">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="S1mpleWind's blog">
+      <meta itemprop="description" content="If you don't play , you won't learn.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="pytorch框架 | S1mpleWind's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          pytorch框架
         </h1>
-      </div>
 
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
       
-    <div class="collection-year">
-      <span class="collection-header">2026</span>
+
+      <time title="Created: 2026-02-23 14:55:42 / Modified: 17:14:37" itemprop="dateCreated datePublished" datetime="2026-02-23T14:55:42+08:00">2026-02-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ML/" itemprop="url" rel="index"><span itemprop="name">ML</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>184</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>1 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="Pytorch框架学习"><a href="#Pytorch框架学习" class="headerlink" title="Pytorch框架学习"></a>Pytorch框架学习</h1><p>用 Pytorch 的时候都是用 llm 生成的代码，只会往<code>nn</code>模块里加点功能层，调用它提供的 Loss</p>
+<p>现在有空了多了解一点</p>
+<h2 id="Pytorch中重要的元素"><a href="#Pytorch中重要的元素" class="headerlink" title="Pytorch中重要的元素"></a>Pytorch中重要的元素</h2><h3 id="1-Tensor"><a href="#1-Tensor" class="headerlink" title="1. Tensor"></a>1. Tensor</h3><p>tensor，张量，是记录一个多维空间里的点或向量的容器</p>
+<p>它可以是 <code>标量-&gt;向量-&gt;矩阵-&gt;张量</code></p>
+<h3 id="3-Autograd"><a href="#3-Autograd" class="headerlink" title="3.Autograd"></a>3.Autograd</h3><p>Pytorch 最特色的就是它的<strong>自动求导</strong>，他会在前向传播的时候</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2026-02-17T11:43:15+08:00"
-              content="2026-02-17">
-          02-17
-        </time>
-      </div>
+    
+    
+    
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2026/02/17/GPU-Architecture/" itemprop="url">
-            <span itemprop="name">GPU-Architecture</span>
+    <footer class="post-footer">
+          <div class="followme">
+  <span>Welcome to my other publishing channels</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/S1mpleWind">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">Github</span>
           </a>
       </div>
-
-      
-    </header>
-  </article>
-
-    </div>
   </div>
-  
-  
-  
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/02/22/About-LPU/" rel="next" title="About-LPU">
+                  About-LPU <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
 
 </div>
   </main>

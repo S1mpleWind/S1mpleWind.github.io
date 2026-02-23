@@ -234,23 +234,6 @@ L &= N_x \cdot 0 + N_y \cdot 1 + N_z \cdot (-1) = N_y - N_z \\
       </tags>
   </entry>
   <entry>
-    <title>About-LPU</title>
-    <url>/2026/02/22/About-LPU/</url>
-    <content><![CDATA[<h1 id="LPU-架构简单学习"><a href="#LPU-架构简单学习" class="headerlink" title="LPU 架构简单学习"></a>LPU 架构简单学习</h1><p>Gemini的免费 api 限额又变少了，最近在找其他 free api 的时候偶然发现了 groq</p>
-<p>groq 提供的几个 api 接口吐字实在快，看到他们说用的是自己研发的 LPU（Language Processing Unit）</p>
-<p>官网上这样介绍自己的优势：</p>
-<ul>
-<li>Software-first</li>
-<li>Programmable assembly line architecture</li>
-<li>Deterministic compute and networking</li>
-<li>On-chip memory</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Architecture</category>
-      </categories>
-  </entry>
-  <entry>
     <title>GPU-Architecture</title>
     <url>/2026/02/17/GPU-Architecture/</url>
     <content><![CDATA[<h1 id="GPU-架构"><a href="#GPU-架构" class="headerlink" title="GPU 架构"></a>GPU 架构</h1><h2 id="0-引言"><a href="#0-引言" class="headerlink" title="0.引言"></a>0.引言</h2><p>GPU (Graphic Processing Unit)，原本作为图像处理的工具，为游戏的渲染服务，在AI时代因为其并行计算性而得到了大量的使用<br>Nvidia 正是看到了 AI 使用显卡进行训练的商机，搭建 <code>CUDA</code> 平台一飞冲天</p>
@@ -400,7 +383,7 @@ L &= N_x \cdot 0 + N_y \cdot 1 + N_z \cdot (-1) = N_y - N_z \\
 <li>red : prediction of draft model</li>
 <li>blue (with snow icon) : target LLM parameter</li>
 </ul>
-<p><style>.cukrmwdwynpt{zoom: 33%;}</style><img src="/2026/02/13/EAGLE/pipeline1.png" class="cukrmwdwynpt" alt="pipeline1"></p>
+<p><style>.rtrioixejevx{zoom: 33%;}</style><img src="/2026/02/13/EAGLE/pipeline1.png" class="rtrioixejevx" alt="pipeline1"></p>
 <p>可以看到这里 Draft Model 由三部分组成：</p>
 <ol>
 <li>Embedding Layer : 与目标 LLM 共享</li>
@@ -411,7 +394,7 @@ L &= N_x \cdot 0 + N_y \cdot 1 + N_z \cdot (-1) = N_y - N_z \\
 <p>FC 层的作用是将 (bs, seq_len, 2*hidden_size) 降维成 (bs, seq_len, hidden_size)  </p>
 <p>在计算 draft 的时候，EAGLE 构建了一颗树。这棵 Draft Tree 的深度是 $m$ ，拥有超过 $m$ 个的 token 数，只会执行 $m$ 步 forward。</p>
 <p>例如，下图是草稿生成的过程中构建的树，可以看到天然的不含有 Medusa 中那种缺乏逻辑性的分支。 这里深度为3，token数为10</p>
-<p><style>.onifxwyulfiq{zoom:50%;}</style><img src="/2026/02/13/EAGLE/pipeline2.png" class="onifxwyulfiq" alt="pipeline2"></p>
+<p><style>.efitmpqcsgyz{zoom:50%;}</style><img src="/2026/02/13/EAGLE/pipeline2.png" class="efitmpqcsgyz" alt="pipeline2"></p>
 <p>对于这颗树的构建规则，附录中有提到一些：</p>
 <ul>
 <li>greedy：每个节点选择 top k 作为儿子</li>
@@ -433,7 +416,7 @@ L &= N_x \cdot 0 + N_y \cdot 1 + N_z \cdot (-1) = N_y - N_z \\
 <p>但是这和 spec sampling 中 <em>“some tokens are simpler  and can be predicted by smaller models”</em>会产生冲突，实验也发现了 token 接受率还和上下文密切相关。因此静态树有天然的限制。在不同的 context 下动态的调整树会更好</p>
 <p>要想拥有更适应 context 的动态结构，就需要原始 LLM 对上下文的推导。但是这与加速的目的相悖了。但是 EAGLE 的实验结果证明了 draft model 具有良好的校准性（Well-calibrated），它的置信度分数（即概率）能够很好地近似 Draft Token 的接受率</p>
 <p>EAGLE-2 基于这一点事实展开，通过动态树的构建提高了接受率（acceptance rate）</p>
-<h3 id="Well-Calibrated-Draft-Model"><a href="#Well-Calibrated-Draft-Model" class="headerlink" title="Well-Calibrated Draft Model"></a>Well-Calibrated Draft Model</h3><p><style>.kodrjkmqpfso{zoom: 80%;}</style><img src="/2026/02/13/EAGLE/cali.png" class="kodrjkmqpfso" alt="cali"></p>
+<h3 id="Well-Calibrated-Draft-Model"><a href="#Well-Calibrated-Draft-Model" class="headerlink" title="Well-Calibrated Draft Model"></a>Well-Calibrated Draft Model</h3><p><style>.aoiumxwbjkdi{zoom: 80%;}</style><img src="/2026/02/13/EAGLE/cali.png" class="aoiumxwbjkdi" alt="cali"></p>
 <p>EAGLE-2 提供了这样一张统计图，其中$Confidence(x) = P<em>{draft}(x) = \frac{\exp(Logit_x)}{\sum \exp(Logit_i)}$，$$\text{Acceptance Rate} = \min\left(1, \frac{P</em>{target}(x)}{P_{draft}(x)}\right)$$</p>
 <p>Confidence 就是 Draft 预测的分布；而接受率在贪婪搜索下就是 $P<em>{target}$和 $P</em>{draft}$预测的最可能的结果一致，在随机采样中是如果 target 认为这个词出现的概率比 Draft 预测的概率还大，那么就是 1.0 的接受率，否则按照比例接受</p>
 <p>这样的校准性能够避免使用 Target LLM 对上下文的推导，仅仅用 Draft 就能寻找动态树的路径</p>
@@ -442,9 +425,9 @@ L &= N_x \cdot 0 + N_y \cdot 1 + N_z \cdot (-1) = N_y - N_z \\
 <h3 id="Reranking-Nodes"><a href="#Reranking-Nodes" class="headerlink" title="Reranking Nodes"></a>Reranking Nodes</h3><p>经过 expand 之后，还要进行一次排序筛选，保留所有节点中期望收益最高，也就是 Global Acceptance最大的 $m$ 个 token</p>
 <p>这一步会有一个现象，就是浅层的 token 会比深层的 token 更有优势，因为每一次都是乘一个小于 1 的数，所以当模型很<strong>自信</strong>的时候，会生成更深的路径，一次推理中能走更多的步骤；而当模型很<strong>困惑</strong>的时候，树的结构趋向于“收缩”，预测趋于浅层，节省深层 token 验证的资源，提高整体期望值</p>
 <p>示例：</p>
-<p><style>.afdjxrdjfycq{zoom:67%;}</style><img src="/2026/02/13/EAGLE/build-dy-tree.png" class="afdjxrdjfycq" alt="build-dy-tree"></p>
+<p><style>.tdlgjevmfmea{zoom:67%;}</style><img src="/2026/02/13/EAGLE/build-dy-tree.png" class="tdlgjevmfmea" alt="build-dy-tree"></p>
 <p>用 tree-attention 验证：</p>
-<p><style>.vohopzmkammg{zoom:50%;}</style><img src="/2026/02/13/EAGLE/verify-2.png" class="vohopzmkammg" alt="verify-2"></p>
+<p><style>.ybeyetymvjaq{zoom:50%;}</style><img src="/2026/02/13/EAGLE/verify-2.png" class="ybeyetymvjaq" alt="verify-2"></p>
 <hr>
 <h2 id="EAGLE-3"><a href="#EAGLE-3" class="headerlink" title="EAGLE-3"></a>EAGLE-3</h2><p>第三版主要是在训练上</p>
 <h3 id="新的训练架构"><a href="#新的训练架构" class="headerlink" title="新的训练架构"></a>新的训练架构</h3><h4 id="Training-time-test"><a href="#Training-time-test" class="headerlink" title="Training-time test"></a>Training-time test</h4><p>EAGLE 的训练是基于 feature-level 的，训练的损失是联合回归损失和分类损失， $L = L<em>{reg} + w</em>{cls}*L<em>{cls}$。$L</em>{reg}$是feature的损失，但是$L_{cls}$的 token 损失其实才是最终的目标。这也就意味着 feature 会施加一个额外的约束，让 Draft Model 很难在更大的 training data 中获益。为此 EAGLE-3 做了这样的尝试：</p>
@@ -459,7 +442,7 @@ L &= N_x \cdot 0 + N_y \cdot 1 + N_z \cdot (-1) = N_y - N_z \\
 <h3 id="Pipeline"><a href="#Pipeline" class="headerlink" title="Pipeline"></a>Pipeline</h3><p>第三版的pipeline如下图。除了增加了底层的 hidden_state 的使用；同时由于训练的时候使用的新方法，draft 部分原本的单步预测器也变成了更 transformer 的 decoder；decoder输入的序列中，会重复使用生成的 draft feature，对应了训练得到的<strong>“轨迹感”</strong>，能根据前面所有步骤形成的动态趋势进行自我修正</p>
 <p><img src="eagle-3-pipe.png" alt="eagle-3-pipe"></p>
 <h3 id="Training"><a href="#Training" class="headerlink" title="Training"></a>Training</h3><p>唯一要训练的部分就是 transformer decoder，训练的时候用了 tree-mask，从一个序列里产出的只能看到它这条路径上的Key（示意图里用 token 来代替了 feature 的表示）</p>
-<p><style>.cgjiakqrqmwq{zoom:67%;}</style><img src="/2026/02/13/EAGLE/eagle-treemask.png" class="cgjiakqrqmwq" alt="eagle-treemask"></p>
+<p><style>.ldjslxzzwngi{zoom:67%;}</style><img src="/2026/02/13/EAGLE/eagle-treemask.png" class="ldjslxzzwngi" alt="eagle-treemask"></p>
 <p>对于每一步的训练，由于浅层的错误是更致命的，所以可能会给不同深度的节点分配训练权重，看代码的时候看看</p>
 <hr>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>EAGLE 由于加入了 token 的选择，可以加强 spec 过程中的上下文逻辑，减轻不确定性，从而获得更高的 Accept Rate</p>
@@ -474,63 +457,45 @@ L &= N_x \cdot 0 + N_y \cdot 1 + N_z \cdot (-1) = N_y - N_z \\
       </tags>
   </entry>
   <entry>
-    <title>南京博物院</title>
-    <url>/2026/02/13/NanjingMuseum/</url>
-    <content><![CDATA[<h1 id="南京博物院"><a href="#南京博物院" class="headerlink" title="南京博物院"></a>南京博物院</h1><p>本南京人第一次来南京博物院</p>
-<span id="more"></span>
-<p><img src="gate.jpg" alt="gate"></p>
-<p>今天天气挺好的，南博有不少人</p>
-<p>南京博物院有好几个馆：</p>
+    <title>About-LPU</title>
+    <url>/2026/02/22/About-LPU/</url>
+    <content><![CDATA[<h1 id="LPU-架构简单学习"><a href="#LPU-架构简单学习" class="headerlink" title="LPU 架构简单学习"></a>LPU 架构简单学习</h1><p>Gemini的免费 api 限额又变少了，最近在找其他 free api 的时候偶然发现了 groq</p>
+<p>groq 提供的几个 api 接口吐字实在快，看到他们说用的是自己研发的 LPU（Language Processing Unit）</p>
+<p>官网上这样介绍自己的优势：</p>
 <ul>
-<li><p>历史馆</p>
-</li>
-<li><p>数字馆</p>
-</li>
-<li><p>民国馆</p>
-</li>
-<li><p>艺术馆</p>
-</li>
-<li><p>非遗馆</p>
-</li>
+<li>Software-first</li>
+<li>Programmable assembly line architecture</li>
+<li>Deterministic compute and networking</li>
+<li>On-chip memory</li>
 </ul>
-<p>历史馆就是最传统的博物馆，也最有意思</p>
-<h2 id="历史馆"><a href="#历史馆" class="headerlink" title="历史馆"></a>历史馆</h2><p>历史馆从史前时期开始介绍江苏地区的历史，一直到民国前</p>
-<p><img src="elephant.jpg" alt="elephant"></p>
-<p>大猛犸象</p>
-<p><img src="spoon.jpg" alt="spoon"></p>
-<p>一个好像没有使用功能的小勺子</p>
-<p><img src="bronzepot.jpg" alt="bronzepot"></p>
-<p>青铜壶</p>
-<p><img src="bronze-crossbow.jpg" alt="bronze-crossbow"></p>
-<p>西汉示器的铜弩机</p>
-<p>这里的<em>错金银</em>工艺，指的就是把金丝/银丝嵌到器具里开好的槽中</p>
-<p><img src="Ox-shape-lamp.jpg" alt="Ox-shape-lamp"></p>
-<p>铜牛灯，虽然看着很像羊</p>
-<p><img src="pillow.jpg" alt="pillow"></p>
-<p>宋朝的瓷枕，感觉直接枕的话有点高<img src="bow.jpg" alt="bow"></p>
-<p>纹路很精美的茶盏</p>
-<p><img src="lion.jpg" alt="lion"></p>
-<p>狮子砖雕</p>
-<p><img src="horse.jpg" alt="horse"></p>
-<p>某个马头的复制品</p>
-<p><img src="seat.jpg" alt="seat"></p>
-<p>气派的座位和屏风，好像使用的珐琅工艺</p>
-<h2 id="数字馆"><a href="#数字馆" class="headerlink" title="数字馆"></a>数字馆</h2><p>没意思，放了点数字影像，不如在家看</p>
-<h2 id="民国馆"><a href="#民国馆" class="headerlink" title="民国馆"></a>民国馆</h2><p>感觉各地的民国馆都是这种交互式的商业街，<img src="street.jpg" alt="street"></p>
-<p>火车头模型<img src="train.jpg" alt="train"></p>
-<h2 id="非遗馆"><a href="#非遗馆" class="headerlink" title="非遗馆"></a>非遗馆</h2><p>介绍了种种非遗，并且有相应的商品柜台</p>
-<h2 id="艺术馆"><a href="#艺术馆" class="headerlink" title="艺术馆"></a>艺术馆</h2><p>有一大半的展厅都没开，就看了几个</p>
-<h4 id="傅抱石-毛主席诗词画展"><a href="#傅抱石-毛主席诗词画展" class="headerlink" title="傅抱石 毛主席诗词画展"></a>傅抱石 毛主席诗词画展</h4><p>展示了傅抱石为毛主席的诗词做的创作 下为《更喜岷山千里雪》</p>
-<p><img src="qianlixue.jpg" alt="qianlixue"></p>
-<h4 id="吴为山雕塑展"><a href="#吴为山雕塑展" class="headerlink" title="吴为山雕塑展"></a>吴为山雕塑展</h4><p><em>写意雕塑</em>，感觉很有意思，鲁迅的青铜雕塑就很简洁有力</p>
-<p>这个《老子出关》非常写意了<img src="laozi.jpg" alt="laozi"></p>
-<h4 id="荷花专题展"><a href="#荷花专题展" class="headerlink" title="荷花专题展"></a>荷花专题展</h4><p><img src="lutos.jpg" alt="lutos"></p>
-<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>旁边的明故宫遗址有好多人逛公园，天气确实好<img src="whether.jpg" alt="whether"></p>
-<p>有大爷在练书法<img src="calligraphy.jpg" alt="calligraphy"></p>
+]]></content>
+      <categories>
+        <category>Architecture</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Singapore-pt1</title>
+    <url>/2025/06/28/Singapore-pt1/</url>
+    <content><![CDATA[<h1 id="新加坡-—-WEEK-1"><a href="#新加坡-—-WEEK-1" class="headerlink" title="新加坡 — WEEK 1"></a>新加坡 — WEEK 1</h1><p>发现好像可以补一下之前的游记<br>有空填上</p>
 ]]></content>
       <categories>
         <category>游记</category>
       </categories>
+  </entry>
+  <entry>
+    <title>Singapore-pt2</title>
+    <url>/2025/07/05/Singapore-pt2/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>Singapore-pt3</title>
+    <url>/2025/07/12/Singapore-pt3/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>Singapore-pt4</title>
+    <url>/2025/07/20/Singapore-pt4/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>Git-Guide</title>
@@ -1298,28 +1263,73 @@ git reset 会改变当前分支的指向，让分支回到某个历史提交。<
       </tags>
   </entry>
   <entry>
-    <title>Singapore-pt1</title>
-    <url>/2025/06/28/Singapore-pt1/</url>
-    <content><![CDATA[<h1 id="新加坡-—-WEEK-1"><a href="#新加坡-—-WEEK-1" class="headerlink" title="新加坡 — WEEK 1"></a>新加坡 — WEEK 1</h1><p>发现好像可以补一下之前的游记<br>有空填上</p>
+    <title>Speculative-Decoding</title>
+    <url>/2026/02/12/Speculative-Decoding/</url>
+    <content><![CDATA[<h1 id="Speculative-Decoding-LLM推理的加速-Medusa-方法阅读"><a href="#Speculative-Decoding-LLM推理的加速-Medusa-方法阅读" class="headerlink" title="Speculative-Decoding , LLM推理的加速 / Medusa 方法阅读"></a>Speculative-Decoding , LLM推理的加速 / Medusa 方法阅读</h1><p>这篇文章简单介绍一下我学习spec-decoding的过程，以及一些学习笔记</p>
+<h2 id="Speculative-Decoding"><a href="#Speculative-Decoding" class="headerlink" title="Speculative Decoding"></a>Speculative Decoding</h2><p>Speculative decoding 是使用轻量的<strong>draft model</strong>去<em>一次性生成多个</em>token,然后交给原本的llm去进行<em>验证</em>。</p>
+<span id="more"></span>
+<p>假设我们一次性生成$k$个token，那么整个过程的 $cost = decoding<em>{draft} * k + forward</em>{llm}$</p>
+<p>这里验证阶段我用的是<code>forward</code>而不是<code>decoding</code>，这里是利用了forward的<em>并行</em>特点，类似于训练过程</p>
+<p>所以要想拥有加速收益，就要有</p>
+<script type="math/tex; mode=display">m* decoding_{llm} > decoding_{draft} * k + forward_{llm}</script><p>这里$m$是这$k$个token中最终被接受的数量，也就是说原本直接用大模型完成$m$次推理更为费时。</p>
+<p>这里就显现出spec方法的核心问题</p>
+<ul>
+<li>降低<code>overhead</code></li>
+<li>提高<code>verify</code>的接受率</li>
+</ul>
+<p>所以其关键点在于找到一个合适的<strong>draft_model</strong>。</p>
+<p>但是一般来说，越轻量的 Draft 模型，overhead 越低，但模型效果越差，导致接受率越低；越重的轻量模型，overhead 可能又过高，反而对性能造成伤害</p>
+<p>所以寻找<strong>draft-model</strong>的成本可能很高。一般来说可能选择同一模型家族的小规格比较合适，但是对于一些已经是<strong>7B/13B</strong>的模型，家族里更小的很难找到。而且直接预训练一个更小的模型，除了训练成本较高以外，还因为无法获得与原始模型相同分布的预训练数据使得 Tokens 生成概率分布很难接近，接受率低</p>
+<p>此外，纯Spec的方法是建立在<code>token-level</code>的采样之上的，是根据draft生成的token进行推理并验证。限制了轻量模型的准确率，影响 Draft Token 的接收率</p>
+<hr>
+<h2 id="Medusa"><a href="#Medusa" class="headerlink" title="Medusa"></a>Medusa</h2><p>原始的Spec Decoding的一大难点就在于获取<code>draft model</code>这个独立的小模型</p>
+<p>所以一个的思路就是通过复用原始 LLM 已有的权重，训练出参数规模较小的增量权重，这些增量的权重可以视作原始 LLM 的偏差，用于预测 Draft Token，也就是<code>medusa</code>干的，用多个’LM Head’去预测不同位置的token</p>
+<h3 id="一、pipeline"><a href="#一、pipeline" class="headerlink" title="一、pipeline"></a>一、pipeline</h3><p><img src="medusa.png" alt="medusa-pipeline"></p>
+<p>如上图所示，不同的head由<code>Last Hidden</code>生成了不同位置的token。</p>
+<p>规定<em>next token</em>为第$1$个token。第$i$个位置生成的候选token是一个hyper parameter，是从生成的logits中选择$top-s_i$，最终得到$s_i$个token。这样将构建出一个树</p>
+<p>从这个<em>Candidate</em>树中，验证是否符合原先的LLM，最后再输出</p>
+<h3 id="二、Medusa-Head"><a href="#二、Medusa-Head" class="headerlink" title="二、Medusa Head"></a>二、Medusa Head</h3><p>Medusa使用了具有残差连接的单层前馈网络(a single layer of<br>feed-forward network with a residual connection)来作为 medusa head</p>
+<script type="math/tex; mode=display">p^{(k)}_t = \text{softmax} \left( W^{(k)}_2 \cdot \text{SiLU} \left( W^{(k)}_1 \cdot h_t \right) + h_t \right),
+\quad \text{where } W^{(k)}_2 \in \mathbb{R}^{d \times V}, \; W^{(k)}_1 \in \mathbb{R}^{d \times d}</script><p>其中$p_i^{k}$是第k个head预测的token分布，$p_i^{0}$就表示模型自身LM-head输出的概率分布</p>
+<h3 id="三、Attention-Tree"><a href="#三、Attention-Tree" class="headerlink" title="三、Attention Tree"></a>三、Attention Tree</h3><p>对于这样的一次推理，假设一共生成了后面$K$个次序的token。由于每个位置的token都是并行生成，所以他们能组成的路径就是笛卡尔积$\prod<em>{i=1}^{K} s_i$。也就是说这颗树上第$i$个位置的节点可以挑选$s</em>{i+1}$中任意的一个作为儿子</p>
+<p>对于第$j$层，这一层的节点总数有$\prod<em>{j=1}^{i} s_j$。于是在一次推理中需要验证的路径总数为$\prod</em>{i=1}^{K} s<em>i$，token总数为$\sum</em>{i=1}^{K} \prod_{j=1}^{i} s_j$.这个数量是爆炸的，取$K=4,top\text{-}8$，总共就有<strong>4096</strong>条路径，总共<strong>4680</strong>个token</p>
+<p>这就引发了一个问题，如果是串行验证这些token，需要调用$\prod_{i=1}^{K} s_i$次<code>forward</code>，然后输出最匹配的一条路径，这比原始情况下调用$K$次还要糟糕的多，因此<code>Medusa</code>需要找到一个并行验证的方法，同时验证所有的路径。</p>
+<p>因此需要将<strong><em>二维的树</em></strong>的结构去压缩成<strong><em>一维的序列</em></strong>，同时在这个序列中能够表示出他们的顺序关系。为此<code>Medusa</code>提出了<strong>Tree Attention</strong>的方法。这个设计仿照了<code>Casual Mask</code>，通过加上<em>mask</em>来避免不同路径的token之间互相计算<em>attention</em></p>
+<p><img src="tree-mask.png" alt="tree-mask"></p>
+<p>如上图所示，打勾的区域是不会被mask的区域</p>
+<p>也就是说，我们计算$Q^{T}K$后得到的区域是一个由所有token为行和列组成的矩阵，而计算完attention之后得到的是一个大小为$\sum<em>{i=1}^{K} \prod</em>{j=1}^{i} s_j \times hidden\text{-}dimension$的<code>hidden_state</code>，经过原始的<em>LM-Head</em>之后，得到的就是一个<em>logits</em>分布。然后调用LLM<strong>自身的采样方法</strong>（<code>Greedy</code>或者<code>Sampling</code>），从<code>Last Hidden</code>经过<em>LM-Head</em>生成<em>logits</em>，<em>softmax</em>之后进行采样，得到一个token，再看medusa得到的第一层中有没有这个token，然后依此类推一层一层验证每一层候选的tokens是否有符合采样的token，然后沿着选中的token这条路径继续进行验证，直到找到一条符合的路径或者中途没找到符合的而结束。</p>
+<h3 id="四、树结构的优化-OPTIMIZED-TREE-CONSTRUCTION"><a href="#四、树结构的优化-OPTIMIZED-TREE-CONSTRUCTION" class="headerlink" title="四、树结构的优化 / OPTIMIZED  TREE  CONSTRUCTION"></a>四、树结构的优化 / OPTIMIZED  TREE  CONSTRUCTION</h3><p>为了减小验证带来的<em>overhead</em>，<code>Medusa</code>针对验证序列做了优化，通过先验的方式对Draft树进行了剪枝，将接受概率低的路径提前剪掉。</p>
+<p>这里他们采用的是贪心算法，当规定好这棵树的节点总数的时候，通过一个一个添加对<em>总体接受token数量</em>的<em>期望</em>贡献值最大的token。具体步骤如下</p>
+<ol>
+<li><p>选定一个校准数据集，并计算第$k$个head中第$i\text{-top}$的 predicted token 的准确性（accuracy）。这里的<em>accuracy</em>应该是<em>empirical accuracy（经验正确率）</em>，=预测正确次数/样本总数。记$a_{k}^{(i)}$为这个<em>accuracy</em></p>
+</li>
+<li><p>得到每一个节点的<em>accuracy</em>之后，论文假设这些accuracies是独立的，那么可以假设一条路径由$[i<em>1,i_2,\cdots,i_k]$这些token组成，这条序列的概率就是accuracy的乘积$\prod</em>{j=1}^{k}a_j^{i_j}$</p>
+</li>
+<li><p>定义一个集合$I$,其中的所有元素能映射到一个树中的节点（不仅仅是叶子节点），该元素就是到达这个节点所经历的路径$[i<em>1,i_2,\cdots,i_m]$。假设它位于第$m$层，记总的接受token的数量为$L$那么就有$P(L&gt;=m)=\sum</em>{[i<em>1,i_2,\cdots,i_m]\in I}\prod</em>{j=1}^{m}a_j^{i_j}$</p>
+</li>
+<li><p>$E[L]=\sum<em>{i=1}^{K}P(L&gt;=i) = \sum</em>{[i<em>1,i_2,\cdots,i_k]\in I}\prod</em>{j=1}^{k}a_j^{i_j} , k \in [1,2,\cdots,K]$</p>
+</li>
+</ol>
+<p>可以看出在固定节点数量的情况下，想要最后的期望能尽量大，就要选择accuracy高的节点。按照这个算法就可以剪枝，下图为选取64nodes的<em>sparse tree</em></p>
+<p><img src="sparse_tree.png" alt="sparse-tree"></p>
+<h3 id="五、训练"><a href="#五、训练" class="headerlink" title="五、训练"></a>五、训练</h3><p>论文中写道和单独训练<code>Medusa Head</code>相比，在训练的同时对LLM进行调参，会取得更好的效果</p>
+<h4 id="1-单独训练-Frozen-backbone"><a href="#1-单独训练-Frozen-backbone" class="headerlink" title="1).单独训练(Frozen backbone)"></a>1).单独训练(Frozen backbone)</h4><p>用交叉熵计算损失 $\mathcal{L}<em>{k} = - \log p_t^{k}(y</em>{t+k+1})$  ，$p_t^{k}(y)$表示的是第$k$个head预测的token是y处正确的token的概率</p>
+<p>观察可以得到，$k$ 越大，$\mathcal{L}<em>{k}$ 越大。因为head是并行生成token，所以越往后的token越难以被预测。因此 medusa 引入了一个额外的权重$\lambda</em>{k}$来平衡不同 head 之间 loss 的差异，最后的公式如下</p>
+<script type="math/tex; mode=display">\mathcal{L}_{MEDUSA-1} = \sum_{k=1}^{K} - \lambda_{k} \log p_t^{(k)}(y_{t+k+1})</script><p>论文中写道最后他们用了 0.8 的 k 次幂来带入 $\lambda_{k}$</p>
+<h4 id="2-联合训练-Joint-Training"><a href="#2-联合训练-Joint-Training" class="headerlink" title="2).联合训练(Joint Training)"></a>2).联合训练(Joint Training)</h4><ul>
+<li>联合损失 / <strong>Combined loss</strong>：加入 LLM 的 loss，同时引入一个权重 $\lambda<em>{0}$ 来平衡 loss 。 $$\mathcal{L}</em>{MEDUSA-2} = \mathcal{L}<em>{LM} + \lambda</em>{0} \mathcal{L}_{MEDUSA-1}$$</li>
+<li>不同的 <code>lr</code>：因为LLM已经是训练过的了，所以 <code>learning-rate</code>应该比 head 的小得多</li>
+<li>预热 head ：head 在刚开始训练的时候 loss 很大，为了防止产生过大的梯度影响 LLM 的 backpropagate，先用单独训练预热一下 head 会取得更好的效果</li>
+</ul>
+<h3 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h3><p>很有用的方法，因为 head 的结构非常轻量，能实现不俗的加速效果<img src="accelerate.png" alt="accelerate"></p>
+<p>但是毕竟是并行产生的 token，不能从前面产生的 token 中获取信息，所以也许接受率相较于后面要读的 <code>EAGLE</code>来说会逊色一些</p>
 ]]></content>
       <categories>
-        <category>游记</category>
+        <category>LLM-inferrence</category>
       </categories>
-  </entry>
-  <entry>
-    <title>Singapore-pt2</title>
-    <url>/2025/07/05/Singapore-pt2/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>Singapore-pt4</title>
-    <url>/2025/07/20/Singapore-pt4/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>Singapore-pt3</title>
-    <url>/2025/07/12/Singapore-pt3/</url>
-    <content><![CDATA[]]></content>
+      <tags>
+        <tag>LLM-inferrence</tag>
+      </tags>
   </entry>
   <entry>
     <title>TimeScope,一个简单的桌面活动记录器</title>
@@ -1420,75 +1430,6 @@ git reset 会改变当前分支的指向，让分支回到某个历史提交。<
       </tags>
   </entry>
   <entry>
-    <title>Speculative-Decoding</title>
-    <url>/2026/02/12/Speculative-Decoding/</url>
-    <content><![CDATA[<h1 id="Speculative-Decoding-LLM推理的加速-Medusa-方法阅读"><a href="#Speculative-Decoding-LLM推理的加速-Medusa-方法阅读" class="headerlink" title="Speculative-Decoding , LLM推理的加速 / Medusa 方法阅读"></a>Speculative-Decoding , LLM推理的加速 / Medusa 方法阅读</h1><p>这篇文章简单介绍一下我学习spec-decoding的过程，以及一些学习笔记</p>
-<h2 id="Speculative-Decoding"><a href="#Speculative-Decoding" class="headerlink" title="Speculative Decoding"></a>Speculative Decoding</h2><p>Speculative decoding 是使用轻量的<strong>draft model</strong>去<em>一次性生成多个</em>token,然后交给原本的llm去进行<em>验证</em>。</p>
-<span id="more"></span>
-<p>假设我们一次性生成$k$个token，那么整个过程的 $cost = decoding<em>{draft} * k + forward</em>{llm}$</p>
-<p>这里验证阶段我用的是<code>forward</code>而不是<code>decoding</code>，这里是利用了forward的<em>并行</em>特点，类似于训练过程</p>
-<p>所以要想拥有加速收益，就要有</p>
-<script type="math/tex; mode=display">m* decoding_{llm} > decoding_{draft} * k + forward_{llm}</script><p>这里$m$是这$k$个token中最终被接受的数量，也就是说原本直接用大模型完成$m$次推理更为费时。</p>
-<p>这里就显现出spec方法的核心问题</p>
-<ul>
-<li>降低<code>overhead</code></li>
-<li>提高<code>verify</code>的接受率</li>
-</ul>
-<p>所以其关键点在于找到一个合适的<strong>draft_model</strong>。</p>
-<p>但是一般来说，越轻量的 Draft 模型，overhead 越低，但模型效果越差，导致接受率越低；越重的轻量模型，overhead 可能又过高，反而对性能造成伤害</p>
-<p>所以寻找<strong>draft-model</strong>的成本可能很高。一般来说可能选择同一模型家族的小规格比较合适，但是对于一些已经是<strong>7B/13B</strong>的模型，家族里更小的很难找到。而且直接预训练一个更小的模型，除了训练成本较高以外，还因为无法获得与原始模型相同分布的预训练数据使得 Tokens 生成概率分布很难接近，接受率低</p>
-<p>此外，纯Spec的方法是建立在<code>token-level</code>的采样之上的，是根据draft生成的token进行推理并验证。限制了轻量模型的准确率，影响 Draft Token 的接收率</p>
-<hr>
-<h2 id="Medusa"><a href="#Medusa" class="headerlink" title="Medusa"></a>Medusa</h2><p>原始的Spec Decoding的一大难点就在于获取<code>draft model</code>这个独立的小模型</p>
-<p>所以一个的思路就是通过复用原始 LLM 已有的权重，训练出参数规模较小的增量权重，这些增量的权重可以视作原始 LLM 的偏差，用于预测 Draft Token，也就是<code>medusa</code>干的，用多个’LM Head’去预测不同位置的token</p>
-<h3 id="一、pipeline"><a href="#一、pipeline" class="headerlink" title="一、pipeline"></a>一、pipeline</h3><p><img src="medusa.png" alt="medusa-pipeline"></p>
-<p>如上图所示，不同的head由<code>Last Hidden</code>生成了不同位置的token。</p>
-<p>规定<em>next token</em>为第$1$个token。第$i$个位置生成的候选token是一个hyper parameter，是从生成的logits中选择$top-s_i$，最终得到$s_i$个token。这样将构建出一个树</p>
-<p>从这个<em>Candidate</em>树中，验证是否符合原先的LLM，最后再输出</p>
-<h3 id="二、Medusa-Head"><a href="#二、Medusa-Head" class="headerlink" title="二、Medusa Head"></a>二、Medusa Head</h3><p>Medusa使用了具有残差连接的单层前馈网络(a single layer of<br>feed-forward network with a residual connection)来作为 medusa head</p>
-<script type="math/tex; mode=display">p^{(k)}_t = \text{softmax} \left( W^{(k)}_2 \cdot \text{SiLU} \left( W^{(k)}_1 \cdot h_t \right) + h_t \right),
-\quad \text{where } W^{(k)}_2 \in \mathbb{R}^{d \times V}, \; W^{(k)}_1 \in \mathbb{R}^{d \times d}</script><p>其中$p_i^{k}$是第k个head预测的token分布，$p_i^{0}$就表示模型自身LM-head输出的概率分布</p>
-<h3 id="三、Attention-Tree"><a href="#三、Attention-Tree" class="headerlink" title="三、Attention Tree"></a>三、Attention Tree</h3><p>对于这样的一次推理，假设一共生成了后面$K$个次序的token。由于每个位置的token都是并行生成，所以他们能组成的路径就是笛卡尔积$\prod<em>{i=1}^{K} s_i$。也就是说这颗树上第$i$个位置的节点可以挑选$s</em>{i+1}$中任意的一个作为儿子</p>
-<p>对于第$j$层，这一层的节点总数有$\prod<em>{j=1}^{i} s_j$。于是在一次推理中需要验证的路径总数为$\prod</em>{i=1}^{K} s<em>i$，token总数为$\sum</em>{i=1}^{K} \prod_{j=1}^{i} s_j$.这个数量是爆炸的，取$K=4,top\text{-}8$，总共就有<strong>4096</strong>条路径，总共<strong>4680</strong>个token</p>
-<p>这就引发了一个问题，如果是串行验证这些token，需要调用$\prod_{i=1}^{K} s_i$次<code>forward</code>，然后输出最匹配的一条路径，这比原始情况下调用$K$次还要糟糕的多，因此<code>Medusa</code>需要找到一个并行验证的方法，同时验证所有的路径。</p>
-<p>因此需要将<strong><em>二维的树</em></strong>的结构去压缩成<strong><em>一维的序列</em></strong>，同时在这个序列中能够表示出他们的顺序关系。为此<code>Medusa</code>提出了<strong>Tree Attention</strong>的方法。这个设计仿照了<code>Casual Mask</code>，通过加上<em>mask</em>来避免不同路径的token之间互相计算<em>attention</em></p>
-<p><img src="tree-mask.png" alt="tree-mask"></p>
-<p>如上图所示，打勾的区域是不会被mask的区域</p>
-<p>也就是说，我们计算$Q^{T}K$后得到的区域是一个由所有token为行和列组成的矩阵，而计算完attention之后得到的是一个大小为$\sum<em>{i=1}^{K} \prod</em>{j=1}^{i} s_j \times hidden\text{-}dimension$的<code>hidden_state</code>，经过原始的<em>LM-Head</em>之后，得到的就是一个<em>logits</em>分布。然后调用LLM<strong>自身的采样方法</strong>（<code>Greedy</code>或者<code>Sampling</code>），从<code>Last Hidden</code>经过<em>LM-Head</em>生成<em>logits</em>，<em>softmax</em>之后进行采样，得到一个token，再看medusa得到的第一层中有没有这个token，然后依此类推一层一层验证每一层候选的tokens是否有符合采样的token，然后沿着选中的token这条路径继续进行验证，直到找到一条符合的路径或者中途没找到符合的而结束。</p>
-<h3 id="四、树结构的优化-OPTIMIZED-TREE-CONSTRUCTION"><a href="#四、树结构的优化-OPTIMIZED-TREE-CONSTRUCTION" class="headerlink" title="四、树结构的优化 / OPTIMIZED  TREE  CONSTRUCTION"></a>四、树结构的优化 / OPTIMIZED  TREE  CONSTRUCTION</h3><p>为了减小验证带来的<em>overhead</em>，<code>Medusa</code>针对验证序列做了优化，通过先验的方式对Draft树进行了剪枝，将接受概率低的路径提前剪掉。</p>
-<p>这里他们采用的是贪心算法，当规定好这棵树的节点总数的时候，通过一个一个添加对<em>总体接受token数量</em>的<em>期望</em>贡献值最大的token。具体步骤如下</p>
-<ol>
-<li><p>选定一个校准数据集，并计算第$k$个head中第$i\text{-top}$的 predicted token 的准确性（accuracy）。这里的<em>accuracy</em>应该是<em>empirical accuracy（经验正确率）</em>，=预测正确次数/样本总数。记$a_{k}^{(i)}$为这个<em>accuracy</em></p>
-</li>
-<li><p>得到每一个节点的<em>accuracy</em>之后，论文假设这些accuracies是独立的，那么可以假设一条路径由$[i<em>1,i_2,\cdots,i_k]$这些token组成，这条序列的概率就是accuracy的乘积$\prod</em>{j=1}^{k}a_j^{i_j}$</p>
-</li>
-<li><p>定义一个集合$I$,其中的所有元素能映射到一个树中的节点（不仅仅是叶子节点），该元素就是到达这个节点所经历的路径$[i<em>1,i_2,\cdots,i_m]$。假设它位于第$m$层，记总的接受token的数量为$L$那么就有$P(L&gt;=m)=\sum</em>{[i<em>1,i_2,\cdots,i_m]\in I}\prod</em>{j=1}^{m}a_j^{i_j}$</p>
-</li>
-<li><p>$E[L]=\sum<em>{i=1}^{K}P(L&gt;=i) = \sum</em>{[i<em>1,i_2,\cdots,i_k]\in I}\prod</em>{j=1}^{k}a_j^{i_j} , k \in [1,2,\cdots,K]$</p>
-</li>
-</ol>
-<p>可以看出在固定节点数量的情况下，想要最后的期望能尽量大，就要选择accuracy高的节点。按照这个算法就可以剪枝，下图为选取64nodes的<em>sparse tree</em></p>
-<p><img src="sparse_tree.png" alt="sparse-tree"></p>
-<h3 id="五、训练"><a href="#五、训练" class="headerlink" title="五、训练"></a>五、训练</h3><p>论文中写道和单独训练<code>Medusa Head</code>相比，在训练的同时对LLM进行调参，会取得更好的效果</p>
-<h4 id="1-单独训练-Frozen-backbone"><a href="#1-单独训练-Frozen-backbone" class="headerlink" title="1).单独训练(Frozen backbone)"></a>1).单独训练(Frozen backbone)</h4><p>用交叉熵计算损失 $\mathcal{L}<em>{k} = - \log p_t^{k}(y</em>{t+k+1})$  ，$p_t^{k}(y)$表示的是第$k$个head预测的token是y处正确的token的概率</p>
-<p>观察可以得到，$k$ 越大，$\mathcal{L}<em>{k}$ 越大。因为head是并行生成token，所以越往后的token越难以被预测。因此 medusa 引入了一个额外的权重$\lambda</em>{k}$来平衡不同 head 之间 loss 的差异，最后的公式如下</p>
-<script type="math/tex; mode=display">\mathcal{L}_{MEDUSA-1} = \sum_{k=1}^{K} - \lambda_{k} \log p_t^{(k)}(y_{t+k+1})</script><p>论文中写道最后他们用了 0.8 的 k 次幂来带入 $\lambda_{k}$</p>
-<h4 id="2-联合训练-Joint-Training"><a href="#2-联合训练-Joint-Training" class="headerlink" title="2).联合训练(Joint Training)"></a>2).联合训练(Joint Training)</h4><ul>
-<li>联合损失 / <strong>Combined loss</strong>：加入 LLM 的 loss，同时引入一个权重 $\lambda<em>{0}$ 来平衡 loss 。 $$\mathcal{L}</em>{MEDUSA-2} = \mathcal{L}<em>{LM} + \lambda</em>{0} \mathcal{L}_{MEDUSA-1}$$</li>
-<li>不同的 <code>lr</code>：因为LLM已经是训练过的了，所以 <code>learning-rate</code>应该比 head 的小得多</li>
-<li>预热 head ：head 在刚开始训练的时候 loss 很大，为了防止产生过大的梯度影响 LLM 的 backpropagate，先用单独训练预热一下 head 会取得更好的效果</li>
-</ul>
-<h3 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h3><p>很有用的方法，因为 head 的结构非常轻量，能实现不俗的加速效果<img src="accelerate.png" alt="accelerate"></p>
-<p>但是毕竟是并行产生的 token，不能从前面产生的 token 中获取信息，所以也许接受率相较于后面要读的 <code>EAGLE</code>来说会逊色一些</p>
-]]></content>
-      <categories>
-        <category>LLM-inferrence</category>
-      </categories>
-      <tags>
-        <tag>LLM-inferrence</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>azure-server</title>
     <url>/2026/02/08/azure-server/</url>
     <content><![CDATA[<h1 id="使用azure搭建服务器"><a href="#使用azure搭建服务器" class="headerlink" title="使用azure搭建服务器"></a>使用azure搭建服务器</h1><p>最近看到github education有能白嫖的azure额度，以及一年的免费域名，于是乎就整了一个服务器玩玩</p>
@@ -1531,6 +1472,65 @@ git reset 会改变当前分支的指向，让分支回到某个历史提交。<
       </tags>
   </entry>
   <entry>
+    <title>南京博物院</title>
+    <url>/2026/02/13/NanjingMuseum/</url>
+    <content><![CDATA[<h1 id="南京博物院"><a href="#南京博物院" class="headerlink" title="南京博物院"></a>南京博物院</h1><p>本南京人第一次来南京博物院</p>
+<span id="more"></span>
+<p><img src="gate.jpg" alt="gate"></p>
+<p>今天天气挺好的，南博有不少人</p>
+<p>南京博物院有好几个馆：</p>
+<ul>
+<li><p>历史馆</p>
+</li>
+<li><p>数字馆</p>
+</li>
+<li><p>民国馆</p>
+</li>
+<li><p>艺术馆</p>
+</li>
+<li><p>非遗馆</p>
+</li>
+</ul>
+<p>历史馆就是最传统的博物馆，也最有意思</p>
+<h2 id="历史馆"><a href="#历史馆" class="headerlink" title="历史馆"></a>历史馆</h2><p>历史馆从史前时期开始介绍江苏地区的历史，一直到民国前</p>
+<p><img src="elephant.jpg" alt="elephant"></p>
+<p>大猛犸象</p>
+<p><img src="spoon.jpg" alt="spoon"></p>
+<p>一个好像没有使用功能的小勺子</p>
+<p><img src="bronzepot.jpg" alt="bronzepot"></p>
+<p>青铜壶</p>
+<p><img src="bronze-crossbow.jpg" alt="bronze-crossbow"></p>
+<p>西汉示器的铜弩机</p>
+<p>这里的<em>错金银</em>工艺，指的就是把金丝/银丝嵌到器具里开好的槽中</p>
+<p><img src="Ox-shape-lamp.jpg" alt="Ox-shape-lamp"></p>
+<p>铜牛灯，虽然看着很像羊</p>
+<p><img src="pillow.jpg" alt="pillow"></p>
+<p>宋朝的瓷枕，感觉直接枕的话有点高<img src="bow.jpg" alt="bow"></p>
+<p>纹路很精美的茶盏</p>
+<p><img src="lion.jpg" alt="lion"></p>
+<p>狮子砖雕</p>
+<p><img src="horse.jpg" alt="horse"></p>
+<p>某个马头的复制品</p>
+<p><img src="seat.jpg" alt="seat"></p>
+<p>气派的座位和屏风，好像使用的珐琅工艺</p>
+<h2 id="数字馆"><a href="#数字馆" class="headerlink" title="数字馆"></a>数字馆</h2><p>没意思，放了点数字影像，不如在家看</p>
+<h2 id="民国馆"><a href="#民国馆" class="headerlink" title="民国馆"></a>民国馆</h2><p>感觉各地的民国馆都是这种交互式的商业街，<img src="street.jpg" alt="street"></p>
+<p>火车头模型<img src="train.jpg" alt="train"></p>
+<h2 id="非遗馆"><a href="#非遗馆" class="headerlink" title="非遗馆"></a>非遗馆</h2><p>介绍了种种非遗，并且有相应的商品柜台</p>
+<h2 id="艺术馆"><a href="#艺术馆" class="headerlink" title="艺术馆"></a>艺术馆</h2><p>有一大半的展厅都没开，就看了几个</p>
+<h4 id="傅抱石-毛主席诗词画展"><a href="#傅抱石-毛主席诗词画展" class="headerlink" title="傅抱石 毛主席诗词画展"></a>傅抱石 毛主席诗词画展</h4><p>展示了傅抱石为毛主席的诗词做的创作 下为《更喜岷山千里雪》</p>
+<p><img src="qianlixue.jpg" alt="qianlixue"></p>
+<h4 id="吴为山雕塑展"><a href="#吴为山雕塑展" class="headerlink" title="吴为山雕塑展"></a>吴为山雕塑展</h4><p><em>写意雕塑</em>，感觉很有意思，鲁迅的青铜雕塑就很简洁有力</p>
+<p>这个《老子出关》非常写意了<img src="laozi.jpg" alt="laozi"></p>
+<h4 id="荷花专题展"><a href="#荷花专题展" class="headerlink" title="荷花专题展"></a>荷花专题展</h4><p><img src="lutos.jpg" alt="lutos"></p>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>旁边的明故宫遗址有好多人逛公园，天气确实好<img src="whether.jpg" alt="whether"></p>
+<p>有大爷在练书法<img src="calligraphy.jpg" alt="calligraphy"></p>
+]]></content>
+      <categories>
+        <category>游记</category>
+      </categories>
+  </entry>
+  <entry>
     <title>将az100用作vpn</title>
     <url>/2026/02/15/azure-vpn/</url>
     <content><![CDATA[<h1 id="将az100用作vpn"><a href="#将az100用作vpn" class="headerlink" title="将az100用作vpn"></a>将az100用作vpn</h1><p>之前注册了一个Azure学生100额度的账号（简称az100）并设立了虚拟机当服务器</p>
@@ -1568,5 +1568,18 @@ git reset 会改变当前分支的指向，让分支回到某个历史提交。<
 <p>它变得更加像是日记一类私人的记录，但是也为了愿意来探访的人打开了一扇门</p>
 <p>anyway，我的博客从今天启程，以后可能用来记录生活或者技术</p>
 <h2 id="END"><a href="#END" class="headerlink" title="END"></a>END</h2>]]></content>
+  </entry>
+  <entry>
+    <title>pytorch框架</title>
+    <url>/2026/02/23/pytorch/</url>
+    <content><![CDATA[<h1 id="Pytorch框架学习"><a href="#Pytorch框架学习" class="headerlink" title="Pytorch框架学习"></a>Pytorch框架学习</h1><p>用 Pytorch 的时候都是用 llm 生成的代码，只会往<code>nn</code>模块里加点功能层，调用它提供的 Loss</p>
+<p>现在有空了多了解一点</p>
+<h2 id="Pytorch中重要的元素"><a href="#Pytorch中重要的元素" class="headerlink" title="Pytorch中重要的元素"></a>Pytorch中重要的元素</h2><h3 id="1-Tensor"><a href="#1-Tensor" class="headerlink" title="1. Tensor"></a>1. Tensor</h3><p>tensor，张量，是记录一个多维空间里的点或向量的容器</p>
+<p>它可以是 <code>标量-&gt;向量-&gt;矩阵-&gt;张量</code></p>
+<h3 id="3-Autograd"><a href="#3-Autograd" class="headerlink" title="3.Autograd"></a>3.Autograd</h3><p>Pytorch 最特色的就是它的<strong>自动求导</strong>，他会在前向传播的时候</p>
+]]></content>
+      <categories>
+        <category>ML</category>
+      </categories>
   </entry>
 </search>
