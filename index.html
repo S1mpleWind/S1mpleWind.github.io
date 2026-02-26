@@ -258,7 +258,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2026-02-26 10:56:43 / Modified: 16:01:19" itemprop="dateCreated datePublished" datetime="2026-02-26T10:56:43+08:00">2026-02-26</time>
+      <time title="Created: 2026-02-26 10:56:43 / Modified: 17:07:09" itemprop="dateCreated datePublished" datetime="2026-02-26T10:56:43+08:00">2026-02-26</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -277,14 +277,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">Word count in article: </span>
-      <span>162</span>
+      <span>1.4k</span>
     </span>
     <span class="post-meta-item" title="Reading time">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>1 mins.</span>
+      <span>2 mins.</span>
     </span>
 </div>
 
@@ -297,9 +297,21 @@
     <div class="post-body" itemprop="articleBody">
           <h1 id="leetcode-217-题解"><a class="markdownIt-Anchor" href="#leetcode-217-题解"></a> LeetCode 217 题解</h1>
 <p>217 - Duplicate Nums，是一道求解列表里是否有重复数字的题目</p>
-<p>乍一看用<em>哈希</em>或者<em>排序算法</em>都可以解决，但是在实际的速度上都没有达到最优，因此记录一下优化的过程</p>
+<p>乍一看用<em>哈希</em>或者<em>排序算法</em>都可以解决，是个非常简单的题目，但是在实际的速度上都没有达到最优，因此记录一下优化的过程</p>
 <h2 id="1-hash"><a class="markdownIt-Anchor" href="#1-hash"></a> 1. Hash</h2>
-<p>哈希算法的时间复杂度为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span>，空间复杂度也为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span>，简单用<code>unordered_map</code>写</p>
+<p>哈希算法的时间复杂度为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span>，空间复杂度也为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span>，第一遍简单用<code>unordered_map</code>写</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">containsDuplicate</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">    unordered_set&lt;<span class="type">int</span>&gt; s;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> x : nums) &#123;</span><br><span class="line">        <span class="comment">// check if the number had appeared before</span></span><br><span class="line">        <span class="keyword">if</span> (s.<span class="built_in">count</span>(x)) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        s.<span class="built_in">insert</span>(x);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//或者直接利用 insert 的特性</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">containsDuplicate</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">    unordered_set&lt;<span class="type">int</span>&gt; s;</span><br><span class="line">    s.<span class="built_in">reserve</span>(nums.<span class="built_in">size</span>());</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> x : nums) &#123;</span><br><span class="line">        <span class="comment">// insert 返回 pair&lt;iterator, bool&gt;</span></span><br><span class="line">        <span class="keyword">if</span> (!s.<span class="built_in">insert</span>(x).second) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>甚至如果不从中途退出，直接比较最终的结果的话，牺牲一点时间就能得到很&quot;炫炮&quot;的一行代码</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">containDuplicate</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">unordered_set</span>&lt;<span class="type">int</span>&gt;(nums.<span class="built_in">begin</span>(),nums.<span class="built_in">end</span>()).<span class="built_in">size</span>() &lt; nums.<span class="built_in">size</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>直接利用cpp提供的<code>unordered_map</code>来写，虽然直观，但是并没有得到很好的结果，其原因是<code>unordered_map</code>的底层是由拉链法实现的。它的组成部分为：</p>
+<ol>
+<li><strong>桶数组（Bucket Array）</strong>：一段连续的内存空间，存储指向链表的指针</li>
+<li><strong>链表节点（Linked Nodes）</strong>：存储实际元素的节点，通过指针连接</li>
+</ol>
+<p>因为是<strong>动态分配</strong>，所以它存在在<strong>堆</strong>上，可能占用的是不连续的内存，遍历的时候需要<em>跳跃访存</em>；同时当新元素出现的时候，需要进行一个<em>扩容 (rehash)</em>。而扩容的过程是重新分配一个更大的桶数组（和用数组实现堆/栈相似），并且释放旧的桶数组并重新组织链表。由此可以小小优化一下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">containsDuplicate</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">    unordered_set&lt;<span class="type">int</span>&gt; s;</span><br><span class="line">    s.<span class="built_in">reserve</span>(nums.<span class="built_in">size</span>());  <span class="comment">// 关键优化：预先分配足够空间</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> x : nums) &#123;</span><br><span class="line">        <span class="keyword">if</span> (s.<span class="built_in">count</span>(x)) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        s.<span class="built_in">insert</span>(x);  <span class="comment">// 不会触发 rehash</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-sort"><a class="markdownIt-Anchor" href="#2-sort"></a> 2. Sort</h2>
+<p>使用</p>
 
       
     </div>
@@ -1377,13 +1389,13 @@ Nvidia 正是看到了 AI 使用显卡进行训练的商机，搭建 <code>CUDA<
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="Word count total">46k</span>
+    <span title="Word count total">47k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:24</span>
+    <span title="Reading time total">1:26</span>
   </span>
 </div>
 <div class="busuanzi-count">
