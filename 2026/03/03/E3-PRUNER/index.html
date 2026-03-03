@@ -21,24 +21,26 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"s1mplewind.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.26.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="If you don&#39;t play , you won&#39;t learn.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="S1mpleWind&#39;s blog">
-<meta property="og:url" content="http://s1mplewind.github.io/index.html">
+    <meta name="description" content="E³-PRUNER 论文阅读 华为的一个剪枝方法 简单来说，逻辑上有两个关键点：  剪枝 微调模型  在训练的循环过程中，在开始的循环中先联合了剪枝和微调，之后只进行微调 &lt;!more&gt;  剪枝 Naive的来看，给定一个参数KKK，让模型最终剪去KKK层的layer，只需要暴力遍历所有的结果并评估分数就行。只要对所有的数据集进行C(L,K)&#x3D;L!K!(L−K)!C(L,K)&#x3D;\fr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="E³-PRUNER">
+<meta property="og:url" content="http://s1mplewind.github.io/2026/03/03/E3-PRUNER/index.html">
 <meta property="og:site_name" content="S1mpleWind&#39;s blog">
-<meta property="og:description" content="If you don&#39;t play , you won&#39;t learn.">
+<meta property="og:description" content="E³-PRUNER 论文阅读 华为的一个剪枝方法 简单来说，逻辑上有两个关键点：  剪枝 微调模型  在训练的循环过程中，在开始的循环中先联合了剪枝和微调，之后只进行微调 &lt;!more&gt;  剪枝 Naive的来看，给定一个参数KKK，让模型最终剪去KKK层的layer，只需要暴力遍历所有的结果并评估分数就行。只要对所有的数据集进行C(L,K)&#x3D;L!K!(L−K)!C(L,K)&#x3D;\fr">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-03-03T06:21:37.000Z">
+<meta property="article:modified_time" content="2026-03-03T08:48:38.963Z">
 <meta property="article:author" content="S1mpleWind">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://s1mplewind.github.io/">
+<link rel="canonical" href="http://s1mplewind.github.io/2026/03/03/E3-PRUNER/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"en","comments":"","permalink":"","path":"index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://s1mplewind.github.io/2026/03/03/E3-PRUNER/","path":"2026/03/03/E3-PRUNER/","title":"E³-PRUNER"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>S1mpleWind's blog</title>
+<title>E³-PRUNER | S1mpleWind's blog</title>
   
 
 
@@ -102,7 +104,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">S1mpleWind's blog</h1>
+      <p class="site-title">S1mpleWind's blog</p>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">简约风的博客</p>
@@ -156,7 +158,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           Table of Contents
@@ -169,6 +171,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#e3-pruner-%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB"><span class="nav-number">1.</span> <span class="nav-text"> E³-PRUNER 论文阅读</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%AA%E6%9E%9D"><span class="nav-number">1.1.</span> <span class="nav-text"> 剪枝</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gumbel-topk-%E7%AE%97%E6%B3%95"><span class="nav-number">1.1.1.</span> <span class="nav-text"> Gumbel-TopK 算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83"><span class="nav-number">1.2.</span> <span class="nav-text"> 微调</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%81%94%E5%90%88%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95"><span class="nav-number">1.2.1.</span> <span class="nav-text"> 联合优化算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.2.</span> <span class="nav-text"> 损失函数</span></a></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -218,16 +221,17 @@
 
     </div>
 
-    <div class="main-inner index posts-expand">
+    <div class="main-inner post posts-expand">
 
-    
+
+  
 
 
 <div class="post-block">
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
     <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/03/03/E3-PRUNER/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -241,13 +245,13 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | S1mpleWind's blog">
+      <meta itemprop="name" content="E³-PRUNER | S1mpleWind's blog">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/03/03/E3-PRUNER/" class="post-title-link" itemprop="url">E³-PRUNER</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          E³-PRUNER
+        </h1>
 
         <div class="post-meta-container">
           <div class="post-meta">
@@ -271,6 +275,13 @@
     </span>
 
   
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
     <span class="post-meta-break"></span>
     <span class="post-meta-item" title="Word count in article">
       <span class="post-meta-item-icon">
@@ -294,8 +305,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="e3-pruner-论文阅读"><a class="markdownIt-Anchor" href="#e3-pruner-论文阅读"></a> E³-PRUNER 论文阅读</h1>
+    <div class="post-body" itemprop="articleBody"><h1 id="e3-pruner-论文阅读"><a class="markdownIt-Anchor" href="#e3-pruner-论文阅读"></a> E³-PRUNER 论文阅读</h1>
 <p>华为的一个剪枝方法</p>
 <p>简单来说，逻辑上有两个关键点：</p>
 <ol>
@@ -358,7 +368,6 @@
 <p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi mathvariant="script">W</mi><mi>i</mi></msub><mo>=</mo><mi mathvariant="script">H</mi><mrow><mo fence="true">(</mo><mtext>Softmax</mtext><msub><mrow><mo fence="true">(</mo><msubsup><mi>z</mi><mi>t</mi><mrow><mo stretchy="false">(</mo><mi>i</mi><mo stretchy="false">)</mo></mrow></msubsup><mo fence="true">)</mo></mrow><mi>c</mi></msub><mo fence="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal{W}_i = \mathcal{H}\left(\text{Softmax}\left(z_t^{(i)}\right)_c\right)
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord"><span class="mord mathcal" style="margin-right:0.08222em;">W</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.84972em;vertical-align:-0.69972em;"></span><span class="mord"><span class="mord mathcal" style="margin-right:0.00965em;">H</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size2">(</span></span><span class="mord text"><span class="mord">Softmax</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner"><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size2">(</span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.0448em;"><span style="top:-2.454244em;margin-left:-0.04398em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span><span style="top:-3.2198em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mopen mtight">(</span><span class="mord mathnormal mtight">i</span><span class="mclose mtight">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.24575599999999997em;"><span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size2">)</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:-0.398328em;"><span style="top:-2.00028em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.69972em;"><span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size2">)</span></span></span></span></span></span></span></p>
 
-      
     </div>
 
     
@@ -366,727 +375,35 @@
     
 
     <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
+          <div class="followme">
+  <span>Welcome to my other publishing channels</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/S1mpleWind">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">Github</span>
+          </a>
+      </div>
+  </div>
 </div>
 
 
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/02/26/leetcode-217/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="S1mpleWind">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="S1mpleWind's blog">
-      <meta itemprop="description" content="If you don't play , you won't learn.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | S1mpleWind's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/02/26/leetcode-217/" class="post-title-link" itemprop="url">leetcode-217</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2026-02-26 10:56:43" itemprop="dateCreated datePublished" datetime="2026-02-26T10:56:43+08:00">2026-02-26</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-03-02 13:52:02" itemprop="dateModified" datetime="2026-03-02T13:52:02+08:00">2026-03-02</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E7%AE%97%E6%B3%95-Algorithm/" itemprop="url" rel="index"><span itemprop="name">算法/Algorithm</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E7%AE%97%E6%B3%95-Algorithm/%E4%BC%98%E5%8C%96-Optimization/" itemprop="url" rel="index"><span itemprop="name">优化/Optimization</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="Word count in article">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">Word count in article: </span>
-      <span>4.3k</span>
-    </span>
-    <span class="post-meta-item" title="Reading time">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>8 mins.</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="leetcode-217-题解"><a class="markdownIt-Anchor" href="#leetcode-217-题解"></a> LeetCode 217 题解</h1>
-<p>217 - Duplicate Nums，是一道求解列表里是否有重复数字的题目</p>
-<p>乍一看用<em>哈希</em>或者<em>排序算法</em>都可以解决，是个非常简单的题目，但是在实际的速度上都没有达到最优，因此记录一下优化的过程</p>
-<h2 id="1-hash"><a class="markdownIt-Anchor" href="#1-hash"></a> 1. Hash</h2>
-<p>哈希算法的时间复杂度为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span>，空间复杂度也为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span>，第一遍简单用<code>unordered_map</code>写</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">containsDuplicate</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">    unordered_set&lt;<span class="type">int</span>&gt; s;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> x : nums) &#123;</span><br><span class="line">        <span class="comment">// check if the number had appeared before</span></span><br><span class="line">        <span class="keyword">if</span> (s.<span class="built_in">count</span>(x)) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        s.<span class="built_in">insert</span>(x);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//或者直接利用 insert 的特性</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">containsDuplicate</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">    unordered_set&lt;<span class="type">int</span>&gt; s;</span><br><span class="line">    s.<span class="built_in">reserve</span>(nums.<span class="built_in">size</span>());</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> x : nums) &#123;</span><br><span class="line">        <span class="comment">// insert 返回 pair&lt;iterator, bool&gt;</span></span><br><span class="line">        <span class="keyword">if</span> (!s.<span class="built_in">insert</span>(x).second) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>甚至如果不从中途退出，直接比较最终的结果的话，牺牲一点时间就能得到很&quot;炫炮&quot;的一行代码</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">containDuplicate</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">unordered_set</span>&lt;<span class="type">int</span>&gt;(nums.<span class="built_in">begin</span>(),nums.<span class="built_in">end</span>()).<span class="built_in">size</span>() &lt; nums.<span class="built_in">size</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>直接利用cpp提供的<code>unordered_map</code>来写，虽然直观，但是并没有得到很好的结果，其原因是<code>unordered_map</code>的底层是由拉链法实现的。它的组成部分为：</p>
-<ol>
-<li><strong>桶数组（Bucket Array）</strong>：一段连续的内存空间，存储指向链表的指针</li>
-<li><strong>链表节点（Linked Nodes）</strong>：存储实际元素的节点，通过指针连接</li>
-</ol>
-<p>因为是<strong>动态分配</strong>，所以它存在在<strong>堆</strong>上，可能占用的是不连续的内存，遍历的时候需要<em>跳跃访存</em>；同时当新元素出现的时候，需要进行一个<em>扩容 (rehash)</em>。而扩容的过程是重新分配一个更大的桶数组（和用数组实现堆/栈相似），并且释放旧的桶数组并重新组织链表。由此可以小小优化一下</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">containsDuplicate</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">    unordered_set&lt;<span class="type">int</span>&gt; s;</span><br><span class="line">    s.<span class="built_in">reserve</span>(nums.<span class="built_in">size</span>());  <span class="comment">// 关键优化：预先分配足够空间</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> x : nums) &#123;</span><br><span class="line">        <span class="keyword">if</span> (s.<span class="built_in">count</span>(x)) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        s.<span class="built_in">insert</span>(x);  <span class="comment">// 不会触发 rehash</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="2-sort"><a class="markdownIt-Anchor" href="#2-sort"></a> 2. Sort</h2>
-<p>先排序，之后查看相邻的元素是否相同即可</p>
-<p>理论上来说根据不同的排序方法，时间复杂度为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mo>+</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N +N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span>到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mi>log</mi><mo>⁡</mo><mi>N</mi><mo>+</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N\log N + N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span>不等，比使用<strong>hash</strong>要更慢，但是实际上测试下来都比<code>unordered_map</code>要慢，</p>
-<p>核心因素可能是数组在内存中连续，CPU的<strong>L1/L2 Cache</strong>对于这种情况读取效率高</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">containsDuplicate</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//使用内置的 sort （快排）</span></span><br><span class="line">    <span class="built_in">sort</span>(nums.<span class="built_in">begin</span>(), nums.<span class="built_in">end</span>());</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; nums.<span class="built_in">size</span>() - <span class="number">1</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (nums[i] == nums[i + <span class="number">1</span>]) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>发现排序更有效之后，再试试用一些<em>非比较排序</em>的方法来优化，比如<strong>基数排序</strong>（牺牲空间）</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">pragma</span> GCC optimize(<span class="string">&quot;Ofast,unroll-loops&quot;</span>)</span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> GCC target(<span class="string">&quot;avx2,bmi,bmi2,lzcnt,popcnt&quot;</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">const</span> <span class="type">int</span> speedup = []() &#123;</span><br><span class="line">    std::ios_base::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>);</span><br><span class="line">    std::cin.<span class="built_in">tie</span>(<span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;();</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">containsDuplicate</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">if</span> (n &lt;= <span class="number">1</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 基数排序需要一个辅助数组</span></span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">buffer</span><span class="params">(n)</span></span>;</span><br><span class="line">        <span class="type">int</span>* src = nums.<span class="built_in">data</span>();</span><br><span class="line">        <span class="type">int</span>* dst = buffer.<span class="built_in">data</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 针对 32 位整数进行两轮基数排序（每轮 16 位，即 65536 个桶）</span></span><br><span class="line">        <span class="comment">// 第一轮：处理低 16 位</span></span><br><span class="line">        <span class="type">int</span> count[<span class="number">65536</span>];</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 第一次 Pass</span></span><br><span class="line">        <span class="comment">// 清空计数器</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">65536</span>; ++i) count[i] = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">// 分拣，看每个“篮子”里对应要放多少数字</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            count[(<span class="type">unsigned</span> <span class="type">short</span>)(src[i] ^ <span class="number">0x80000000</span>)]++; <span class="comment">// 偏移符号位处理负数（异或运算反转最高位，改变映射区域）</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 将 count 转换为 dst 中的 index</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; <span class="number">65536</span>; ++i) count[i] += count[i - <span class="number">1</span>];</span><br><span class="line">        <span class="comment">// 搬运数据</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = n - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">            dst[--count[(<span class="type">unsigned</span> <span class="type">short</span>)(src[i] ^ <span class="number">0x80000000</span>)]] = src[i];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 第二轮：处理高 16 位</span></span><br><span class="line">        <span class="built_in">swap</span>(src, dst);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">65536</span>; ++i) count[i] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            count[(<span class="type">unsigned</span> <span class="type">int</span>)((<span class="type">unsigned</span> <span class="type">int</span>)(src[i] ^ <span class="number">0x80000000</span>) &gt;&gt; <span class="number">16</span>)]++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; <span class="number">65536</span>; ++i) count[i] += count[i - <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = n - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">            dst[--count[(<span class="type">unsigned</span> <span class="type">int</span>)((<span class="type">unsigned</span> <span class="type">int</span>)(src[i] ^ <span class="number">0x80000000</span>) &gt;&gt; <span class="number">16</span>)]] = src[i];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 最终检查相邻元素</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n - <span class="number">1</span>; ++i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (dst[i] == dst[i + <span class="number">1</span>]) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>这是目前为止最快的版本，但是还是没有达到 leetcode 排行榜中的最快</p>
-<h2 id="3-customized-hash"><a class="markdownIt-Anchor" href="#3-customized-hash"></a> 3. Customized HASH</h2>
-<p>基数排序分为两部分进行了处理，并且每一步都包含了<em>初始化</em>和<em>搬运</em>这两个小循环，而 hash 理论上只要搬运一次数据。因此看看有没有更好的 hash 实现方式</p>
-<p>之前使用的<code>unordered_map</code>的数据结构是有利于完成之后的查询的一种结构，但是这道题其实只需要<em>存储</em>这一步，因为 hash 的特性会在存储的时候计算出映射，所以这个时候就已经能检验是否重复了。这里尝试了一个简单的线性探测，因为不会涉及到取出这个元素，所以它本身的<em>主聚类</em>导致查找的性能损失的劣势不复存在</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">containsDuplicate</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">if</span> (n &lt; <span class="number">2</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 1. 空间换时间：设定哈希表大小为 2 的幂次</span></span><br><span class="line">        <span class="comment">// 负载因子控制在 0.5 以下，极大减少探测冲突</span></span><br><span class="line">        <span class="type">int</span> hashSize = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (hashSize &lt; n * <span class="number">2</span>) hashSize &lt;&lt;= <span class="number">1</span>; </span><br><span class="line">        <span class="type">int</span> mask = hashSize - <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2. 使用原始连续数组，分配极快且缓存友好</span></span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">hashTable</span><span class="params">(hashSize, INT_MIN)</span></span>; </span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> x : nums) &#123;</span><br><span class="line">            <span class="comment">// 3. 计算哈希：简单的无符号映射 + 位运算取模</span></span><br><span class="line">            <span class="type">unsigned</span> <span class="type">int</span> h = (<span class="type">unsigned</span> <span class="type">int</span>)x;</span><br><span class="line">            <span class="type">int</span> idx = h &amp; mask;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 4. 线性探测：如果位置被占用，直接检查下一个</span></span><br><span class="line">            <span class="keyword">while</span> (hashTable[idx] != INT_MIN) &#123;</span><br><span class="line">                <span class="keyword">if</span> (hashTable[idx] == x) <span class="keyword">return</span> <span class="literal">true</span>; <span class="comment">// 发现重复，立即退出（Early Exit）</span></span><br><span class="line">                idx = (idx + <span class="number">1</span>) &amp; mask; <span class="comment">// 线性向后移动</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 5. 填入新值</span></span><br><span class="line">            hashTable[idx] = x;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>几个细节：</p>
-<ul>
-<li>hash表的大小：要是负载因子大于 0.5，就要开辟大于 2*n 的空间，同时要保证 hashsize 为2的幂次，便于后面 <em>计算hash</em> 的优化</li>
-<li>计算hash：线性探测需要对数字和 hashsize 进行一个取模的运算。而 mod 运算处理起来是一个除法，需要复杂的逻辑单元处理；而按位与<code>&amp;</code>只是简单的位运算，在汇编的时候只是一个 <code>AND</code>指令，运算代价小</li>
-</ul>
-<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
-<p>最终<strong>线性探测</strong>方法胜出</p>
-<p>另：数据结构的一些算法已经快忘光了</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/02/23/pytorch/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="S1mpleWind">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="S1mpleWind's blog">
-      <meta itemprop="description" content="If you don't play , you won't learn.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | S1mpleWind's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/02/23/pytorch/" class="post-title-link" itemprop="url">pytorch框架</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-      
-
-      <time title="Created: 2026-02-23 14:55:42 / Modified: 22:42:58" itemprop="dateCreated datePublished" datetime="2026-02-23T14:55:42+08:00">2026-02-23</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/ML/" itemprop="url" rel="index"><span itemprop="name">ML</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="Word count in article">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">Word count in article: </span>
-      <span>833</span>
-    </span>
-    <span class="post-meta-item" title="Reading time">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>2 mins.</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="pytorch框架学习"><a class="markdownIt-Anchor" href="#pytorch框架学习"></a> Pytorch框架学习</h1>
-<p>用 Pytorch 的时候都是用 llm 生成的代码，只会往<code>nn</code>模块里加点功能层，调用它提供的 Loss</p>
-<p>现在有空了多了解一点</p>
-<h2 id="pytorch中重要的元素"><a class="markdownIt-Anchor" href="#pytorch中重要的元素"></a> Pytorch中重要的元素</h2>
-<h3 id="1-tensor"><a class="markdownIt-Anchor" href="#1-tensor"></a> 1. Tensor</h3>
-<p>tensor，张量，是记录一个多维空间里的点或向量的容器</p>
-<p>它可以是 <code>标量-&gt;向量-&gt;矩阵-&gt;张量</code></p>
-<h3 id="2autograd"><a class="markdownIt-Anchor" href="#2autograd"></a> 2.Autograd</h3>
-<p>Pytorch 最特色的就是它的<strong>自动求导</strong>，他会在前向传播的时候记录下一个图，相当于实时构建与销毁一个 DAG</p>
-<p>只需要在初始化 Tensor 的时候传入<code>requires_grad = true</code></p>
-<h3 id="3-nnmodule"><a class="markdownIt-Anchor" href="#3-nnmodule"></a> 3. <code>nn.Module</code></h3>
-<p>neural network 模块是对复杂运算的封装</p>
-<p>相当于一个大的黑盒子（整个 ResNet）里面可以装着很多中等的黑盒子（Residual Block），中等的里面装着小的黑盒子（Conv2d / ReLU等等）</p>
-<p>要想定义一个 model，有两张方法：使用 <em>自定义类</em> 或者是用 <em>Sequential</em></p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">特性</th>
-<th style="text-align:left">自定义类 (继承 nn.Module)</th>
-<th style="text-align:left">nn.Sequential</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left"><strong>forward 定义</strong></td>
-<td style="text-align:left">必须手动定义</td>
-<td style="text-align:left">自动按顺序执行</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>灵活性</strong></td>
-<td style="text-align:left">高（可以有任何复杂逻辑）</td>
-<td style="text-align:left">低（只能是简单顺序结构）</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>适用场景</strong></td>
-<td style="text-align:left">复杂网络、多分支、跳跃连接</td>
-<td style="text-align:left">简单顺序网络、快速原型</td>
-</tr>
-</tbody>
-</table>
-<h4 id="sequential"><a class="markdownIt-Anchor" href="#sequential"></a> Sequential</h4>
-<p>无需定义新的类，只用按顺序组合层</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">model = nn.Sequential(</span><br><span class="line">    nn.Conv2d(<span class="number">3</span>, <span class="number">32</span>, <span class="number">3</span>),</span><br><span class="line">    nn.ReLU(),</span><br><span class="line">    nn.Conv2d(<span class="number">32</span>, <span class="number">64</span>, <span class="number">3</span>),</span><br><span class="line">    nn.ReLU(),</span><br><span class="line">    nn.Flatten(),</span><br><span class="line">    nn.Linear(<span class="number">64</span> * <span class="number">26</span> * <span class="number">26</span>, <span class="number">10</span>)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<h4 id="自定义"><a class="markdownIt-Anchor" href="#自定义"></a> 自定义</h4>
-<p>从 <code>nn.module</code>继承一个子类，需要在<code>__init__</code>的时候定义<strong>网络层</strong>，同时在<code>forward</code>中定义数据流动的顺序</p>
-<h2 id="流程"><a class="markdownIt-Anchor" href="#流程"></a> 流程</h2>
-<ol>
-<li>
-<p><strong>目标（Loss Function）</strong>：定义一个“完美状态”与“当前状态”的距离</p>
-</li>
-<li>
-<p><strong>感知（Forward）</strong>：系统根据现有参数对输入做出判断</p>
-</li>
-<li>
-<p><strong>反馈（Backward）</strong>：系统发现判断错了，利用微积分算出梯度下降的方向</p>
-</li>
-<li>
-<p><strong>修正（Optimizer）</strong>：根据反馈，微调参数</p>
-</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/02/22/About-LPU/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="S1mpleWind">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="S1mpleWind's blog">
-      <meta itemprop="description" content="If you don't play , you won't learn.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | S1mpleWind's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/02/22/About-LPU/" class="post-title-link" itemprop="url">About-LPU</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-      
-
-      <time title="Created: 2026-02-22 08:21:44 / Modified: 15:30:23" itemprop="dateCreated datePublished" datetime="2026-02-22T08:21:44+08:00">2026-02-22</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Architecture/" itemprop="url" rel="index"><span itemprop="name">Architecture</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="Word count in article">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">Word count in article: </span>
-      <span>222</span>
-    </span>
-    <span class="post-meta-item" title="Reading time">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>1 mins.</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="lpu-架构简单学习"><a class="markdownIt-Anchor" href="#lpu-架构简单学习"></a> LPU 架构简单学习</h1>
-<p>Gemini的免费 api 限额又变少了，最近在找其他 free api 的时候偶然发现了 groq</p>
-<p>groq 提供的几个 api 接口吐字实在快，看到他们说用的是自己研发的 LPU（Language Processing Unit）</p>
-<p>官网上这样介绍自己的优势：</p>
-<ul>
-<li>Software-first</li>
-<li>Programmable assembly line architecture</li>
-<li>Deterministic compute and networking</li>
-<li>On-chip memory</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/02/17/GPU-Architecture/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="S1mpleWind">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="S1mpleWind's blog">
-      <meta itemprop="description" content="If you don't play , you won't learn.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | S1mpleWind's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/02/17/GPU-Architecture/" class="post-title-link" itemprop="url">GPU-Architecture</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2026-02-17 11:43:15" itemprop="dateCreated datePublished" datetime="2026-02-17T11:43:15+08:00">2026-02-17</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-02-23 17:25:50" itemprop="dateModified" datetime="2026-02-23T17:25:50+08:00">2026-02-23</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Architecture/" itemprop="url" rel="index"><span itemprop="name">Architecture</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="Word count in article">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">Word count in article: </span>
-      <span>2.3k</span>
-    </span>
-    <span class="post-meta-item" title="Reading time">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>4 mins.</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="gpu-架构"><a class="markdownIt-Anchor" href="#gpu-架构"></a> GPU 架构</h1>
-<h2 id="0引言"><a class="markdownIt-Anchor" href="#0引言"></a> 0.引言</h2>
-<p>GPU (Graphic Processing Unit)，原本作为图像处理的工具，为游戏的渲染服务，在AI时代因为其并行计算性而得到了大量的使用<br />
-Nvidia 正是看到了 AI 使用显卡进行训练的商机，搭建 <code>CUDA</code> 平台一飞冲天</p>
-<p>最近看到 <code>groq</code> 使用的 <code>LPU</code> 带来的惊人的推理速度，想要了解一下它的架构，但是发现自己连现在的 <code>GPU</code> 架构也不是很了解，所以回炉重造一下</p>
-<p>主要从两个方面入手：</p>
-<ul>
-<li>GPU 的硬件架构</li>
-<li>编程模型</li>
-<li>Memory设计</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2026/02/17/GPU-Architecture/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
-    </div>
 
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/02/15/azure-vpn/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="S1mpleWind">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="S1mpleWind's blog">
-      <meta itemprop="description" content="If you don't play , you won't learn.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | S1mpleWind's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/02/15/azure-vpn/" class="post-title-link" itemprop="url">将az100用作vpn</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-      
-
-      <time title="Created: 2026-02-15 18:16:57 / Modified: 18:47:43" itemprop="dateCreated datePublished" datetime="2026-02-15T18:16:57+08:00">2026-02-15</time>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="Word count in article">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">Word count in article: </span>
-      <span>772</span>
-    </span>
-    <span class="post-meta-item" title="Reading time">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>1 mins.</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="将az100用作vpn"><a class="markdownIt-Anchor" href="#将az100用作vpn"></a> 将az100用作vpn</h1>
-<p>之前注册了一个Azure学生100额度的账号（简称az100）并设立了虚拟机当服务器</p>
-<p>发现我好像不需要用它部署网页之后，利用剩下的额度去做一个vpn</p>
-<p>技术要点：</p>
-<ul>
-<li>Xray-core</li>
-<li>Reality</li>
-</ul>
-<p>（有关技术方面还在学习中）</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2026/02/15/azure-vpn/#more" rel="contents">
-                Read more &raquo;
-              </a>
+          <div class="post-nav">
+            <div class="post-nav-item">
             </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/02/13/NanjingMuseum/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="S1mpleWind">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="S1mpleWind's blog">
-      <meta itemprop="description" content="If you don't play , you won't learn.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | S1mpleWind's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/02/13/NanjingMuseum/" class="post-title-link" itemprop="url">南京博物院</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2026-02-13 16:36:27" itemprop="dateCreated datePublished" datetime="2026-02-13T16:36:27+08:00">2026-02-13</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-02-14 09:34:48" itemprop="dateModified" datetime="2026-02-14T09:34:48+08:00">2026-02-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%B8%B8%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">游记</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="Word count in article">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">Word count in article: </span>
-      <span>433</span>
-    </span>
-    <span class="post-meta-item" title="Reading time">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>1 mins.</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="南京博物院"><a class="markdownIt-Anchor" href="#南京博物院"></a> 南京博物院</h1>
-<p>本南京人第一次来南京博物院</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2026/02/13/NanjingMuseum/#more" rel="contents">
-                Read more &raquo;
-              </a>
+            <div class="post-nav-item">
+                <a href="/2026/02/26/leetcode-217/" rel="next" title="leetcode-217">
+                  leetcode-217 <i class="fa fa-angle-right"></i>
+                </a>
             </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
+          </div>
     </footer>
   </article>
 </div>
@@ -1094,353 +411,7 @@ Nvidia 正是看到了 AI 使用显卡进行训练的商机，搭建 <code>CUDA<
 
 
 
-    
 
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/02/13/EAGLE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="S1mpleWind">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="S1mpleWind's blog">
-      <meta itemprop="description" content="If you don't play , you won't learn.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | S1mpleWind's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/02/13/EAGLE/" class="post-title-link" itemprop="url">EAGLE</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2026-02-13 09:08:58" itemprop="dateCreated datePublished" datetime="2026-02-13T09:08:58+08:00">2026-02-13</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-03-02 18:24:23" itemprop="dateModified" datetime="2026-03-02T18:24:23+08:00">2026-03-02</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/LLM-inferrence/" itemprop="url" rel="index"><span itemprop="name">LLM-inferrence</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="Word count in article">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">Word count in article: </span>
-      <span>5.2k</span>
-    </span>
-    <span class="post-meta-item" title="Reading time">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>9 mins.</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="extrapolation-algorithm-for-greater-language-model-efficiency-eagle-算法学习"><a class="markdownIt-Anchor" href="#extrapolation-algorithm-for-greater-language-model-efficiency-eagle-算法学习"></a> Extrapolation Algorithm for Greater Language-model Efficiency  , EAGLE 算法学习</h1>
-<p>前面看完了<code>Medusa</code>方法，再看加速效果更好的<code>EAGLE</code></p>
-<h2 id="eagle"><a class="markdownIt-Anchor" href="#eagle"></a> EAGLE</h2>
-<p>下图是这几种方法的对比：</p>
-<ul>
-<li>spec sampling 是 token-level</li>
-<li>Medusa 是利用一个 feature 用不同的 head 去预测不同位置的 token</li>
-<li>EAGLE 是将 token 和 feature 混合输入</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2026/02/13/EAGLE/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/02/12/Speculative-Decoding/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="S1mpleWind">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="S1mpleWind's blog">
-      <meta itemprop="description" content="If you don't play , you won't learn.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | S1mpleWind's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/02/12/Speculative-Decoding/" class="post-title-link" itemprop="url">Speculative-Decoding</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2026-02-12 18:06:56" itemprop="dateCreated datePublished" datetime="2026-02-12T18:06:56+08:00">2026-02-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-02-23 17:24:48" itemprop="dateModified" datetime="2026-02-23T17:24:48+08:00">2026-02-23</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/LLM-inferrence/" itemprop="url" rel="index"><span itemprop="name">LLM-inferrence</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="Word count in article">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">Word count in article: </span>
-      <span>4.9k</span>
-    </span>
-    <span class="post-meta-item" title="Reading time">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>9 mins.</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="speculative-decoding-llm推理的加速-medusa-方法阅读"><a class="markdownIt-Anchor" href="#speculative-decoding-llm推理的加速-medusa-方法阅读"></a> Speculative-Decoding , LLM推理的加速 / Medusa 方法阅读</h1>
-<p>这篇文章简单介绍一下我学习spec-decoding的过程，以及一些学习笔记</p>
-<h2 id="speculative-decoding"><a class="markdownIt-Anchor" href="#speculative-decoding"></a> Speculative Decoding</h2>
-<p>Speculative decoding 是使用轻量的<strong>draft model</strong>去<em>一次性生成多个</em>token,然后交给原本的llm去进行<em>验证</em>。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2026/02/12/Speculative-Decoding/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/02/09/acti-tracker/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="S1mpleWind">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="S1mpleWind's blog">
-      <meta itemprop="description" content="If you don't play , you won't learn.">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | S1mpleWind's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/02/09/acti-tracker/" class="post-title-link" itemprop="url">TimeScope,一个简单的桌面活动记录器</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2026-02-09 17:01:51" itemprop="dateCreated datePublished" datetime="2026-02-09T17:01:51+08:00">2026-02-09</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-02-12 18:23:41" itemprop="dateModified" datetime="2026-02-12T18:23:41+08:00">2026-02-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E7%8E%A9%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">玩具</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="Word count in article">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">Word count in article: </span>
-      <span>2.8k</span>
-    </span>
-    <span class="post-meta-item" title="Reading time">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>5 mins.</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="timescope"><a class="markdownIt-Anchor" href="#timescope"></a> TimeScope</h1>
-<p>这是几个月前一时兴起写的小项目，最近差不多完结了，在博客里稍微记录一下</p>
-<p>这是repo的地址：<a target="_blank" rel="noopener" href="https://github.com/S1mpleWind/activity-tracker">repo-address</a></p>
-<h2 id="abstract"><a class="markdownIt-Anchor" href="#abstract"></a> Abstract</h2>
-<p>TimeScope – 一个面向windows的桌面应用记录小程序</p>
-<p>主要依赖的库：</p>
-<ul>
-<li>进程与窗口采集：<code>pywin32</code> <code>psutil</code></li>
-<li>数据存储：<code>sqlite</code></li>
-<li>数据可视化：<code>matplotlib</code></li>
-<li>文本分类：<code>fasttext</code>,<code>jieba</code></li>
-<li>gui，后台与托盘化：<code>customtkinter</code>,<code>pytray</code> ,<code>PIL</code></li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2026/02/09/acti-tracker/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/2/"><i class="fa fa-angle-right"></i></a>
-  </nav>
 
 </div>
   </main>
