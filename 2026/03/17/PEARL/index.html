@@ -28,10 +28,13 @@
 <meta property="og:site_name" content="S1mpleWind&#39;s blog">
 <meta property="og:description" content="PEARL 论文阅读之前读 EAGLE 的时候就看到这位老哥在底下附上这篇 paper，最近要看 PD 分离有关的文字，正好看看这篇，记录一下">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/03/17/PEARL/pearl1.png">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/03/17/PEARL/pearl-pipe.png">
 <meta property="article:published_time" content="2026-03-17T13:19:50.000Z">
-<meta property="article:modified_time" content="2026-03-17T14:10:10.467Z">
+<meta property="article:modified_time" content="2026-03-18T07:44:45.525Z">
 <meta property="article:author" content="S1mpleWind">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://s1mplewind.github.io/2026/03/17/PEARL/pearl1.png">
 
 
 <link rel="canonical" href="http://s1mplewind.github.io/2026/03/17/PEARL/">
@@ -171,7 +174,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#PEARL-%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB"><span class="nav-number">1.</span> <span class="nav-text">PEARL 论文阅读</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#PEARL-%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB"><span class="nav-number">1.</span> <span class="nav-text">PEARL 论文阅读</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Core-Idea"><span class="nav-number">1.1.</span> <span class="nav-text">Core Idea</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Core-Concept"><span class="nav-number">1.2.</span> <span class="nav-text">Core Concept</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Thinking"><span class="nav-number">1.3.</span> <span class="nav-text">Thinking</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -260,9 +263,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2026-03-17 21:19:50 / Modified: 22:10:10" itemprop="dateCreated datePublished" datetime="2026-03-17T21:19:50+08:00">2026-03-17</time>
+      <time title="Created: 2026-03-17 21:19:50" itemprop="dateCreated datePublished" datetime="2026-03-17T21:19:50+08:00">2026-03-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2026-03-18 15:44:45" itemprop="dateModified" datetime="2026-03-18T15:44:45+08:00">2026-03-18</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -288,14 +297,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">Word count in article: </span>
-      <span>65</span>
+      <span>884</span>
     </span>
     <span class="post-meta-item" title="Reading time">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>1 mins.</span>
+      <span>2 mins.</span>
     </span>
 </div>
 
@@ -307,6 +316,28 @@
     
     <div class="post-body" itemprop="articleBody"><h1 id="PEARL-论文阅读"><a href="#PEARL-论文阅读" class="headerlink" title="PEARL 论文阅读"></a>PEARL 论文阅读</h1><p>之前读 <code>EAGLE</code> 的时候就看到这位老哥在底下附上这篇 paper，最近要看 PD 分离有关的文字，正好看看这篇，记录一下</p>
 <span id="more"></span>
+<h2 id="Core-Idea"><a href="#Core-Idea" class="headerlink" title="Core Idea"></a>Core Idea</h2><p>传统的 SD 基于这样的原则：在完成一个序列的 Draft token的输出之后才进行一次验证，也就是说验证和推理天然存在一个<strong>逻辑上的先后关系</strong>，验证的同时是没有推理的进行的，推理的同时也无法进行验证</p>
+<p>为了能够让这两个过程并行起来，<code>PEARL</code>提出了两种验证的策略来帮助</p>
+<p><img src="pearl1.png" alt="pearl1"></p>
+<hr>
+<h2 id="Core-Concept"><a href="#Core-Concept" class="headerlink" title="Core Concept"></a>Core Concept</h2><p>两种验证策略，<code>pre-verify</code>和<code>post-verify</code>:</p>
+<ul>
+<li><code>pre</code>：这个策略的目标就是为了打破验证要在<strong>完整推测</strong>之后发生的限制，对<strong>prefix</strong>，在<strong>第一个 Draft Token</strong>出现的同时就进行验证，如果第一个就不接受，后面的都不会接受；同时这个做法也没有打破逻辑上的先后关系，感觉所有的推理中其实都可以使用这种利用资源的办法</li>
+<li><code>post</code>：这个 verify 旨在打破 vanilla SD 中 draft 的生成要等待 verify 结束来提供一个<strong>prefix</strong>，将多次 draft generation 之间的间隔合并；换句话说，假如一次的 draft token 生成中全对，那么就能继续接着生成，draft model 还有没发挥完的潜力，所以不需要 verify 生成的 prefix 去“打扰”现在健康的生成；而当错误的验证发生的时候，就要重回到 pre 的验证阶段</li>
+</ul>
+<p><img src="pearl-pipe.png" alt="pearl-pipe"></p>
+<hr>
+<h2 id="Thinking"><a href="#Thinking" class="headerlink" title="Thinking"></a>Thinking</h2><p>这个方法看起来挺nature的，但是就像pipeline里的分支预测那样，依赖于预测方向的可能性，也就是 draft 的<strong>接受率</strong>，</p>
+<p>推导了一个计算公式，假设</p>
+<!-- - $t_g$generate time
+- $t_v$verify time
+- $\gamma$一次draft生成的最大长度 |
+- $\alpha$每个token的接受率 |
+- $t_1$一个section的时间 | -->
+<p>在两种策略下，粗略估计一下平均收益$tokens/s$分别为：</p>
+<script type="math/tex; mode=display">U_{pre}=1/t_1</script><script type="math/tex; mode=display">U_{post}= [1 + \alpha (\gamma - 1)] / t_1</script><p>所以最终的平均收益应该是</p>
+<script type="math/tex; mode=display">U= (1-\alpha) U_{\text{pre}} + \alpha U_{\text{post}} \\ = \frac{\max(\gamma t_g + t_v)}{1+\alpha^{2}(\gamma - 1)}</script><p>而 vanilla SD的平均收益</p>
+<script type="math/tex; mode=display">U=\frac{\alpha k}{k t_g + t_v}</script>
     </div>
 
     
@@ -371,13 +402,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="Word count total">54k</span>
+    <span title="Word count total">55k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:38</span>
+    <span title="Reading time total">1:39</span>
   </span>
 </div>
 <div class="busuanzi-count">

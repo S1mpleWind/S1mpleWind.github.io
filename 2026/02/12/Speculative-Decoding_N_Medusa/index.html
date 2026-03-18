@@ -21,19 +21,19 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"s1mplewind.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.26.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="Speculative-Decoding , LLM推理的加速 &#x2F; Medusa 方法阅读这篇文章简单介绍一下我学习spec-decoding的过程，以及一些学习笔记 Speculative DecodingSpeculative decoding 是使用轻量的draft model去一次性生成多个token,然后交给原本的llm去进行验证。">
+    <meta name="description" content="Speculative-Decoding , LLM推理的加速 &#x2F; Medusa 方法阅读这篇文章简单介绍一下我学习spec-decoding的过程，以及一些学习笔记$test$ Speculative DecodingSpeculative decoding 是使用轻量的draft model去一次性生成多个token,然后交给原本的llm去进行验证。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Speculative-Decoding">
 <meta property="og:url" content="http://s1mplewind.github.io/2026/02/12/Speculative-Decoding_N_Medusa/index.html">
 <meta property="og:site_name" content="S1mpleWind&#39;s blog">
-<meta property="og:description" content="Speculative-Decoding , LLM推理的加速 &#x2F; Medusa 方法阅读这篇文章简单介绍一下我学习spec-decoding的过程，以及一些学习笔记 Speculative DecodingSpeculative decoding 是使用轻量的draft model去一次性生成多个token,然后交给原本的llm去进行验证。">
+<meta property="og:description" content="Speculative-Decoding , LLM推理的加速 &#x2F; Medusa 方法阅读这篇文章简单介绍一下我学习spec-decoding的过程，以及一些学习笔记$test$ Speculative DecodingSpeculative decoding 是使用轻量的draft model去一次性生成多个token,然后交给原本的llm去进行验证。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://s1mplewind.github.io/2026/02/12/Speculative-Decoding_N_Medusa/medusa.png">
 <meta property="og:image" content="http://s1mplewind.github.io/2026/02/12/Speculative-Decoding_N_Medusa/tree-mask.png">
 <meta property="og:image" content="http://s1mplewind.github.io/2026/02/12/Speculative-Decoding_N_Medusa/sparse_tree.png">
 <meta property="og:image" content="http://s1mplewind.github.io/2026/02/12/Speculative-Decoding_N_Medusa/accelerate.png">
 <meta property="article:published_time" content="2026-02-12T10:06:56.000Z">
-<meta property="article:modified_time" content="2026-03-17T14:09:48.306Z">
+<meta property="article:modified_time" content="2026-03-18T07:52:58.502Z">
 <meta property="article:author" content="S1mpleWind">
 <meta property="article:tag" content="LLM-inference">
 <meta name="twitter:card" content="summary">
@@ -274,7 +274,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-03-17 22:09:48" itemprop="dateModified" datetime="2026-03-17T22:09:48+08:00">2026-03-17</time>
+      <time title="Modified: 2026-03-18 15:52:58" itemprop="dateModified" datetime="2026-03-18T15:52:58+08:00">2026-03-18</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -317,7 +317,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="Speculative-Decoding-LLM推理的加速-Medusa-方法阅读"><a href="#Speculative-Decoding-LLM推理的加速-Medusa-方法阅读" class="headerlink" title="Speculative-Decoding , LLM推理的加速 / Medusa 方法阅读"></a>Speculative-Decoding , LLM推理的加速 / Medusa 方法阅读</h1><p>这篇文章简单介绍一下我学习spec-decoding的过程，以及一些学习笔记</p>
+    <div class="post-body" itemprop="articleBody"><h1 id="Speculative-Decoding-LLM推理的加速-Medusa-方法阅读"><a href="#Speculative-Decoding-LLM推理的加速-Medusa-方法阅读" class="headerlink" title="Speculative-Decoding , LLM推理的加速 / Medusa 方法阅读"></a>Speculative-Decoding , LLM推理的加速 / Medusa 方法阅读</h1><p>这篇文章简单介绍一下我学习spec-decoding的过程，以及一些学习笔记<br>$test$</p>
 <h2 id="Speculative-Decoding"><a href="#Speculative-Decoding" class="headerlink" title="Speculative Decoding"></a>Speculative Decoding</h2><p>Speculative decoding 是使用轻量的<strong>draft model</strong>去<em>一次性生成多个</em>token,然后交给原本的llm去进行<em>验证</em>。</p>
 <span id="more"></span>
 <p>假设我们一次性生成$k$个token，那么整个过程的$cost=decoding<em>{draft} * k + forward</em>{llm}$</p>
@@ -446,13 +446,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="Word count total">54k</span>
+    <span title="Word count total">55k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:38</span>
+    <span title="Reading time total">1:39</span>
   </span>
 </div>
 <div class="busuanzi-count">
