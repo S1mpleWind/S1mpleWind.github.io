@@ -21,24 +21,26 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"s1mplewind.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.26.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="If you don&#39;t play , you won&#39;t learn.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="S1mpleWind&#39;s blog">
-<meta property="og:url" content="http://s1mplewind.github.io/categories/server/index.html">
+    <meta name="description" content="WEB Dev Basic 记录一下学习互联网应用开发的一些笔记，这里主要是一些比较大的概念">
+<meta property="og:type" content="article">
+<meta property="og:title" content="web_dev basics &#x2F; front end">
+<meta property="og:url" content="http://s1mplewind.github.io/2026/04/01/web-dev/index.html">
 <meta property="og:site_name" content="S1mpleWind&#39;s blog">
-<meta property="og:description" content="If you don&#39;t play , you won&#39;t learn.">
+<meta property="og:description" content="WEB Dev Basic 记录一下学习互联网应用开发的一些笔记，这里主要是一些比较大的概念">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-04-01T08:49:07.000Z">
+<meta property="article:modified_time" content="2026-04-01T08:55:37.685Z">
 <meta property="article:author" content="S1mpleWind">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://s1mplewind.github.io/categories/server/">
+<link rel="canonical" href="http://s1mplewind.github.io/2026/04/01/web-dev/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"en","comments":"","permalink":"","path":"categories/server/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://s1mplewind.github.io/2026/04/01/web-dev/","path":"2026/04/01/web-dev/","title":"web_dev basics / front end"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Category: server | S1mpleWind's blog</title>
+<title>web_dev basics / front end | S1mpleWind's blog</title>
   
 
 
@@ -156,7 +158,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           Table of Contents
@@ -169,6 +171,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#web-dev-basic"><span class="nav-number">1.</span> <span class="nav-text"> WEB Dev Basic</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text"> 概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#html"><span class="nav-number">1.2.</span> <span class="nav-text"> HTML</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#css"><span class="nav-number">1.3.</span> <span class="nav-text"> CSS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#javascript"><span class="nav-number">1.4.</span> <span class="nav-text"> JavaScript</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#react"><span class="nav-number">1.5.</span> <span class="nav-text"> React</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vite"><span class="nav-number">1.6.</span> <span class="nav-text"> Vite</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E8%80%85%E5%85%B3%E7%B3%BB"><span class="nav-number">1.7.</span> <span class="nav-text"> 三者关系</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -218,50 +221,242 @@
 
     </div>
 
-    <div class="main-inner category posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
+
+
+<div class="post-block">
   
   
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <h1 class="collection-header">server
-          <small>Category</small>
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/04/01/web-dev/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="S1mpleWind">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="S1mpleWind's blog">
+      <meta itemprop="description" content="If you don't play , you won't learn.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="web_dev basics &#x2F; front end | S1mpleWind's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          web_dev basics / front end
         </h1>
-      </div>
 
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
       
-    <div class="collection-year">
-      <span class="collection-header">2026</span>
+
+      <time title="Created: 2026-04-01 16:49:07 / Modified: 16:55:37" itemprop="dateCreated datePublished" datetime="2026-04-01T16:49:07+08:00">2026-04-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/web/" itemprop="url" rel="index"><span itemprop="name">web</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>1.4k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>2 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="web-dev-basic"><a class="markdownIt-Anchor" href="#web-dev-basic"></a> WEB Dev Basic</h1>
+<p>记录一下学习互联网应用开发的一些笔记，这里主要是一些比较大的概念</p>
+<span id="more"></span>
+<h2 id="概念"><a class="markdownIt-Anchor" href="#概念"></a> 概念</h2>
+<ul>
+<li>HTML</li>
+<li>CSS</li>
+<li>JavaScript</li>
+<li>React</li>
+<li>Vite</li>
+</ul>
+<hr />
+<h2 id="html"><a class="markdownIt-Anchor" href="#html"></a> HTML</h2>
+<p><strong>HTML 是网页的结构骨架，负责“有什么内容”。</strong></p>
+<ul>
+<li>超文本标记语言（HyperText Markup Language）</li>
+<li>不是编程语言，是<strong>标记语言</strong>，用标签描述页面结构</li>
+<li>决定页面里有哪些东西：标题、段落、图片、链接、按钮、表单等</li>
+<li>整个网页的根节点是 <code>&lt;html&gt;</code>，实际内容放在 <code>&lt;body&gt;</code> 里</li>
+</ul>
+<p><strong>核心作用：</strong></p>
+<ul>
+<li>定义页面<strong>结构</strong></li>
+<li>放置<strong>内容</strong></li>
+<li>给浏览器提供<strong>语义</strong>（哪里是标题、哪里是导航、哪里是正文）</li>
+</ul>
+<p><strong>简单理解：</strong><br />
+HTML 就是盖房子时的<strong>钢筋水泥框架</strong>，只有结构，没有样式和交互。</p>
+<hr />
+<h2 id="css"><a class="markdownIt-Anchor" href="#css"></a> CSS</h2>
+<p><strong>CSS 是网页的样式外观，负责“长什么样”。</strong></p>
+<ul>
+<li>层叠样式表（Cascading Style Sheets）</li>
+<li>用来美化 HTML，控制颜色、大小、位置、字体、布局、动画等</li>
+<li>可以写在标签内（行内样式）、<code>&lt;style&gt;</code> 标签内（内部样式）、单独 <code>.css</code> 文件（外部样式）</li>
+</ul>
+<p><strong>核心作用：</strong></p>
+<ul>
+<li>控制<strong>外观和样式</strong></li>
+<li>实现<strong>布局</strong>（居中、分列、弹性布局、网格）</li>
+<li>让页面好看、适配不同屏幕</li>
+</ul>
+<p><strong>简单理解：</strong><br />
+CSS 就是给房子<strong>装修、刷墙、摆家具</strong>，让结构变好看、变整齐。</p>
+<hr />
+<h2 id="javascript"><a class="markdownIt-Anchor" href="#javascript"></a> JavaScript</h2>
+<p><strong>JavaScript 是网页的行为逻辑，负责“动起来”。</strong></p>
+<ul>
+<li>前端唯一的脚本编程语言</li>
+<li>让网页具备交互能力：点击、输入、弹窗、请求数据、修改页面内容</li>
+<li>可以操作 HTML 和 CSS，实现动态更新</li>
+</ul>
+<p><strong>核心作用：</strong></p>
+<ul>
+<li>实现<strong>交互逻辑</strong></li>
+<li>操作 DOM（修改 HTML 元素、CSS 样式）</li>
+<li>处理事件（点击、输入、滚动等）</li>
+<li>发送网络请求、获取数据</li>
+<li>实现复杂功能：表单验证、轮播图、下拉菜单、单页应用等</li>
+</ul>
+<p><strong>简单理解：</strong><br />
+JavaScript 就是给房子<strong>装电路、装开关、装智能系统</strong>，让房子能用、会动、能交互。</p>
+<hr />
+<h2 id="react"><a class="markdownIt-Anchor" href="#react"></a> React</h2>
+<p><strong>React 是用于构建用户界面的 JavaScript 库，用来快速开发大型前端项目。</strong></p>
+<ul>
+<li>由 Meta（Facebook）开发的主流前端框架</li>
+<li>基于<strong>组件化</strong>和<strong>函数式编程</strong>思想</li>
+<li>使用 <strong>JSX</strong> 语法，可以在 JS 中写 HTML 结构</li>
+<li>通过 <strong>useState</strong> 等 Hook 管理页面状态，数据变页面自动更新</li>
+</ul>
+<p><strong>核心作用：</strong></p>
+<ul>
+<li>把页面拆成<strong>组件</strong>，复用、维护更简单</li>
+<li>数据驱动视图：只改数据，不用手动操作 DOM</li>
+<li>适合开发<strong>复杂交互、大型项目</strong>（后台系统、APP 网页、桌面软件等）</li>
+<li>可以配合 Electron/Tauri 开发桌面软件</li>
+</ul>
+<p><strong>简单理解：</strong><br />
+原生 HTML/CSS/JS 是“手工盖房子”，React 是<strong>模块化预制建房</strong>，效率更高、扩展性更强。</p>
+<hr />
+<h2 id="vite"><a class="markdownIt-Anchor" href="#vite"></a> Vite</h2>
+<p><strong>Vite 是前端构建工具，负责项目的运行、打包、编译。</strong></p>
+<ul>
+<li>新一代前端工程化工具，比传统 Webpack 更快</li>
+<li>由 Vue 作者尤雨溪开发，支持 React、Vue、原生 JS 等</li>
+<li>启动极快、修改代码后热更新、自动编译 JSX/TS/CSS 等</li>
+</ul>
+<p><strong>核心作用：</strong></p>
+<ul>
+<li>快速<strong>创建项目</strong>模板</li>
+<li>启动<strong>开发服务器</strong>，本地预览网页</li>
+<li>自动处理 JSX、ES6+、CSS 等语法</li>
+<li>最终打包成可上线的静态文件（<code>dist</code> 文件夹）</li>
+</ul>
+<p><strong>简单理解：</strong><br />
+Vite 就是前端项目的<strong>工地总指挥 + 施工队</strong>，你只管写代码，它负责编译、运行、打包。</p>
+<hr />
+<h2 id="三者关系"><a class="markdownIt-Anchor" href="#三者关系"></a> 三者关系</h2>
+<ul>
+<li><strong>HTML</strong>：结构（有什么）</li>
+<li><strong>CSS</strong>：样式（好看吗）</li>
+<li><strong>JavaScript</strong>：行为（能干嘛）</li>
+</ul>
+<p><strong>React</strong> = 高效开发方式<br />
+<strong>Vite</strong> = 工程化工具</p>
+<p>前端开发 = 用 HTML + CSS + JS 构建页面，用 React 提升效率，用 Vite 管理项目</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2026-02-08T20:40:13+08:00"
-              content="2026-02-08">
-          02-08
-        </time>
-      </div>
+    
+    
+    
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2026/02/08/azure-server/" itemprop="url">
-            <span itemprop="name">azure-server</span>
+    <footer class="post-footer">
+          <div class="followme">
+  <span>Welcome to my other publishing channels</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/S1mpleWind">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">Github</span>
           </a>
       </div>
-
-      
-    </header>
-  </article>
-
-    </div>
   </div>
-  
-  
-  
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/03/23/diffusion-llm/" rel="next" title="复刻的”镜像“与可能的“智能“">
+                  复刻的”镜像“与可能的“智能“ <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
 
 </div>
   </main>
