@@ -1,24 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>About-LPU</title>
-    <url>/2026/02/22/About-LPU/</url>
-    <content><![CDATA[<h1 id="lpu-架构简单学习"><a class="markdownIt-Anchor" href="#lpu-架构简单学习"></a> LPU 架构简单学习</h1>
-<p>Gemini的免费 api 限额又变少了，最近在找其他 free api 的时候偶然发现了 groq</p>
-<p>groq 提供的几个 api 接口吐字实在快，看到他们说用的是自己研发的 LPU（Language Processing Unit）</p>
-<p>官网上这样介绍自己的优势：</p>
-<ul>
-<li>Software-first</li>
-<li>Programmable assembly line architecture</li>
-<li>Deterministic compute and networking</li>
-<li>On-chip memory</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Architecture</category>
-      </categories>
-  </entry>
-  <entry>
     <title>3D Donut</title>
     <url>/2026/01/19/3D-donut/</url>
     <content><![CDATA[<h1 id="3d旋转甜甜圈算法"><a class="markdownIt-Anchor" href="#3d旋转甜甜圈算法"></a> 3D旋转甜甜圈算法</h1>
@@ -410,6 +392,24 @@ L &amp;= N_x \cdot 0 + N_y \cdot 1 + N_z \cdot (-1) = N_y - N_z \\
       </tags>
   </entry>
   <entry>
+    <title>About-LPU</title>
+    <url>/2026/02/22/About-LPU/</url>
+    <content><![CDATA[<h1 id="lpu-架构简单学习"><a class="markdownIt-Anchor" href="#lpu-架构简单学习"></a> LPU 架构简单学习</h1>
+<p>Gemini的免费 api 限额又变少了，最近在找其他 free api 的时候偶然发现了 groq</p>
+<p>groq 提供的几个 api 接口吐字实在快，看到他们说用的是自己研发的 LPU（Language Processing Unit）</p>
+<p>官网上这样介绍自己的优势：</p>
+<ul>
+<li>Software-first</li>
+<li>Programmable assembly line architecture</li>
+<li>Deterministic compute and networking</li>
+<li>On-chip memory</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Architecture</category>
+      </categories>
+  </entry>
+  <entry>
     <title>E³-PRUNER</title>
     <url>/2026/03/03/E3-PRUNER/</url>
     <content><![CDATA[<h1 id="e3-pruner-论文阅读"><a class="markdownIt-Anchor" href="#e3-pruner-论文阅读"></a> E³-PRUNER 论文阅读</h1>
@@ -525,7 +525,7 @@ L &amp;= N_x \cdot 0 + N_y \cdot 1 + N_z \cdot (-1) = N_y - N_z \\
 <li>red : prediction of draft model</li>
 <li>blue (with snow icon) : target LLM parameter</li>
 </ul>
-<style>.faxrvjwvlxkq{zoom: 33%;}</style><img src="/2026/02/13/EAGLE/pipeline1.png" class="faxrvjwvlxkq" alt="pipeline1">
+<style>.jpkpyimxiglo{zoom: 33%;}</style><img src="/2026/02/13/EAGLE/pipeline1.png" class="jpkpyimxiglo" alt="pipeline1">
 <p>可以看到这里 Draft Model 由三部分组成：</p>
 <ol>
 <li>Embedding Layer : 与目标 LLM 共享</li>
@@ -536,7 +536,7 @@ L &amp;= N_x \cdot 0 + N_y \cdot 1 + N_z \cdot (-1) = N_y - N_z \\
 <p>FC 层的作用是将 (bs, seq_len, 2*hidden_size) 降维成 (bs, seq_len, hidden_size)</p>
 <p>在计算 draft 的时候，EAGLE 构建了一颗树。这棵 Draft Tree 的深度是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">m</span></span></span></span> ，拥有超过<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">m</span></span></span></span>个的 token 数，只会执行<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">m</span></span></span></span>步 forward。</p>
 <p>例如，下图是草稿生成的过程中构建的树，可以看到天然的不含有 Medusa 中那种缺乏逻辑性的分支。 这里深度为3，token数为10</p>
-<style>.ogckfkhbpfyw{zoom:50%;}</style><img src="/2026/02/13/EAGLE/pipeline2.png" class="ogckfkhbpfyw" alt="pipeline2">
+<style>.vdblxmcrsdii{zoom:50%;}</style><img src="/2026/02/13/EAGLE/pipeline2.png" class="vdblxmcrsdii" alt="pipeline2">
 <p>对于这颗树的构建规则，附录中有提到一些：</p>
 <ul>
 <li>greedy：每个节点选择 top k 作为儿子</li>
@@ -570,7 +570,7 @@ L &amp;= N_x \cdot 0 + N_y \cdot 1 + N_z \cdot (-1) = N_y - N_z \\
 <p>要想拥有更适应 context 的动态结构，就需要原始 LLM 对上下文的推导。但是这与加速的目的相悖了。但是 EAGLE 的实验结果证明了 draft model 具有良好的校准性（Well-calibrated），它的置信度分数（即概率）能够很好地近似 Draft Token 的接受率</p>
 <p>EAGLE-2 基于这一点事实展开，通过动态树的构建提高了接受率（acceptance rate）</p>
 <h3 id="well-calibrated-draft-model"><a class="markdownIt-Anchor" href="#well-calibrated-draft-model"></a> Well-Calibrated Draft Model</h3>
-<style>.vyeekjixzdgs{zoom: 80%;}</style><img src="/2026/02/13/EAGLE/cali.png" class="vyeekjixzdgs" alt="cali">
+<style>.bdjenluykmcb{zoom: 80%;}</style><img src="/2026/02/13/EAGLE/cali.png" class="bdjenluykmcb" alt="cali">
 <p>EAGLE-2 提供了这样一张统计图，其中<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mi>o</mi><mi>n</mi><mi>f</mi><mi>i</mi><mi>d</mi><mi>e</mi><mi>n</mi><mi>c</mi><mi>e</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mi>P</mi><mrow><mi>d</mi><mi>r</mi><mi>a</mi><mi>f</mi><mi>t</mi></mrow></msub><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mi>exp</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>L</mi><mi>o</mi><mi>g</mi><mi>i</mi><msub><mi>t</mi><mi>x</mi></msub><mo stretchy="false">)</mo></mrow><mrow><mo>∑</mo><mi>exp</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>L</mi><mi>o</mi><mi>g</mi><mi>i</mi><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">Confidence(x) = P_{draft}(x) = \frac{\exp(Logit_x)}{\sum \exp(Logit_i)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mord mathnormal">i</span><span class="mord mathnormal">d</span><span class="mord mathnormal">e</span><span class="mord mathnormal">n</span><span class="mord mathnormal">c</span><span class="mord mathnormal">e</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.036108em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.530007em;vertical-align:-0.520007em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.01em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mop op-symbol small-op mtight" style="position:relative;top:-0.0000050000000000050004em;">∑</span><span class="mspace mtight" style="margin-right:0.19516666666666668em;"></span><span class="mop mtight"><span class="mtight">e</span><span class="mtight">x</span><span class="mtight">p</span></span><span class="mopen mtight">(</span><span class="mord mathnormal mtight">L</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span><span class="mord mathnormal mtight">i</span><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3280857142857143em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span><span class="mclose mtight">)</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.485em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mop mtight"><span class="mtight">e</span><span class="mtight">x</span><span class="mtight">p</span></span><span class="mopen mtight">(</span><span class="mord mathnormal mtight">L</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span><span class="mord mathnormal mtight">i</span><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.16454285714285719em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">x</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span><span class="mclose mtight">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.520007em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>Acceptance Rate</mtext><mo>=</mo><mi>min</mi><mo>⁡</mo><mrow><mo fence="true">(</mo><mn>1</mn><mo separator="true">,</mo><mfrac><mrow><msub><mi>P</mi><mrow><mi>t</mi><mi>a</mi><mi>r</mi><mi>g</mi><mi>e</mi><mi>t</mi></mrow></msub><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><mrow><msub><mi>P</mi><mrow><mi>d</mi><mi>r</mi><mi>a</mi><mi>f</mi><mi>t</mi></mrow></msub><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow></mfrac><mo fence="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\text{Acceptance Rate} = \min\left(1, \frac{P_{target}(x)}{P_{draft}(x)}\right)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord text"><span class="mord">Acceptance Rate</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.80002em;vertical-align:-0.65002em;"></span><span class="mop">min</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size2">(</span></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.03232em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3487714285714287em;margin-left:-0.13889em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.29011428571428566em;"><span></span></span></span></span></span></span><span class="mopen mtight">(</span><span class="mord mathnormal mtight">x</span><span class="mclose mtight">)</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.50732em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.29634285714285713em;"><span style="top:-2.357em;margin-left:-0.13889em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2818857142857143em;"><span></span></span></span></span></span></span><span class="mopen mtight">(</span><span class="mord mathnormal mtight">x</span><span class="mclose mtight">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.5480799999999999em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size2">)</span></span></span></span></span></span></p>
 <p>Confidence 就是 Draft 预测的分布；而接受率在贪婪搜索下就是 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mrow><mi>t</mi><mi>a</mi><mi>r</mi><mi>g</mi><mi>e</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">P_{target}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.28055599999999997em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mrow><mi>d</mi><mi>r</mi><mi>a</mi><mi>f</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">P_{draft}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>预测的最可能的结果一致，在随机采样中是如果 target 认为这个词出现的概率比 Draft 预测的概率还大，那么就是 1.0 的接受率，否则按照比例接受</p>
 <p>这样的校准性能够避免使用 Target LLM 对上下文的推导，仅仅用 Draft 就能寻找动态树的路径</p>
@@ -581,9 +581,9 @@ L &amp;= N_x \cdot 0 + N_y \cdot 1 + N_z \cdot (-1) = N_y - N_z \\
 <p>经过 expand 之后，还要进行一次排序筛选，保留所有节点中期望收益最高，也就是 Global Acceptance最大的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">m</span></span></span></span> 个 token</p>
 <p>这一步会有一个现象，就是浅层的 token 会比深层的 token 更有优势，因为每一次都是乘一个小于 1 的数，所以当模型很<strong>自信</strong>的时候，会生成更深的路径，一次推理中能走更多的步骤；而当模型很<strong>困惑</strong>的时候，树的结构趋向于“收缩”，预测趋于浅层，节省深层 token 验证的资源，提高整体期望值</p>
 <p>示例：</p>
-<style>.wmwveylgrthe{zoom:67%;}</style><img src="/2026/02/13/EAGLE/build-dy-tree.png" class="wmwveylgrthe" alt="build-dy-tree">
+<style>.gqkztwwsxbak{zoom:67%;}</style><img src="/2026/02/13/EAGLE/build-dy-tree.png" class="gqkztwwsxbak" alt="build-dy-tree">
 <p>用 tree-attention 验证：</p>
-<style>.qtuwcnugtywg{zoom:50%;}</style><img src="/2026/02/13/EAGLE/verify-2.png" class="qtuwcnugtywg" alt="verify-2">
+<style>.fyrsbltwpmhg{zoom:50%;}</style><img src="/2026/02/13/EAGLE/verify-2.png" class="fyrsbltwpmhg" alt="verify-2">
 <hr />
 <h2 id="eagle-3"><a class="markdownIt-Anchor" href="#eagle-3"></a> EAGLE-3</h2>
 <p>第三版主要是在训练上</p>
@@ -605,7 +605,7 @@ L &amp;= N_x \cdot 0 + N_y \cdot 1 + N_z \cdot (-1) = N_y - N_z \\
 <p><img src="eagle-3-pipe.png" alt="eagle-3-pipe" /></p>
 <h3 id="training"><a class="markdownIt-Anchor" href="#training"></a> Training</h3>
 <p>唯一要训练的部分就是 transformer decoder，训练的时候用了 tree-mask，从一个序列里产出的只能看到它这条路径上的Key（示意图里用 token 来代替了 feature 的表示）</p>
-<style>.yemjghfqkgfj{zoom:67%;}</style><img src="/2026/02/13/EAGLE/eagle-treemask.png" class="yemjghfqkgfj" alt="eagle-treemask">
+<style>.stqqpwesfshu{zoom:67%;}</style><img src="/2026/02/13/EAGLE/eagle-treemask.png" class="stqqpwesfshu" alt="eagle-treemask">
 <p>对于每一步的训练，由于浅层的错误是更致命的，所以可能会给不同深度的节点分配训练权重，看代码的时候看看</p>
 <hr />
 <h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
@@ -776,6 +776,132 @@ Nvidia 正是看到了 AI 使用显卡进行训练的商机，搭建 <code>CUDA<
       <tags>
         <tag>GPU</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>南京博物院</title>
+    <url>/2026/02/13/NanjingMuseum/</url>
+    <content><![CDATA[<h1 id="南京博物院"><a class="markdownIt-Anchor" href="#南京博物院"></a> 南京博物院</h1>
+<p>本南京人第一次来南京博物院</p>
+<span id="more"></span>
+<p><img src="gate.jpg" alt="gate" /></p>
+<p>今天天气挺好的，南博有不少人</p>
+<p>南京博物院有好几个馆：</p>
+<ul>
+<li>
+<p>历史馆</p>
+</li>
+<li>
+<p>数字馆</p>
+</li>
+<li>
+<p>民国馆</p>
+</li>
+<li>
+<p>艺术馆</p>
+</li>
+<li>
+<p>非遗馆</p>
+</li>
+</ul>
+<p>历史馆就是最传统的博物馆，也最有意思</p>
+<h2 id="历史馆"><a class="markdownIt-Anchor" href="#历史馆"></a> 历史馆</h2>
+<p>历史馆从史前时期开始介绍江苏地区的历史，一直到民国前</p>
+<p><img src="elephant.jpg" alt="elephant" /></p>
+<p>大猛犸象</p>
+<p><img src="spoon.jpg" alt="spoon" /></p>
+<p>一个好像没有使用功能的小勺子</p>
+<p><img src="bronzepot.jpg" alt="bronzepot" /></p>
+<p>青铜壶</p>
+<p><img src="bronze-crossbow.jpg" alt="bronze-crossbow" /></p>
+<p>西汉示器的铜弩机</p>
+<p>这里的<em>错金银</em>工艺，指的就是把金丝/银丝嵌到器具里开好的槽中</p>
+<p><img src="Ox-shape-lamp.jpg" alt="Ox-shape-lamp" /></p>
+<p>铜牛灯，虽然看着很像羊</p>
+<p><img src="pillow.jpg" alt="pillow" /></p>
+<p>宋朝的瓷枕，感觉直接枕的话有点高<img src="bow.jpg" alt="bow" /></p>
+<p>纹路很精美的茶盏</p>
+<p><img src="lion.jpg" alt="lion" /></p>
+<p>狮子砖雕</p>
+<p><img src="horse.jpg" alt="horse" /></p>
+<p>某个马头的复制品</p>
+<p><img src="seat.jpg" alt="seat" /></p>
+<p>气派的座位和屏风，好像使用的珐琅工艺</p>
+<h2 id="数字馆"><a class="markdownIt-Anchor" href="#数字馆"></a> 数字馆</h2>
+<p>没意思，放了点数字影像，不如在家看</p>
+<h2 id="民国馆"><a class="markdownIt-Anchor" href="#民国馆"></a> 民国馆</h2>
+<p>感觉各地的民国馆都是这种交互式的商业街，<img src="street.jpg" alt="street" /></p>
+<p>火车头模型<img src="train.jpg" alt="train" /></p>
+<h2 id="非遗馆"><a class="markdownIt-Anchor" href="#非遗馆"></a> 非遗馆</h2>
+<p>介绍了种种非遗，并且有相应的商品柜台</p>
+<h2 id="艺术馆"><a class="markdownIt-Anchor" href="#艺术馆"></a> 艺术馆</h2>
+<p>有一大半的展厅都没开，就看了几个</p>
+<h4 id="傅抱石-毛主席诗词画展"><a class="markdownIt-Anchor" href="#傅抱石-毛主席诗词画展"></a> 傅抱石 毛主席诗词画展</h4>
+<p>展示了傅抱石为毛主席的诗词做的创作 下为《更喜岷山千里雪》</p>
+<p><img src="qianlixue.jpg" alt="qianlixue" /></p>
+<h4 id="吴为山雕塑展"><a class="markdownIt-Anchor" href="#吴为山雕塑展"></a> 吴为山雕塑展</h4>
+<p><em>写意雕塑</em>，感觉很有意思，鲁迅的青铜雕塑就很简洁有力</p>
+<p>这个《老子出关》非常写意了<img src="laozi.jpg" alt="laozi" /></p>
+<h4 id="荷花专题展"><a class="markdownIt-Anchor" href="#荷花专题展"></a> 荷花专题展</h4>
+<p><img src="lutos.jpg" alt="lutos" /></p>
+<h2 id="后记"><a class="markdownIt-Anchor" href="#后记"></a> 后记</h2>
+<p>旁边的明故宫遗址有好多人逛公园，天气确实好<img src="whether.jpg" alt="whether" /></p>
+<p>有大爷在练书法<img src="calligraphy.jpg" alt="calligraphy" /></p>
+]]></content>
+      <categories>
+        <category>游记</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>PD/DT-separation</title>
+    <url>/2026/03/20/PD-DT-separation/</url>
+    <content><![CDATA[<h1 id="有关pddt分离的一些想法"><a class="markdownIt-Anchor" href="#有关pddt分离的一些想法"></a> 有关PD/DT分离的一些想法</h1>
+<p>最近实验室让看了有关这方面的论文，包括但不限kimi的[mooncake](<a href="https://github.com/zhenghuawei923/Mooncake-kimi-ai">zhenghuawei923/Mooncake-kimi-ai: Mooncake is the serving platform for Kimi, a leading LLM service provided by Moonshot AI. kimiAI大模型</a>)，以及tri-dao最新的[SSD](<a href="https://openreview.net/forum?id=aL1Wnml9Ef">Speculative Speculative Decoding | OpenReview</a>)</p>
+<h2 id="mooncake"><a class="markdownIt-Anchor" href="#mooncake"></a> Mooncake</h2>
+<p>PD 分离的工程实现</p>
+<h2 id="ssd"><a class="markdownIt-Anchor" href="#ssd"></a> SSD</h2>
+<p>在一个“节点”内部实现的一种简单的DT分离</p>
+<h2 id="一些想法"><a class="markdownIt-Anchor" href="#一些想法"></a> 一些想法</h2>
+<p>如果要从现有的 PD 分离的方法中借鉴，那就要弄清现在两种方法的相似和不同</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>PD</th>
+<th>DT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>生命周期</td>
+<td>prefill的生命周期短，且在一轮独立的处理中，只会出现一次；<br />decode的生命周期就更长，会一直generate直到满足条件</td>
+<td>Draft阶段的推测是非常轻量的，所以它的生命周期更短<br />而 Target 的验证虽然一次性并行，但是本身是大的，所以周期长</td>
+</tr>
+<tr>
+<td>计算特性</td>
+<td>prefill阶段是密集型计算，规模随输入长度的增长而呈square/linear增长<br />decode阶段则是访存密集型，需要频繁的读写kvcache</td>
+<td>Verify 阶段同样是密集型计算，但是其增长取决于生成的 draft token 的长度以及可能生成的 draft 树<br />Draft阶段取决于生成的策略，从最naive的串行到 EAGLE 之类的树状结构，再到PEARL生成的串行的异步，以及SSD的网状的结果，计算特性会有所不同，并发的程度也不一样</td>
+</tr>
+<tr>
+<td>交互特性</td>
+<td>在一轮独立的处理，两者只会交互一次，传输KVCache</td>
+<td>在不依赖异步策略的一轮处理中，两者会多次交互，但是逻辑上的先后特性被完整转化成了时间上的先后顺序<br />而在实施了异步策略的一轮处理里，这个交互的逻辑就会变得更加复杂</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+]]></content>
+      <categories>
+        <category>llm-inference</category>
+      </categories>
   </entry>
   <entry>
     <title>Git-Guide</title>
@@ -1829,80 +1955,6 @@ Git 现在用 <code>refs/heads/</code> 和 <code>refs/remotes/</code> 来管理�
       </tags>
   </entry>
   <entry>
-    <title>南京博物院</title>
-    <url>/2026/02/13/NanjingMuseum/</url>
-    <content><![CDATA[<h1 id="南京博物院"><a class="markdownIt-Anchor" href="#南京博物院"></a> 南京博物院</h1>
-<p>本南京人第一次来南京博物院</p>
-<span id="more"></span>
-<p><img src="gate.jpg" alt="gate" /></p>
-<p>今天天气挺好的，南博有不少人</p>
-<p>南京博物院有好几个馆：</p>
-<ul>
-<li>
-<p>历史馆</p>
-</li>
-<li>
-<p>数字馆</p>
-</li>
-<li>
-<p>民国馆</p>
-</li>
-<li>
-<p>艺术馆</p>
-</li>
-<li>
-<p>非遗馆</p>
-</li>
-</ul>
-<p>历史馆就是最传统的博物馆，也最有意思</p>
-<h2 id="历史馆"><a class="markdownIt-Anchor" href="#历史馆"></a> 历史馆</h2>
-<p>历史馆从史前时期开始介绍江苏地区的历史，一直到民国前</p>
-<p><img src="elephant.jpg" alt="elephant" /></p>
-<p>大猛犸象</p>
-<p><img src="spoon.jpg" alt="spoon" /></p>
-<p>一个好像没有使用功能的小勺子</p>
-<p><img src="bronzepot.jpg" alt="bronzepot" /></p>
-<p>青铜壶</p>
-<p><img src="bronze-crossbow.jpg" alt="bronze-crossbow" /></p>
-<p>西汉示器的铜弩机</p>
-<p>这里的<em>错金银</em>工艺，指的就是把金丝/银丝嵌到器具里开好的槽中</p>
-<p><img src="Ox-shape-lamp.jpg" alt="Ox-shape-lamp" /></p>
-<p>铜牛灯，虽然看着很像羊</p>
-<p><img src="pillow.jpg" alt="pillow" /></p>
-<p>宋朝的瓷枕，感觉直接枕的话有点高<img src="bow.jpg" alt="bow" /></p>
-<p>纹路很精美的茶盏</p>
-<p><img src="lion.jpg" alt="lion" /></p>
-<p>狮子砖雕</p>
-<p><img src="horse.jpg" alt="horse" /></p>
-<p>某个马头的复制品</p>
-<p><img src="seat.jpg" alt="seat" /></p>
-<p>气派的座位和屏风，好像使用的珐琅工艺</p>
-<h2 id="数字馆"><a class="markdownIt-Anchor" href="#数字馆"></a> 数字馆</h2>
-<p>没意思，放了点数字影像，不如在家看</p>
-<h2 id="民国馆"><a class="markdownIt-Anchor" href="#民国馆"></a> 民国馆</h2>
-<p>感觉各地的民国馆都是这种交互式的商业街，<img src="street.jpg" alt="street" /></p>
-<p>火车头模型<img src="train.jpg" alt="train" /></p>
-<h2 id="非遗馆"><a class="markdownIt-Anchor" href="#非遗馆"></a> 非遗馆</h2>
-<p>介绍了种种非遗，并且有相应的商品柜台</p>
-<h2 id="艺术馆"><a class="markdownIt-Anchor" href="#艺术馆"></a> 艺术馆</h2>
-<p>有一大半的展厅都没开，就看了几个</p>
-<h4 id="傅抱石-毛主席诗词画展"><a class="markdownIt-Anchor" href="#傅抱石-毛主席诗词画展"></a> 傅抱石 毛主席诗词画展</h4>
-<p>展示了傅抱石为毛主席的诗词做的创作 下为《更喜岷山千里雪》</p>
-<p><img src="qianlixue.jpg" alt="qianlixue" /></p>
-<h4 id="吴为山雕塑展"><a class="markdownIt-Anchor" href="#吴为山雕塑展"></a> 吴为山雕塑展</h4>
-<p><em>写意雕塑</em>，感觉很有意思，鲁迅的青铜雕塑就很简洁有力</p>
-<p>这个《老子出关》非常写意了<img src="laozi.jpg" alt="laozi" /></p>
-<h4 id="荷花专题展"><a class="markdownIt-Anchor" href="#荷花专题展"></a> 荷花专题展</h4>
-<p><img src="lutos.jpg" alt="lutos" /></p>
-<h2 id="后记"><a class="markdownIt-Anchor" href="#后记"></a> 后记</h2>
-<p>旁边的明故宫遗址有好多人逛公园，天气确实好<img src="whether.jpg" alt="whether" /></p>
-<p>有大爷在练书法<img src="calligraphy.jpg" alt="calligraphy" /></p>
-]]></content>
-      <categories>
-        <category>游记</category>
-      </categories>
-  </entry>
-  <entry>
     <title>PEARL</title>
     <url>/2026/03/17/PEARL/</url>
     <content><![CDATA[<h1 id="pearl-论文阅读"><a class="markdownIt-Anchor" href="#pearl-论文阅读"></a> PEARL 论文阅读</h1>
@@ -1911,7 +1963,7 @@ Git 现在用 <code>refs/heads/</code> 和 <code>refs/remotes/</code> 来管理�
 <h2 id="core-idea"><a class="markdownIt-Anchor" href="#core-idea"></a> Core Idea</h2>
 <p>传统的 SD 基于这样的原则：在完成一个序列的 Draft token的输出之后才进行一次验证，也就是说验证和推理天然存在一个<strong>逻辑上的先后关系</strong>，验证的同时是没有推理的进行的，推理的同时也无法进行验证</p>
 <p>为了能够让这两个过程并行起来，<code>PEARL</code>提出了两种验证的策略来帮助</p>
-<style>.gkvzjwroreim{zoom: 33%;}</style><img src="/2026/03/17/PEARL/pearl1.png" class="gkvzjwroreim" alt="pearl1">
+<style>.flldhqkgsuzt{zoom: 33%;}</style><img src="/2026/03/17/PEARL/pearl1.png" class="flldhqkgsuzt" alt="pearl1">
 <hr />
 <h2 id="core-concept"><a class="markdownIt-Anchor" href="#core-concept"></a> Core Concept</h2>
 <p>两种验证策略，<code>pre-verify</code>和<code>post-verify</code>:</p>
@@ -1919,7 +1971,7 @@ Git 现在用 <code>refs/heads/</code> 和 <code>refs/remotes/</code> 来管理�
 <li><code>pre</code>：这个策略的目标就是为了打破验证要在<strong>完整推测</strong>之后发生的限制，对<strong>prefix</strong>，在<strong>第一个 Draft Token</strong>出现的同时就进行验证，如果第一个就不接受，后面的都不会接受；同时这个做法也没有打破逻辑上的先后关系，感觉所有的推理中其实都可以使用这种利用资源的办法</li>
 <li><code>post</code>：这个 verify 旨在打破 vanilla SD 中 draft 的生成要等待 verify 结束来提供一个<strong>prefix</strong>，将多次 draft generation 之间的间隔合并；换句话说，假如一次的 draft token 生成中全对，那么就能继续接着生成，draft model 还有没发挥完的潜力，所以不需要 verify 生成的 prefix 去“打扰”现在健康的生成；而当错误的验证发生的时候，就要重回到 pre 的验证阶段</li>
 </ul>
-<style>.wrfbgbunhobv{zoom: 25%;}</style><img src="/2026/03/17/PEARL/pearl-pipe.png" class="wrfbgbunhobv" alt="pearl-pipe">
+<style>.jlnofqpkarxt{zoom: 25%;}</style><img src="/2026/03/17/PEARL/pearl-pipe.png" class="jlnofqpkarxt" alt="pearl-pipe">
 <hr />
 <h2 id="thinking"><a class="markdownIt-Anchor" href="#thinking"></a> Thinking</h2>
 <p>这个方法看起来挺nature的，但是就像pipeline里的分支预测那样，依赖于预测方向的可能性，也就是 draft 的<strong>接受率</strong>，</p>
@@ -1958,60 +2010,8 @@ E\left[\frac{\text{token}}{\text{s}}\right]
 <p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>U</mi><mo>=</mo><mfrac><mrow><mi>α</mi><mi>k</mi></mrow><mrow><mi>k</mi><msub><mi>t</mi><mi>g</mi></msub><mo>+</mo><msub><mi>t</mi><mi>v</mi></msub></mrow></mfrac></mrow><annotation encoding="application/x-tex">U=\frac{\alpha k}{k t_g + t_v}
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.343548em;vertical-align:-0.972108em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.37144em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">v</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.972108em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
 <p>简单取<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mi>v</mi></msub><mo>=</mo><mn>10</mn><msub><mi>t</mi><mi>g</mi></msub></mrow><annotation encoding="application/x-tex">t_v = 10 t_g</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.76508em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">v</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.9305479999999999em;vertical-align:-0.286108em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>γ</mi></mrow><annotation encoding="application/x-tex">\gamma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.05556em;">γ</span></span></span></span>= 4，得到了如下的图像，可以看到接受率高的时候是有显著的收益的</p>
-<style>.ykyjcdogomov{zoom:25%;}</style><img src="/2026/03/17/PEARL/graph.png" class="ykyjcdogomov" alt="graph">
+<style>.dekwbichxmyn{zoom:25%;}</style><img src="/2026/03/17/PEARL/graph.png" class="dekwbichxmyn" alt="graph">
 <p>而且随着接受序列的边长，接受率是会下降的，也就是说真实的情况下不是等比数列，效果还要差一点</p>
-]]></content>
-      <categories>
-        <category>llm-inference</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>PD/DT-separation</title>
-    <url>/2026/03/20/PD-DT-separation/</url>
-    <content><![CDATA[<h1 id="有关pddt分离的一些想法"><a class="markdownIt-Anchor" href="#有关pddt分离的一些想法"></a> 有关PD/DT分离的一些想法</h1>
-<p>最近实验室让看了有关这方面的论文，包括但不限kimi的[mooncake](<a href="https://github.com/zhenghuawei923/Mooncake-kimi-ai">zhenghuawei923/Mooncake-kimi-ai: Mooncake is the serving platform for Kimi, a leading LLM service provided by Moonshot AI. kimiAI大模型</a>)，以及tri-dao最新的[SSD](<a href="https://openreview.net/forum?id=aL1Wnml9Ef">Speculative Speculative Decoding | OpenReview</a>)</p>
-<h2 id="mooncake"><a class="markdownIt-Anchor" href="#mooncake"></a> Mooncake</h2>
-<p>PD 分离的工程实现</p>
-<h2 id="ssd"><a class="markdownIt-Anchor" href="#ssd"></a> SSD</h2>
-<p>在一个“节点”内部实现的一种简单的DT分离</p>
-<h2 id="一些想法"><a class="markdownIt-Anchor" href="#一些想法"></a> 一些想法</h2>
-<p>如果要从现有的 PD 分离的方法中借鉴，那就要弄清现在两种方法的相似和不同</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>PD</th>
-<th>DT</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>生命周期</td>
-<td>prefill的生命周期短，且在一轮独立的处理中，只会出现一次；<br />decode的生命周期就更长，会一直generate直到满足条件</td>
-<td>Draft阶段的推测是非常轻量的，所以它的生命周期更短<br />而 Target 的验证虽然一次性并行，但是本身是大的，所以周期长</td>
-</tr>
-<tr>
-<td>计算特性</td>
-<td>prefill阶段是密集型计算，规模随输入长度的增长而呈square/linear增长<br />decode阶段则是访存密集型，需要频繁的读写kvcache</td>
-<td>Verify 阶段同样是密集型计算，但是其增长取决于生成的 draft token 的长度以及可能生成的 draft 树<br />Draft阶段取决于生成的策略，从最naive的串行到 EAGLE 之类的树状结构，再到PEARL生成的串行的异步，以及SSD的网状的结果，计算特性会有所不同，并发的程度也不一样</td>
-</tr>
-<tr>
-<td>交互特性</td>
-<td>在一轮独立的处理，两者只会交互一次，传输KVCache</td>
-<td>在不依赖异步策略的一轮处理中，两者会多次交互，但是逻辑上的先后特性被完整转化成了时间上的先后顺序<br />而在实施了异步策略的一轮处理里，这个交互的逻辑就会变得更加复杂</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
 ]]></content>
       <categories>
         <category>llm-inference</category>
@@ -2047,11 +2047,6 @@ E\left[\frac{\text{token}}{\text{s}}\right]
   <entry>
     <title>Singapore-pt2</title>
     <url>/2025/07/05/Singapore-pt2/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>Singapore-pt4</title>
-    <url>/2025/07/20/Singapore-pt4/</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
@@ -2145,6 +2140,11 @@ feed-forward network with a residual connection)来作为 medusa head</p>
       </tags>
   </entry>
   <entry>
+    <title>Singapore-pt4</title>
+    <url>/2025/07/20/Singapore-pt4/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>azure-server</title>
     <url>/2026/02/08/azure-server/</url>
     <content><![CDATA[<h1 id="使用azure搭建服务器"><a class="markdownIt-Anchor" href="#使用azure搭建服务器"></a> 使用azure搭建服务器</h1>
@@ -2197,6 +2197,11 @@ feed-forward network with a residual connection)来作为 medusa head</p>
         <tag>azure</tag>
         <tag>vpn</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Singapore-pt3</title>
+    <url>/2025/07/12/Singapore-pt3/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>TimeScope,一个简单的桌面活动记录器</title>
@@ -2372,11 +2377,6 @@ c-16-25.333-24-45-24-59z'/></svg></span></span></span></span><span class="vlist-
       <tags>
         <tag>vpn</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Singapore-pt3</title>
-    <url>/2025/07/12/Singapore-pt3/</url>
-    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>bridge-card</title>
@@ -2726,10 +2726,76 @@ c-16-25.333-24-45-24-59z'/></svg></span></span></span></span><span class="vlist-
 <li>超弦理论</li>
 <li>神经科学</li>
 <li>哲学部分</li>
+<li>有关dLLM的部分还有待学习 <a href="https://zhuanlan.zhihu.com/p/1989306829931557631">dLLM的局限性</a>，有人认为自然语言实际上含有Markov结构，因此 L2R 的建模有显著的优势，然而究竟是训练上有难度还是本身方法上有缺陷还有待思考</li>
 </ul>
 ]]></content>
       <categories>
         <category>杂谈</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>jeju-tour</title>
+    <url>/2026/04/08/jeju-tour/</url>
+    <content><![CDATA[<h1 id="jeju-tour"><a class="markdownIt-Anchor" href="#jeju-tour"></a> Jeju-tour</h1>
+<span id="more"></span>
+<h2 id="day-1-981park挟才海水浴场涯月邑"><a class="markdownIt-Anchor" href="#day-1-981park挟才海水浴场涯月邑"></a> day 1: 9.81park&amp;挟才海水浴场&amp;涯月邑</h2>
+<h3 id="981-park"><a class="markdownIt-Anchor" href="#981-park"></a> 9.81 park</h3>
+<p>一个设施齐全的游乐场</p>
+<h4 id="卡丁车"><a class="markdownIt-Anchor" href="#卡丁车"></a> 卡丁车</h4>
+<p>先玩了无动力卡丁车<br />
+全程不踩刹车过弯的时候能很明显感受到横向的加速度，爽<style>.kkjtajphiyjq{zoom: 25%;}</style><img src="/2026/04/08/jeju-tour/e601cf9859018cb8465a1d5498389518.jpg" class="kkjtajphiyjq" alt="e601cf9859018cb8465a1d5498389518"></p>
+<p>可惜了买的是4圈的票，在第二赛道开了三圈才拿到 master- license，没机会体验x赛道了<br />
+（壁垒第二赛道左边的道，比右边慢</p>
+<h4 id="真人cs"><a class="markdownIt-Anchor" href="#真人cs"></a> 真人cs</h4>
+<p>虐待老年人</p>
+<style>.yfhtwqxvjitg{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/53494babbd83132c0f35e2cbdfd4aa10.jpg" class="yfhtwqxvjitg" alt="53494babbd83132c0f35e2cbdfd4aa10">
+<h3 id="挟才海水浴场"><a class="markdownIt-Anchor" href="#挟才海水浴场"></a> 挟才海水浴场</h3>
+<p>很蓝很清的海水<style>.rvqnzzcbukwe{zoom: 33%;}</style><img src="/2026/04/08/jeju-tour/5a5ccecabfdbccf596023526700fa213.jpg" class="rvqnzzcbukwe" alt="5a5ccecabfdbccf596023526700fa213"><br />
+四月的水温有点凉，但是穿着短裤下水也能接受<br />
+海风非常舒服<br />
+午饭吃了烤肉 好吃<style>.inwhmiifhqop{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/676b8e6c617fccf938c937808240a45a.jpg" class="inwhmiifhqop" alt="676b8e6c617fccf938c937808240a45a"></p>
+<h3 id="涯月邑"><a class="markdownIt-Anchor" href="#涯月邑"></a> 涯月邑</h3>
+<p>到上一站坐bus之后步行了半个小时到了涯月邑，沙滩没有挟才的好，但是周围有很多咖啡店可以出片<style>.wawtwsitdwxe{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/15244c418395b661f8287bef1004c9ce.jpg" class="wawtwsitdwxe" alt="15244c418395b661f8287bef1004c9ce"><style>.olgqpyjgjtoe{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/421aa2a1333321f0d244bce5576a206a.jpg" class="olgqpyjgjtoe" alt="421aa2a1333321f0d244bce5576a206a"><br />
+晚饭吃了steak，铸铁锅很有风味<style>.fiwpfpfnqutu{zoom: 25%;}</style><img src="/2026/04/08/jeju-tour/1d8bea52040dee13d77b80cd4f84e16b.jpg" class="fiwpfpfnqutu" alt="1d8bea52040dee13d77b80cd4f84e16b"><br />
+可惜晚上云多了 没看到落日</p>
+<h2 id="day2-wind1947-偶来市场-柱状节理带"><a class="markdownIt-Anchor" href="#day2-wind1947-偶来市场-柱状节理带"></a> day2: wind1947 &amp; 偶来市场 &amp; 柱状节理带</h2>
+<h3 id="1947"><a class="markdownIt-Anchor" href="#1947"></a> 1947</h3>
+<p>去的路上顺带看了济州大学的樱花<style>.powvupubmnuy{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/sakura.jpg" class="powvupubmnuy" alt="sakura"></p>
+<p>这次是有动力的柴油卡丁车了 全程踩着油门，加速的时候有推背感，弯道的横向加速度也很明显，爽的<br />
+就是车子有点震，而且头盔老是飞</p>
+<h3 id="偶来"><a class="markdownIt-Anchor" href="#偶来"></a> 偶来</h3>
+<p>一个集市，进去先买了一筐🍊，皮薄肉厚，好吃<br />
+然后又尝了烤肉寿司、烤包子、丑橘汁、橘子年糕，都挺好吃的<style>.eqpthjibhuto{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/24d73d400c418e87cfb040192101444c.jpg" class="eqpthjibhuto" alt="24d73d400c418e87cfb040192101444c"><style>.xlrosmgrhodo{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/ec896faf7a8dcd07289c166abd0863bb.jpg" class="xlrosmgrhodo" alt="ec896faf7a8dcd07289c166abd0863bb"></p>
+<h3 id="柱状节理带"><a class="markdownIt-Anchor" href="#柱状节理带"></a> 柱状节理带</h3>
+<p>火山岩浆冷却之后形成的六棱柱地貌<br />
+可惜天气不好，但是拍出来还是很震撼的<style>.vyyyomqqrylz{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/3eeaf91f6bc7510d0f72db1e1a7abbb6.jpg" class="vyyyomqqrylz" alt="3eeaf91f6bc7510d0f72db1e1a7abbb6"></p>
+<p>晚饭吃了酒店旁边一家烤肉 好吃<style>.eyndhvpdtdgl{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/014061a780fd52e19226348459912313.jpg" class="eyndhvpdtdgl" alt="014061a780fd52e19226348459912313"><br />
+回去的路上又整了炸鸡和年糕，非常juicy<style>.vksxfhlvlvnh{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/23f18c67d62d45929f51465f98f47e03.jpg" class="vksxfhlvlvnh" alt="23f18c67d62d45929f51465f98f47e03"></p>
+<h2 id="day3-日出峰牛岛"><a class="markdownIt-Anchor" href="#day3-日出峰牛岛"></a> day3 日出峰&amp;牛岛</h2>
+<h3 id="日出峰"><a class="markdownIt-Anchor" href="#日出峰"></a> 日出峰</h3>
+<p>海边的一座山峰，不是很高，爬了一二十分钟就能登顶，能俯瞰一部分的济州岛，眺望大海，景色不错<style>.oxmwblmquxvt{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/flower.jpg" class="oxmwblmquxvt" alt="flower"><style>.shqjxnmijsfw{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/richufeng.jpg" class="shqjxnmijsfw" alt="richufeng"></p>
+<h3 id="牛岛"><a class="markdownIt-Anchor" href="#牛岛"></a> 牛岛</h3>
+<p>从小路走，乘着邮轮到牛岛，一座非常惬意的小岛<br />
+租了电助力单车之后开始逆时针环岛，景色非常放松，也有很多可以拍照打卡的地方<style>.qedetswxtqou{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/piano.jpg" class="qedetswxtqou" alt="piano"></p>
+<p>午饭吃了一家peanut burger（好像在一家海鲜饭旁边），猪肉烤的很好，牛肉也很juicy<style>.innpqjoqqcmn{zoom: 25%;}</style><img src="/2026/04/08/jeju-tour/burger.jpg" class="innpqjoqqcmn" alt="burger"></p>
+<p>牛岛边上的小岛吃到的peanut ice cream，好吃<br />
+一个奶奶从头开始做的，花生碎很香，冰淇淋的口感很清爽，味道比较淡，和甜甜的花生碎很搭，不过如果冰淇淋味道能浓一点就更好了<style>.xidfzmkbqakg{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/peanut-icecream.jpg" class="xidfzmkbqakg" alt="peanut-icecream"></p>
+<p>路上王哥拍到了落日<style>.twbmiiqocent{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/0cd96e03d686d3772ff7fc70b32e412c.jpg" class="twbmiiqocent" alt="0cd96e03d686d3772ff7fc70b32e412c"></p>
+<p>晚饭搜刮到了一家土豆脊骨汤，民俗脊骨汤的分店，似乎去对了地方，遇到的食客都是韩国人，还遇到了一个热情的黑龙江的朝鲜族阿姨教我们吃饭hhh<style>.whrfksyniora{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/d194a317c3dda4b06ad48963c480e728.jpg" class="whrfksyniora" alt="d194a317c3dda4b06ad48963c480e728"></p>
+<h2 id="day4"><a class="markdownIt-Anchor" href="#day4"></a> day4</h2>
+<h3 id="snoopy-garden"><a class="markdownIt-Anchor" href="#snoopy-garden"></a> snoopy garden</h3>
+<p>很美的一个花园，造景非常细节，对应snoopy里一些场景和情节<br />
+还有好多狗狗友好的小路<style>.mwwvepjojgpp{zoom: 50%;}</style><img src="/2026/04/08/jeju-tour/1bceed035ea45c9c293aa9bf21f1fff7.jpg" class="mwwvepjojgpp" alt="1bceed035ea45c9c293aa9bf21f1fff7"></p>
+<p>可惜的是主题餐厅出餐要1h就没有吃，最后在门口吃了一个红豆馅饼，很香</p>
+<h3 id="月汀里stylesjnyzaumupbizoom33style-swig21-"><a class="markdownIt-Anchor" href="#月汀里stylesjnyzaumupbizoom33style-swig21-"></a> 月汀里<style>.sjnyzaumupbi{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/4078ce22cd741a987580906c23e67bc9.jpg" class="sjnyzaumupbi" alt="4078ce22cd741a987580906c23e67bc9"></h3>
+<p>午饭在月汀里一家专门做猪排的店，猪排很juicy可惜被馅饼填了肚子没吃完<style>.gzknknpppejg{zoom: 25%;}</style><img src="/2026/04/08/jeju-tour/6983327a1fd86b85c2960f0a1e778e3d.jpg" class="gzknknpppejg" alt="6983327a1fd86b85c2960f0a1e778e3d"><br />
+月汀里浴场的沙滩也很好，能下水的区域比挟才窄一点，但是也有咖啡馆</p>
+<p>最后走之前吃了炸鸡块 好吃</p>
+<h2 id="后记"><a class="markdownIt-Anchor" href="#后记"></a> 后记</h2>
+<p>感谢wsq王哥的领导和max林总的摄影！</p>
+]]></content>
+      <categories>
+        <category>游记</category>
       </categories>
   </entry>
   <entry>
@@ -2779,71 +2845,6 @@ c-16-25.333-24-45-24-59z'/></svg></span></span></span></span><span class="vlist-
         <tag>leetcode</tag>
         <tag>优化/optimization</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>jeju-tour</title>
-    <url>/2026/04/08/jeju-tour/</url>
-    <content><![CDATA[<h1 id="jeju-tour"><a class="markdownIt-Anchor" href="#jeju-tour"></a> Jeju-tour</h1>
-<span id="more"></span>
-<h2 id="day-1-981park挟才海水浴场涯月邑"><a class="markdownIt-Anchor" href="#day-1-981park挟才海水浴场涯月邑"></a> day 1: 9.81park&amp;挟才海水浴场&amp;涯月邑</h2>
-<h3 id="981-park"><a class="markdownIt-Anchor" href="#981-park"></a> 9.81 park</h3>
-<p>一个设施齐全的游乐场</p>
-<h4 id="卡丁车"><a class="markdownIt-Anchor" href="#卡丁车"></a> 卡丁车</h4>
-<p>先玩了无动力卡丁车<br />
-全程不踩刹车过弯的时候能很明显感受到横向的加速度，爽<style>.qqadbjgmhuxk{zoom: 25%;}</style><img src="/2026/04/08/jeju-tour/e601cf9859018cb8465a1d5498389518.jpg" class="qqadbjgmhuxk" alt="e601cf9859018cb8465a1d5498389518"></p>
-<p>可惜了买的是4圈的票，在第二赛道开了三圈才拿到 master- license，没机会体验x赛道了<br />
-（壁垒第二赛道左边的道，比右边慢</p>
-<h4 id="真人cs"><a class="markdownIt-Anchor" href="#真人cs"></a> 真人cs</h4>
-<p>虐待老年人</p>
-<style>.mcygxvdtwgfq{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/53494babbd83132c0f35e2cbdfd4aa10.jpg" class="mcygxvdtwgfq" alt="53494babbd83132c0f35e2cbdfd4aa10">
-<h3 id="挟才海水浴场"><a class="markdownIt-Anchor" href="#挟才海水浴场"></a> 挟才海水浴场</h3>
-<p>很蓝很清的海水<style>.uujaxdlccjpy{zoom: 33%;}</style><img src="/2026/04/08/jeju-tour/5a5ccecabfdbccf596023526700fa213.jpg" class="uujaxdlccjpy" alt="5a5ccecabfdbccf596023526700fa213"><br />
-四月的水温有点凉，但是穿着短裤下水也能接受<br />
-海风非常舒服<br />
-午饭吃了烤肉 好吃<style>.oskdeevgbkuu{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/676b8e6c617fccf938c937808240a45a.jpg" class="oskdeevgbkuu" alt="676b8e6c617fccf938c937808240a45a"></p>
-<h3 id="涯月邑"><a class="markdownIt-Anchor" href="#涯月邑"></a> 涯月邑</h3>
-<p>到上一站坐bus之后步行了半个小时到了涯月邑，沙滩没有挟才的好，但是周围有很多咖啡店可以出片<style>.ylytemrusfbl{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/15244c418395b661f8287bef1004c9ce.jpg" class="ylytemrusfbl" alt="15244c418395b661f8287bef1004c9ce"><style>.cdifdmbbodps{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/421aa2a1333321f0d244bce5576a206a.jpg" class="cdifdmbbodps" alt="421aa2a1333321f0d244bce5576a206a"><br />
-晚饭吃了steak，铸铁锅很有风味<style>.ylwbmpdhwnej{zoom: 25%;}</style><img src="/2026/04/08/jeju-tour/1d8bea52040dee13d77b80cd4f84e16b.jpg" class="ylwbmpdhwnej" alt="1d8bea52040dee13d77b80cd4f84e16b"><br />
-可惜晚上云多了 没看到落日</p>
-<h2 id="day2-wind1947-偶来市场-柱状节理带"><a class="markdownIt-Anchor" href="#day2-wind1947-偶来市场-柱状节理带"></a> day2: wind1947 &amp; 偶来市场 &amp; 柱状节理带</h2>
-<h3 id="1947"><a class="markdownIt-Anchor" href="#1947"></a> 1947</h3>
-<p>去的路上顺带看了济州大学的樱花<style>.jgwgforolyij{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/sakura.jpg" class="jgwgforolyij" alt="sakura"></p>
-<p>这次是有动力的柴油卡丁车了 全程踩着油门，加速的时候有推背感，弯道的横向加速度也很明显，爽的<br />
-就是车子有点震，而且头盔老是飞</p>
-<h3 id="偶来"><a class="markdownIt-Anchor" href="#偶来"></a> 偶来</h3>
-<p>一个集市，进去先买了一筐🍊，皮薄肉厚，好吃<br />
-然后又尝了烤肉寿司、烤包子、丑橘汁、橘子年糕，都挺好吃的<style>.mtftwcbenhdp{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/24d73d400c418e87cfb040192101444c.jpg" class="mtftwcbenhdp" alt="24d73d400c418e87cfb040192101444c"><style>.hlsyarfnutik{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/ec896faf7a8dcd07289c166abd0863bb.jpg" class="hlsyarfnutik" alt="ec896faf7a8dcd07289c166abd0863bb"></p>
-<h3 id="柱状节理带"><a class="markdownIt-Anchor" href="#柱状节理带"></a> 柱状节理带</h3>
-<p>火山岩浆冷却之后形成的六棱柱地貌<br />
-可惜天气不好，但是拍出来还是很震撼的<style>.ptxaqmgrqdpr{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/3eeaf91f6bc7510d0f72db1e1a7abbb6.jpg" class="ptxaqmgrqdpr" alt="3eeaf91f6bc7510d0f72db1e1a7abbb6"></p>
-<p>晚饭吃了酒店旁边一家烤肉 好吃<style>.mgyioqstkaup{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/014061a780fd52e19226348459912313.jpg" class="mgyioqstkaup" alt="014061a780fd52e19226348459912313"><br />
-回去的路上又整了炸鸡和年糕，非常juicy<style>.kciyqickmpej{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/23f18c67d62d45929f51465f98f47e03.jpg" class="kciyqickmpej" alt="23f18c67d62d45929f51465f98f47e03"></p>
-<h2 id="day3-日出峰牛岛"><a class="markdownIt-Anchor" href="#day3-日出峰牛岛"></a> day3 日出峰&amp;牛岛</h2>
-<h3 id="日出峰"><a class="markdownIt-Anchor" href="#日出峰"></a> 日出峰</h3>
-<p>海边的一座山峰，不是很高，爬了一二十分钟就能登顶，能俯瞰一部分的济州岛，眺望大海，景色不错<style>.bscqwiohngqy{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/flower.jpg" class="bscqwiohngqy" alt="flower"><style>.qdtnjomukssc{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/richufeng.jpg" class="qdtnjomukssc" alt="richufeng"></p>
-<h3 id="牛岛"><a class="markdownIt-Anchor" href="#牛岛"></a> 牛岛</h3>
-<p>从小路走，乘着邮轮到牛岛，一座非常惬意的小岛<br />
-租了电助力单车之后开始逆时针环岛，景色非常放松，也有很多可以拍照打卡的地方<style>.krfuxastojpo{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/piano.jpg" class="krfuxastojpo" alt="piano"></p>
-<p>午饭吃了一家peanut burger（好像在一家海鲜饭旁边），猪肉烤的很好，牛肉也很juicy<style>.rceiqcesdref{zoom: 25%;}</style><img src="/2026/04/08/jeju-tour/burger.jpg" class="rceiqcesdref" alt="burger"></p>
-<p>牛岛边上的小岛吃到的peanut ice cream，好吃<br />
-一个奶奶从头开始做的，花生碎很香，冰淇淋的口感很清爽，味道比较淡，和甜甜的花生碎很搭，不过如果冰淇淋味道能浓一点就更好了<style>.rdpsrpktrelk{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/peanut-icecream.jpg" class="rdpsrpktrelk" alt="peanut-icecream"></p>
-<p>路上王哥拍到了落日<style>.qolxcrmwjoyn{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/0cd96e03d686d3772ff7fc70b32e412c.jpg" class="qolxcrmwjoyn" alt="0cd96e03d686d3772ff7fc70b32e412c"></p>
-<p>晚饭搜刮到了一家土豆脊骨汤，民俗脊骨汤的分店，似乎去对了地方，遇到的食客都是韩国人，还遇到了一个热情的黑龙江的朝鲜族阿姨教我们吃饭hhh<style>.hvxizvswgfkv{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/d194a317c3dda4b06ad48963c480e728.jpg" class="hvxizvswgfkv" alt="d194a317c3dda4b06ad48963c480e728"></p>
-<h2 id="day4"><a class="markdownIt-Anchor" href="#day4"></a> day4</h2>
-<h3 id="snoopy-garden"><a class="markdownIt-Anchor" href="#snoopy-garden"></a> snoopy garden</h3>
-<p>很美的一个花园，造景非常细节，对应snoopy里一些场景和情节<br />
-还有好多狗狗友好的小路<style>.hsdjsqkrppro{zoom: 50%;}</style><img src="/2026/04/08/jeju-tour/1bceed035ea45c9c293aa9bf21f1fff7.jpg" class="hsdjsqkrppro" alt="1bceed035ea45c9c293aa9bf21f1fff7"></p>
-<p>可惜的是主题餐厅出餐要1h就没有吃，最后在门口吃了一个红豆馅饼，很香</p>
-<h3 id="月汀里stylensbedpthreqgzoom33style-swig21-"><a class="markdownIt-Anchor" href="#月汀里stylensbedpthreqgzoom33style-swig21-"></a> 月汀里<style>.nsbedpthreqg{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/4078ce22cd741a987580906c23e67bc9.jpg" class="nsbedpthreqg" alt="4078ce22cd741a987580906c23e67bc9"></h3>
-<p>午饭在月汀里一家专门做猪排的店，猪排很juicy可惜被馅饼填了肚子没吃完<style>.tmdohjihwgme{zoom: 25%;}</style><img src="/2026/04/08/jeju-tour/6983327a1fd86b85c2960f0a1e778e3d.jpg" class="tmdohjihwgme" alt="6983327a1fd86b85c2960f0a1e778e3d"><br />
-月汀里浴场的沙滩也很好，能下水的区域比挟才窄一点，但是也有咖啡馆</p>
-<p>最后走之前吃了炸鸡块 好吃</p>
-<h2 id="后记"><a class="markdownIt-Anchor" href="#后记"></a> 后记</h2>
-<p>感谢wsq王哥的领导和max林总的摄影！</p>
-]]></content>
-      <categories>
-        <category>游记</category>
-      </categories>
   </entry>
   <entry>
     <title>pytorch框架</title>
