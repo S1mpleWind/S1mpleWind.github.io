@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"s1mplewind.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.26.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="Ray 集群架构要想在多卡环境下进行训练，进行不同卡之间的通信和协同是必不可少的 这里将简单记录一下对Ray集群架构的学习 TODO:有空来补上 看来这个坑要很久之后才能填上了">
+    <meta name="description" content="Ray 集群架构 要想在多卡环境下进行训练，进行不同卡之间的通信和协同是必不可少的 这里将简单记录一下对Ray集群架构的学习 TODO:有空来补上 看来这个坑要很久之后才能填上了">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Ray">
 <meta property="og:url" content="http://s1mplewind.github.io/2026/03/13/Ray/index.html">
 <meta property="og:site_name" content="S1mpleWind&#39;s blog">
-<meta property="og:description" content="Ray 集群架构要想在多卡环境下进行训练，进行不同卡之间的通信和协同是必不可少的 这里将简单记录一下对Ray集群架构的学习 TODO:有空来补上 看来这个坑要很久之后才能填上了">
+<meta property="og:description" content="Ray 集群架构 要想在多卡环境下进行训练，进行不同卡之间的通信和协同是必不可少的 这里将简单记录一下对Ray集群架构的学习 TODO:有空来补上 看来这个坑要很久之后才能填上了">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2026-03-13T12:13:49.000Z">
 <meta property="article:modified_time" content="2026-03-17T14:00:59.904Z">
@@ -174,7 +174,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Ray-%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">Ray 集群架构</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ray-%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text"> Ray 集群架构</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -314,7 +314,8 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="Ray-集群架构"><a href="#Ray-集群架构" class="headerlink" title="Ray 集群架构"></a>Ray 集群架构</h1><p>要想在多卡环境下进行训练，进行不同卡之间的通信和协同是必不可少的</p>
+    <div class="post-body" itemprop="articleBody"><h1 id="ray-集群架构"><a class="markdownIt-Anchor" href="#ray-集群架构"></a> Ray 集群架构</h1>
+<p>要想在多卡环境下进行训练，进行不同卡之间的通信和协同是必不可少的</p>
 <p>这里将简单记录一下对<strong>Ray</strong>集群架构的学习</p>
 <p>TODO:有空来补上</p>
 <p>看来这个坑要很久之后才能填上了</p>
@@ -389,13 +390,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="Word count total">73k</span>
+    <span title="Word count total">82k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">2:13</span>
+    <span title="Reading time total">2:29</span>
   </span>
 </div>
 <div class="busuanzi-count">
