@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"s1mplewind.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.26.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="使用azure搭建服务器最近看到github education有能白嫖的azure额度，以及一年的免费域名，于是乎就整了一个服务器玩玩 0.准备阶段1）学生认证首先需要进行github education的申请github education，用自己的教育邮箱、学生证即可。因为要验证你的地区，所以申请的时候可以连上学校的vpn，这样亲测认证方便一点">
+    <meta name="description" content="使用azure搭建服务器 最近看到github education有能白嫖的azure额度，以及一年的免费域名，于是乎就整了一个服务器玩玩  0.准备阶段  1）学生认证 首先需要进行github education的申请github education，用自己的教育邮箱、学生证即可。因为要验证你的地区，所以申请的时候可以连上学校的vpn，这样亲测认证方便一点">
 <meta property="og:type" content="article">
 <meta property="og:title" content="azure-server">
 <meta property="og:url" content="http://s1mplewind.github.io/2026/02/08/azure-server/index.html">
 <meta property="og:site_name" content="S1mpleWind&#39;s blog">
-<meta property="og:description" content="使用azure搭建服务器最近看到github education有能白嫖的azure额度，以及一年的免费域名，于是乎就整了一个服务器玩玩 0.准备阶段1）学生认证首先需要进行github education的申请github education，用自己的教育邮箱、学生证即可。因为要验证你的地区，所以申请的时候可以连上学校的vpn，这样亲测认证方便一点">
+<meta property="og:description" content="使用azure搭建服务器 最近看到github education有能白嫖的azure额度，以及一年的免费域名，于是乎就整了一个服务器玩玩  0.准备阶段  1）学生认证 首先需要进行github education的申请github education，用自己的教育邮箱、学生证即可。因为要验证你的地区，所以申请的时候可以连上学校的vpn，这样亲测认证方便一点">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://s1mplewind.github.io/2026/02/08/azure-server/vm.png">
 <meta property="og:image" content="http://s1mplewind.github.io/2026/02/08/azure-server/namecheap.png">
@@ -178,7 +178,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8azure%E6%90%AD%E5%BB%BA%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text">使用azure搭建服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-%E5%87%86%E5%A4%87%E9%98%B6%E6%AE%B5"><span class="nav-number">1.1.</span> <span class="nav-text">0.准备阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%EF%BC%89%E5%AD%A6%E7%94%9F%E8%AE%A4%E8%AF%81"><span class="nav-number">1.1.1.</span> <span class="nav-text">1）学生认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%EF%BC%89azure"><span class="nav-number">1.1.2.</span> <span class="nav-text">2）azure</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%EF%BC%89%E5%9F%9F%E5%90%8D%EF%BC%88%E5%8F%AF%E9%80%89%EF%BC%89"><span class="nav-number">1.1.3.</span> <span class="nav-text">3）域名（可选）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%90%AD%E5%BB%BA%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.2.</span> <span class="nav-text">1. 搭建服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%9F%9F%E5%90%8D"><span class="nav-number">1.3.</span> <span class="nav-text">2.域名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%90%AD%E7%BD%91%E7%AB%99"><span class="nav-number">1.4.</span> <span class="nav-text">3.搭网站</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-vpn"><span class="nav-number">1.5.</span> <span class="nav-text">4. vpn</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8azure%E6%90%AD%E5%BB%BA%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text"> 使用azure搭建服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0%E5%87%86%E5%A4%87%E9%98%B6%E6%AE%B5"><span class="nav-number">1.1.</span> <span class="nav-text"> 0.准备阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E5%AD%A6%E7%94%9F%E8%AE%A4%E8%AF%81"><span class="nav-number">1.1.1.</span> <span class="nav-text"> 1）学生认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2azure"><span class="nav-number">1.1.2.</span> <span class="nav-text"> 2）azure</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E5%9F%9F%E5%90%8D%E5%8F%AF%E9%80%89"><span class="nav-number">1.1.3.</span> <span class="nav-text"> 3）域名（可选）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%90%AD%E5%BB%BA%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.2.</span> <span class="nav-text"> 1. 搭建服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E5%9F%9F%E5%90%8D"><span class="nav-number">1.3.</span> <span class="nav-text"> 2.域名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E6%90%AD%E7%BD%91%E7%AB%99"><span class="nav-number">1.4.</span> <span class="nav-text"> 3.搭网站</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-vpn"><span class="nav-number">1.5.</span> <span class="nav-text"> 4. vpn</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -322,36 +322,48 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="使用azure搭建服务器"><a href="#使用azure搭建服务器" class="headerlink" title="使用azure搭建服务器"></a>使用azure搭建服务器</h1><p>最近看到github education有能白嫖的azure额度，以及一年的免费域名，于是乎就整了一个服务器玩玩</p>
-<h2 id="0-准备阶段"><a href="#0-准备阶段" class="headerlink" title="0.准备阶段"></a>0.准备阶段</h2><h3 id="1）学生认证"><a href="#1）学生认证" class="headerlink" title="1）学生认证"></a>1）学生认证</h3><p>首先需要进行<code>github education</code>的申请<a target="_blank" rel="noopener" href="https://github.com/education">github education</a>，用自己的教育邮箱、学生证即可。因为要验证你的地区，所以申请的时候可以连上学校的vpn，这样亲测认证方便一点</p>
+    <div class="post-body" itemprop="articleBody"><h1 id="使用azure搭建服务器"><a class="markdownIt-Anchor" href="#使用azure搭建服务器"></a> 使用azure搭建服务器</h1>
+<p>最近看到github education有能白嫖的azure额度，以及一年的免费域名，于是乎就整了一个服务器玩玩</p>
+<h2 id="0准备阶段"><a class="markdownIt-Anchor" href="#0准备阶段"></a> 0.准备阶段</h2>
+<h3 id="1学生认证"><a class="markdownIt-Anchor" href="#1学生认证"></a> 1）学生认证</h3>
+<p>首先需要进行<code>github education</code>的申请<a target="_blank" rel="noopener" href="https://github.com/education">github education</a>，用自己的教育邮箱、学生证即可。因为要验证你的地区，所以申请的时候可以连上学校的vpn，这样亲测认证方便一点</p>
 <span id="more"></span>
-<h3 id="2）azure"><a href="#2）azure" class="headerlink" title="2）azure"></a>2）azure</h3><p>然后就是去登录azure账号，搜一下azure，登录账号的时候选择<strong>sign in with Github</strong>即可</p>
+<h3 id="2azure"><a class="markdownIt-Anchor" href="#2azure"></a> 2）azure</h3>
+<p>然后就是去登录azure账号，搜一下azure，登录账号的时候选择<strong>sign in with Github</strong>即可</p>
 <p>（如果直接用GitHub登录失败，可能是没识别绑定的邮箱，比如你github用的<strong>主邮箱</strong>不是教育邮箱，这个时候用主邮箱注册一个微软账户，然后再用GitHub登录azure就行了）</p>
-<h3 id="3）域名（可选）"><a href="#3）域名（可选）" class="headerlink" title="3）域名（可选）"></a>3）域名（可选）</h3><p>GitHub教育包提供了一年的免费域名，进入<a target="_blank" rel="noopener" href="https://education.github.com/pack#namecheap">student dev pack</a>，找到·namecheap·，就可以搜索一个你喜欢的域名，领取一年免费的使用权</p>
+<h3 id="3域名可选"><a class="markdownIt-Anchor" href="#3域名可选"></a> 3）域名（可选）</h3>
+<p>GitHub教育包提供了一年的免费域名，进入<a target="_blank" rel="noopener" href="https://education.github.com/pack#namecheap">student dev pack</a>，找到·namecheap·，就可以搜索一个你喜欢的域名，领取一年免费的使用权</p>
 <p>如果要在服务器上部署网页的话，</p>
-<hr>
-<h2 id="1-搭建服务器"><a href="#1-搭建服务器" class="headerlink" title="1. 搭建服务器"></a>1. 搭建服务器</h2><p>搭建服务器就是在azure里面创建一个虚拟机，然后就可以玩了</p>
-<p>这一步网上有很多教程，这里贴一个<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/629609870">知乎教程</a>，<del>可惜好像以后basic里不能免费给公网ip了</del></p>
+<hr />
+<h2 id="1-搭建服务器"><a class="markdownIt-Anchor" href="#1-搭建服务器"></a> 1. 搭建服务器</h2>
+<p>搭建服务器就是在azure里面创建一个虚拟机，然后就可以玩了</p>
+<p>这一步网上有很多教程，这里贴一个<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/629609870">知乎教程</a>，<s>可惜好像以后basic里不能免费给公网ip了</s></p>
 <ul>
-<li><p>如果在注册的时候有选择地区的话，最好开梯子并选一个<strong>海外的地区</strong>，因为海外地区每月的出站流量免费额度更多，好像是每月能多<strong>15+100G</strong>，不过我现在也没搞清楚。国内的话则是只有<strong>15G</strong></p>
+<li>
+<p>如果在注册的时候有选择地区的话，最好开梯子并选一个<strong>海外的地区</strong>，因为海外地区每月的出站流量免费额度更多，好像是每月能多<strong>15+100G</strong>，不过我现在也没搞清楚。国内的话则是只有<strong>15G</strong></p>
 </li>
-<li><p>注意教程里说的 选择<em>标准SKU</em>，<em>静态</em>ip。虽然会额外收费（每年要花掉 43.8 美元）但是也没有什么别的办法。而且静态ip确实方便一点</p>
+<li>
+<p>注意教程里说的 选择<em>标准SKU</em>，<em>静态</em>ip。虽然会额外收费（每年要花掉 43.8 美元）但是也没有什么别的办法。而且静态ip确实方便一点</p>
 </li>
 </ul>
-<p>以下是我的虚拟机<img src="vm.png" alt="vm"></p>
-<hr>
-<h2 id="2-域名"><a href="#2-域名" class="headerlink" title="2.域名"></a>2.域名</h2><p>如果要部署网站的话，可以把刚刚买到的域名绑定一下</p>
+<p>以下是我的虚拟机<img src="vm.png" alt="vm" /></p>
+<hr />
+<h2 id="2域名"><a class="markdownIt-Anchor" href="#2域名"></a> 2.域名</h2>
+<p>如果要部署网站的话，可以把刚刚买到的域名绑定一下</p>
 <p>注册完虚拟机之后，直接在我们的域名里加一个<code>A record</code>，并且填入我们的ip就行</p>
 <p>可以看到<strong>上图</strong>中有一个<code>DNS 名称</code>,这里刚创立的时候其实是没有的，你可以输一个自己喜欢的，然后azure会帮你用 <strong>Fully Qualified Domain Name (FQDN)</strong> 来绑到这个域名。</p>
 <p>这样之后就可以在我们刚刚“买”的域名中配置一个<code>CNAME</code>,如下图所示，添加一条记录即可</p>
-<p><img src="namecheap.png" alt="namecheap"></p>
-<hr>
-<h2 id="3-搭网站"><a href="#3-搭网站" class="headerlink" title="3.搭网站"></a>3.搭网站</h2><p>到这就可以在上面搭建你的网页了</p>
+<p><img src="namecheap.png" alt="namecheap" /></p>
+<hr />
+<h2 id="3搭网站"><a class="markdownIt-Anchor" href="#3搭网站"></a> 3.搭网站</h2>
+<p>到这就可以在上面搭建你的网页了</p>
 <p>但是我发现我有<code>github.io</code>了，不需要一个再部署静态网页的地方，这里就没有写网站</p>
 <p>所以最后把域名绑到<code>github.io</code>上了</p>
-<hr>
-<h2 id="4-vpn"><a href="#4-vpn" class="headerlink" title="4. vpn"></a>4. vpn</h2><p>本着不浪费的原则，打算当梯子用</p>
-<p>正在更新中<br>见<a href="https://s1mplewind.github.io/2026/02/15/azure-vpn/">博客</a></p>
+<hr />
+<h2 id="4-vpn"><a class="markdownIt-Anchor" href="#4-vpn"></a> 4. vpn</h2>
+<p>本着不浪费的原则，打算当梯子用</p>
+<p>正在更新中<br />
+见<a href="https://s1mplewind.github.io/2026/02/15/azure-vpn/">博客</a></p>
 
     </div>
 
@@ -424,13 +436,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="Word count total">77k</span>
+    <span title="Word count total">87k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">2:20</span>
+    <span title="Reading time total">2:37</span>
   </span>
 </div>
 <div class="busuanzi-count">

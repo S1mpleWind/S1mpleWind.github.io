@@ -297,7 +297,8 @@
 <ol>
 <li>hybrid attention：用了dsa和一个低秩投影之后的dense attn</li>
 </ol>
-<h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h2>
+<h2 id="todo"><a class="markdownIt-Anchor" href="#todo"></a> TODO</h2>
+
       
     </div>
 
@@ -374,14 +375,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">Word count in article: </span>
-      <span>2.9k</span>
+      <span>3.5k</span>
     </span>
     <span class="post-meta-item" title="Reading time">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>5 mins.</span>
+      <span>6 mins.</span>
     </span>
 </div>
 
@@ -392,8 +393,10 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="中位数以及k位数选取的算法"><a href="#中位数以及k位数选取的算法" class="headerlink" title="中位数以及k位数选取的算法"></a>中位数以及k位数选取的算法</h1><ul>
-<li>中位数<ul>
+          <h1 id="中位数以及k位数选取的算法"><a class="markdownIt-Anchor" href="#中位数以及k位数选取的算法"></a> 中位数以及k位数选取的算法</h1>
+<ul>
+<li>中位数
+<ul>
 <li>众数</li>
 <li>归并有序序列</li>
 </ul>
@@ -508,7 +511,8 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="Suede-Shanghai"><a href="#Suede-Shanghai" class="headerlink" title="Suede Shanghai"></a>Suede Shanghai</h1><p>看帅老头</p>
+          <h1 id="suede-shanghai"><a class="markdownIt-Anchor" href="#suede-shanghai"></a> Suede Shanghai</h1>
+<p>看帅老头</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/04/15/suede-sh/#more" rel="contents">
@@ -580,7 +584,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-04-21 18:07:24" itemprop="dateModified" datetime="2026-04-21T18:07:24+08:00">2026-04-21</time>
+      <time title="Modified: 2026-04-28 15:24:54" itemprop="dateModified" datetime="2026-04-28T15:24:54+08:00">2026-04-28</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -599,7 +603,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">Word count in article: </span>
-      <span>943</span>
+      <span>928</span>
     </span>
     <span class="post-meta-item" title="Reading time">
       <span class="post-meta-item-icon">
@@ -617,35 +621,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="SGLang-dsa"><a href="#SGLang-dsa" class="headerlink" title="SGLang dsa"></a>SGLang dsa</h1><h2 id="profile"><a href="#profile" class="headerlink" title="profile"></a>profile</h2><p>看看能不能找出这里sparse有没有什么明显的特征</p>
-<p>从longbench里找了一个长文本做了一次prefill，前 2048 token是直接使用的<code>standard mha</code>，也就是dense的attn</p>
-<p>这里画了几张 2048 - 8192 的heatmap（chunk prefill 的上限是8192，see in <code>srt/managers/scheduler.py</code>）</p>
-<p><img src="activation_heatmap.png" alt="activation_heatmap">可以看到这里的“横线”和”斜线“是非常明显的，说明其实attn显示出了很强的sink特征和relative特征，<code>lightning indexer</code>选择的kv倾向于选择：</p>
-<ol>
-<li><code>sink attn</code>：选取特定的绝对位置上的kv，维持全局性</li>
-<li><code>relative attn</code>：从当前query id向前看，每隔一些长度会选取一些kv</li>
-</ol>
-<p>随着窗口的长度增加还有在这样的特征：</p>
-<ol>
-<li>横线部分基本保持</li>
-<li>斜线部分渐渐弱化</li>
-</ol>
-<p>也就是随着窗口变大，relative attn 会给 sink attn 让位</p>
-<p><img src="relative_distance_heatmap (1" alt="relative_distance_heatmap (1)">.png)</p>
-<p>按照不同的 block size 进行切分之后，block内部选取indices的相同的比例</p>
-<p><img src="combined_similarity_analysis (1" alt="combined_similarity_analysis (1)">.png)</p>
-<p>block内部选取indices的交集和并集</p>
-<p><img src="heatmap_block_distribution_highres (4" alt="heatmap_block_distribution_highres (4)">.png)这张图似乎能印证上面的一些观察，交集似乎就是具备sink特征的，而交集中剔除并集的部分很可能就是relative特征的</p>
-<p>根据上面的比例信息，以及实际选取数量的表格(此处未列出)，交集和并集的数量和block所在的位置没有显著的关系，在远离dense之后都会趋于一个恒定的值</p>
-<p>如果说并集就是 sink 的话，那么就是随着seq的增长，前面的sink的宽度减少为了给靠后的token一个出现在attn里的机会，并且这个sink的数量是比较稳定的（在最后7-8k的时候出现了一点下降的趋势，可能在更长的时候会下降？）</p>
-<p><img src="attn_patterns_fixed_offset.png" alt="attn_patterns_fixed_offset"></p>
-<p><img src="absolute_attention_heatmap_sparse_cleaned.png" alt="absolute_attention_heatmap_sparse_cleaned"></p>
-<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a target="_blank" rel="noopener" href="https://www.lmsys.org/blog/2025-09-29-deepseek-V32/">SGLang blog</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/sgl-project/sglang/blob/main/docs/advanced_features/attention_backend.md">SGLang attn backend</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/sgl-project/sglang/issues/11060">https://github.com/sgl-project/sglang/issues/11060</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/sgl-project/sglang/blob/main/docs/basic_usage/deepseek_v32.md">https://github.com/sgl-project/sglang/blob/main/docs/basic_usage/deepseek_v32.md</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/deepseek-ai/FlashMLA">https://github.com/deepseek-ai/FlashMLA</a></p>
-
+          <h1 id="sglang-dsa"><a class="markdownIt-Anchor" href="#sglang-dsa"></a> SGLang dsa</h1>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/04/13/dsa-sglang/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -709,7 +693,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-04-13 16:31:39" itemprop="dateModified" datetime="2026-04-13T16:31:39+08:00">2026-04-13</time>
+      <time title="Modified: 2026-04-28 14:57:00" itemprop="dateModified" datetime="2026-04-28T14:57:00+08:00">2026-04-28</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -728,14 +712,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">Word count in article: </span>
-      <span>9k</span>
+      <span>11k</span>
     </span>
     <span class="post-meta-item" title="Reading time">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>16 mins.</span>
+      <span>20 mins.</span>
     </span>
 </div>
 
@@ -746,7 +730,8 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="DSA-Deepseek-sparse-attention"><a href="#DSA-Deepseek-sparse-attention" class="headerlink" title="DSA (Deepseek sparse attention)"></a>DSA (Deepseek sparse attention)</h1><p>最近在看 DSA 的内容，看看能不能优化一下写个算子啥的（虽然目前CUDA只会最简单的语法，先看算法）</p>
+          <h1 id="dsa-deepseek-sparse-attention"><a class="markdownIt-Anchor" href="#dsa-deepseek-sparse-attention"></a> DSA (Deepseek sparse attention)</h1>
+<p>最近在看 DSA 的内容，看看能不能优化一下写个算子啥的（虽然目前CUDA只会最简单的语法，先看算法）</p>
 <p>由于涉及到的内容比较多，所以系统的梳理一下相关的笔记，主要包括：</p>
 <ul>
 <li><a href="#1.kv-and-kvcache">KV and KVcache</a></li>
@@ -862,7 +847,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="Jeju-tour"><a href="#Jeju-tour" class="headerlink" title="Jeju-tour"></a>Jeju-tour</h1>
+          <h1 id="jeju-tour"><a class="markdownIt-Anchor" href="#jeju-tour"></a> Jeju-tour</h1>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/04/08/jeju-tour/#more" rel="contents">
@@ -965,7 +950,8 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="WEB-Dev-Basic"><a href="#WEB-Dev-Basic" class="headerlink" title="WEB Dev Basic"></a>WEB Dev Basic</h1><p>记录一下学习互联网应用开发的一些笔记，这里主要是一些比较大的概念</p>
+          <h1 id="web-dev-basic"><a class="markdownIt-Anchor" href="#web-dev-basic"></a> WEB Dev Basic</h1>
+<p>记录一下学习互联网应用开发的一些笔记，这里主要是一些比较大的概念</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/04/01/web-dev/#more" rel="contents">
@@ -1161,7 +1147,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">Word count in article: </span>
-      <span>605</span>
+      <span>768</span>
     </span>
     <span class="post-meta-item" title="Reading time">
       <span class="post-meta-item-icon">
@@ -1179,11 +1165,14 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="有关PD-DT分离的一些想法"><a href="#有关PD-DT分离的一些想法" class="headerlink" title="有关PD/DT分离的一些想法"></a>有关PD/DT分离的一些想法</h1><p>最近实验室让看了有关这方面的论文，包括但不限kimi的<a href="[zhenghuawei923/Mooncake-kimi-ai: Mooncake is the serving platform for Kimi, a leading LLM service provided by Moonshot AI. kimiAI大模型](https://github.com/zhenghuawei923/Mooncake-kimi-ai">mooncake</a>)，以及tri-dao最新的<a href="[Speculative Speculative Decoding | OpenReview](https://openreview.net/forum?id=aL1Wnml9Ef">SSD</a>)</p>
-<h2 id="Mooncake"><a href="#Mooncake" class="headerlink" title="Mooncake"></a>Mooncake</h2><p>PD 分离的工程实现</p>
-<h2 id="SSD"><a href="#SSD" class="headerlink" title="SSD"></a>SSD</h2><p>在一个“节点”内部实现的一种简单的DT分离</p>
-<h2 id="一些想法"><a href="#一些想法" class="headerlink" title="一些想法"></a>一些想法</h2><p>如果要从现有的 PD 分离的方法中借鉴，那就要弄清现在两种方法的相似和不同</p>
-<div class="table-container">
+          <h1 id="有关pddt分离的一些想法"><a class="markdownIt-Anchor" href="#有关pddt分离的一些想法"></a> 有关PD/DT分离的一些想法</h1>
+<p>最近实验室让看了有关这方面的论文，包括但不限kimi的[mooncake](<a target="_blank" rel="noopener" href="https://github.com/zhenghuawei923/Mooncake-kimi-ai">zhenghuawei923/Mooncake-kimi-ai: Mooncake is the serving platform for Kimi, a leading LLM service provided by Moonshot AI. kimiAI大模型</a>)，以及tri-dao最新的[SSD](<a target="_blank" rel="noopener" href="https://openreview.net/forum?id=aL1Wnml9Ef">Speculative Speculative Decoding | OpenReview</a>)</p>
+<h2 id="mooncake"><a class="markdownIt-Anchor" href="#mooncake"></a> Mooncake</h2>
+<p>PD 分离的工程实现</p>
+<h2 id="ssd"><a class="markdownIt-Anchor" href="#ssd"></a> SSD</h2>
+<p>在一个“节点”内部实现的一种简单的DT分离</p>
+<h2 id="一些想法"><a class="markdownIt-Anchor" href="#一些想法"></a> 一些想法</h2>
+<p>如果要从现有的 PD 分离的方法中借鉴，那就要弄清现在两种方法的相似和不同</p>
 <table>
 <thead>
 <tr>
@@ -1216,10 +1205,10 @@
 <tr>
 <td></td>
 <td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
-</div>
 
       
     </div>
@@ -1303,14 +1292,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">Word count in article: </span>
-      <span>1.6k</span>
+      <span>2.1k</span>
     </span>
     <span class="post-meta-item" title="Reading time">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>3 mins.</span>
+      <span>4 mins.</span>
     </span>
 </div>
 
@@ -1321,7 +1310,8 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="PEARL-论文阅读"><a href="#PEARL-论文阅读" class="headerlink" title="PEARL 论文阅读"></a>PEARL 论文阅读</h1><p>之前读 <code>EAGLE</code> 的时候就看到这位老哥在底下附上这篇 paper，最近要看 PD 分离有关的文字，正好看看这篇，记录一下</p>
+          <h1 id="pearl-论文阅读"><a class="markdownIt-Anchor" href="#pearl-论文阅读"></a> PEARL 论文阅读</h1>
+<p>之前读 <code>EAGLE</code> 的时候就看到这位老哥在底下附上这篇 paper，最近要看 PD 分离有关的文字，正好看看这篇，记录一下</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/03/17/PEARL/#more" rel="contents">
@@ -1370,13 +1360,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="Word count total">77k</span>
+    <span title="Word count total">87k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">2:20</span>
+    <span title="Reading time total">2:37</span>
   </span>
 </div>
 <div class="busuanzi-count">
