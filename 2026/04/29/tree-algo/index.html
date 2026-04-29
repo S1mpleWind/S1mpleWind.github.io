@@ -22,24 +22,29 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"s1mplewind.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.26.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="If you don&#39;t play, you won&#39;t learn. Do a big SMILE to today!">
-<meta property="og:type" content="website">
-<meta property="og:title" content="S1mpleWind&#39;s blog">
-<meta property="og:url" content="http://s1mplewind.github.io/index.html">
+    <meta name="description" content="常见树结构详解：从二叉树到 B+ 树  本文系统梳理九种常见树结构的定义、核心算法与复杂度分析，覆盖二叉系列与多叉系列    目录 二叉系列  二叉树 Binary Tree 二叉搜索树 BST [AVL 树（二叉平衡树）](#3 -AVL树（二叉平衡树）) 红黑树 Red-Black Tree Splay 树 KD 树  多叉系列  B 树 B+ 树 Trie 树（字典树）  总结  横向对比">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tree-algo">
+<meta property="og:url" content="http://s1mplewind.github.io/2026/04/29/tree-algo/index.html">
 <meta property="og:site_name" content="S1mpleWind&#39;s blog">
-<meta property="og:description" content="If you don&#39;t play, you won&#39;t learn. Do a big SMILE to today!">
+<meta property="og:description" content="常见树结构详解：从二叉树到 B+ 树  本文系统梳理九种常见树结构的定义、核心算法与复杂度分析，覆盖二叉系列与多叉系列    目录 二叉系列  二叉树 Binary Tree 二叉搜索树 BST [AVL 树（二叉平衡树）](#3 -AVL树（二叉平衡树）) 红黑树 Red-Black Tree Splay 树 KD 树  多叉系列  B 树 B+ 树 Trie 树（字典树）  总结  横向对比">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/04/29/tree-algo/merge-node.png">
+<meta property="article:published_time" content="2026-04-29T08:23:53.000Z">
+<meta property="article:modified_time" content="2026-04-29T08:52:49.822Z">
 <meta property="article:author" content="S1mpleWind">
+<meta property="article:tag" content="“Data Structure&quot;">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://s1mplewind.github.io/2026/04/29/tree-algo/merge-node.png">
 
 
-<link rel="canonical" href="http://s1mplewind.github.io/">
+<link rel="canonical" href="http://s1mplewind.github.io/2026/04/29/tree-algo/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"en","comments":"","permalink":"","path":"index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://s1mplewind.github.io/2026/04/29/tree-algo/","path":"2026/04/29/tree-algo/","title":"tree-algo"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>S1mpleWind's blog</title>
+<title>tree-algo | S1mpleWind's blog</title>
   
 
 
@@ -104,7 +109,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">S1mpleWind's blog</h1>
+      <p class="site-title">S1mpleWind's blog</p>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">简约风的博客</p>
@@ -158,7 +163,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           Table of Contents
@@ -171,6 +176,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E6%A0%91%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3%E4%BB%8E%E4%BA%8C%E5%8F%89%E6%A0%91%E5%88%B0-b-%E6%A0%91"><span class="nav-number">1.</span> <span class="nav-text"> 常见树结构详解：从二叉树到 B+ 树</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95"><span class="nav-number">1.1.</span> <span class="nav-text"> 目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%BA%8C%E5%8F%89%E6%A0%91-binary-tree"><span class="nav-number">1.2.</span> <span class="nav-text"> 1. 二叉树 Binary Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">1.2.1.</span> <span class="nav-text"> 定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%80%A7%E8%B4%A8"><span class="nav-number">1.2.2.</span> <span class="nav-text"> 核心性质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%81%8D%E5%8E%86%E7%AE%97%E6%B3%95"><span class="nav-number">1.2.3.</span> <span class="nav-text"> 遍历算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%B0%8F%E7%BB%93"><span class="nav-number">1.2.4.</span> <span class="nav-text"> 复杂度小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91-bst"><span class="nav-number">1.3.</span> <span class="nav-text"> 2. 二叉搜索树 BST</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-2"><span class="nav-number">1.3.1.</span> <span class="nav-text"> 定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%93%8D%E4%BD%9C"><span class="nav-number">1.3.2.</span> <span class="nav-text"> 核心操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90"><span class="nav-number">1.3.3.</span> <span class="nav-text"> 复杂度分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-avl-%E6%A0%91%E4%BA%8C%E5%8F%89%E5%B9%B3%E8%A1%A1%E6%A0%91"><span class="nav-number">1.4.</span> <span class="nav-text"> 3. AVL 树（二叉平衡树）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-3"><span class="nav-number">1.4.1.</span> <span class="nav-text"> 定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC%E6%93%8D%E4%BD%9C"><span class="nav-number">1.4.2.</span> <span class="nav-text"> 旋转操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90-2"><span class="nav-number">1.4.3.</span> <span class="nav-text"> 复杂度分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E7%BA%A2%E9%BB%91%E6%A0%91-red-black-tree"><span class="nav-number">1.5.</span> <span class="nav-text"> 4. 红黑树 Red-Black Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E4%B8%8E%E4%BA%94%E6%9D%A1%E6%80%A7%E8%B4%A8"><span class="nav-number">1.5.1.</span> <span class="nav-text"> 定义与五条性质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E7%BA%A2%E9%BB%91%E6%A0%91%E9%AB%98%E5%BA%A6%E6%9C%89%E7%95%8C"><span class="nav-number">1.5.2.</span> <span class="nav-text"> 为什么红黑树高度有界？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%93%8D%E4%BD%9C"><span class="nav-number">1.5.3.</span> <span class="nav-text"> 插入操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90-3"><span class="nav-number">1.5.4.</span> <span class="nav-text"> 复杂度分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8E-avl-%E6%A0%91%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="nav-number">1.5.5.</span> <span class="nav-text"> 与 AVL 树的对比</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-splay-%E6%A0%91"><span class="nav-number">1.6.</span> <span class="nav-text"> 5. Splay 树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-4"><span class="nav-number">1.6.1.</span> <span class="nav-text"> 定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#splay-%E6%93%8D%E4%BD%9C%E7%9A%84%E4%B8%89%E7%A7%8D%E6%83%85%E5%86%B5"><span class="nav-number">1.6.2.</span> <span class="nav-text"> Splay 操作的三种情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9D%87%E6%91%8A%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90%E5%8A%BF%E8%83%BD%E6%B3%95"><span class="nav-number">1.6.3.</span> <span class="nav-text"> 均摊复杂度分析（势能法）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE%E5%B1%80%E9%83%A8%E6%80%A7%E4%BC%98%E5%8A%BF"><span class="nav-number">1.6.4.</span> <span class="nav-text"> 访问局部性优势</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%B0%8F%E7%BB%93-2"><span class="nav-number">1.6.5.</span> <span class="nav-text"> 复杂度小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-kd-%E6%A0%91"><span class="nav-number">1.7.</span> <span class="nav-text"> 6. KD 树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-5"><span class="nav-number">1.7.1.</span> <span class="nav-text"> 定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E7%AE%97%E6%B3%95"><span class="nav-number">1.7.2.</span> <span class="nav-text"> 构建算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E8%BF%91%E9%82%BB%E6%90%9C%E7%B4%A2"><span class="nav-number">1.7.3.</span> <span class="nav-text"> 最近邻搜索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90-4"><span class="nav-number">1.7.4.</span> <span class="nav-text"> 复杂度分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%B4%E5%BA%A6%E8%AF%85%E5%92%92curse-of-dimensionality"><span class="nav-number">1.7.5.</span> <span class="nav-text"> 维度诅咒（Curse of Dimensionality）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-b-%E6%A0%91"><span class="nav-number">1.8.</span> <span class="nav-text"> 7. B 树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF%E4%B8%8E%E5%8A%A8%E6%9C%BA"><span class="nav-number">1.8.1.</span> <span class="nav-text"> 背景与动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89m-%E9%98%B6-b-%E6%A0%91"><span class="nav-number">1.8.2.</span> <span class="nav-text"> 定义（mmm 阶 B 树）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AB%98%E5%BA%A6%E5%88%86%E6%9E%90"><span class="nav-number">1.8.3.</span> <span class="nav-text"> 高度分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E4%B8%8E%E5%88%86%E8%A3%82"><span class="nav-number">1.8.4.</span> <span class="nav-text"> 插入与分裂</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90-5"><span class="nav-number">1.8.5.</span> <span class="nav-text"> 复杂度分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-b-%E6%A0%91"><span class="nav-number">1.9.</span> <span class="nav-text"> 8. B+ 树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8E-b-%E6%A0%91%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8C%BA%E5%88%AB"><span class="nav-number">1.9.1.</span> <span class="nav-text"> 与 B 树的核心区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9B%B4%E5%81%8F%E7%88%B1-b-%E6%A0%91"><span class="nav-number">1.9.2.</span> <span class="nav-text"> 为什么数据库更偏爱 B+ 树？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90-6"><span class="nav-number">1.9.3.</span> <span class="nav-text"> 复杂度分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E6%93%8D%E4%BD%9C%E4%B8%8B%E6%BA%A2%E5%A4%84%E7%90%86"><span class="nav-number">1.9.4.</span> <span class="nav-text"> 删除操作（下溢处理）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-trie-%E6%A0%91%E5%AD%97%E5%85%B8%E6%A0%91"><span class="nav-number">1.10.</span> <span class="nav-text"> 9. Trie 树（字典树）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-6"><span class="nav-number">1.10.1.</span> <span class="nav-text"> 定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E7%BB%93%E6%9E%84"><span class="nav-number">1.10.2.</span> <span class="nav-text"> 节点结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%93%8D%E4%BD%9C-2"><span class="nav-number">1.10.3.</span> <span class="nav-text"> 核心操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90-7"><span class="nav-number">1.10.4.</span> <span class="nav-text"> 复杂度分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A9%BA%E9%97%B4%E4%BC%98%E5%8C%96%E5%8F%98%E4%BD%93"><span class="nav-number">1.10.5.</span> <span class="nav-text"> 空间优化变体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E5%BA%94%E7%94%A8"><span class="nav-number">1.10.6.</span> <span class="nav-text"> 典型应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-%E6%A8%AA%E5%90%91%E5%AF%B9%E6%AF%94%E4%B8%8E%E9%80%89%E5%9E%8B%E5%BB%BA%E8%AE%AE"><span class="nav-number">1.11.</span> <span class="nav-text"> 10. 横向对比与选型建议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%85%A8%E6%99%AF"><span class="nav-number">1.11.1.</span> <span class="nav-text"> 复杂度全景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E5%9E%8B%E5%BB%BA%E8%AE%AE"><span class="nav-number">1.11.2.</span> <span class="nav-text"> 选型建议</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.12.</span> <span class="nav-text"> 参考资料</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -222,121 +228,17 @@ Do a big SMILE to today!
 
     </div>
 
-    <div class="main-inner index posts-expand">
+    <div class="main-inner post posts-expand">
 
-    
+
+  
 
 
 <div class="post-block">
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/04/29/high-energy/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="S1mpleWind">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="S1mpleWind's blog">
-      <meta itemprop="description" content="If you don't play, you won't learn.
-Do a big SMILE to today!
-">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | S1mpleWind's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/04/29/high-energy/" class="post-title-link" itemprop="url">high-energy</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-      
-
-      <time title="Created: 2026-04-29 22:32:24 / Modified: 22:34:49" itemprop="dateCreated datePublished" datetime="2026-04-29T22:32:24+08:00">2026-04-29</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%9D%82%E8%B0%88/" itemprop="url" rel="index"><span itemprop="name">杂谈</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="Word count in article">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">Word count in article: </span>
-      <span>4.8k</span>
-    </span>
-    <span class="post-meta-item" title="Reading time">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>9 mins.</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="杂谈一篇与llm共处的精力困境"><a class="markdownIt-Anchor" href="#杂谈一篇与llm共处的精力困境"></a> 杂谈一篇——与LLM共处的精力困境</h1>
-<p>终于算是把最近的任务都基本上完结了，打算在接下来的几天和五一假期看一些感兴趣的东西，先了结一下这篇文章</p>
-<p>想了想还是把这篇文章发出来，反正以后回看的时候肯定每一篇都觉得childish（）</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2026/04/29/high-energy/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
     <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/04/29/tree-algo/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -352,13 +254,13 @@ Do a big SMILE to today!
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | S1mpleWind's blog">
+      <meta itemprop="name" content="tree-algo | S1mpleWind's blog">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/04/29/tree-algo/" class="post-title-link" itemprop="url">tree-algo</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          tree-algo
+        </h1>
 
         <div class="post-meta-container">
           <div class="post-meta">
@@ -382,6 +284,13 @@ Do a big SMILE to today!
     </span>
 
   
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
     <span class="post-meta-break"></span>
     <span class="post-meta-item" title="Word count in article">
       <span class="post-meta-item-icon">
@@ -405,8 +314,7 @@ Do a big SMILE to today!
     
     
     
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="常见树结构详解从二叉树到-b-树"><a class="markdownIt-Anchor" href="#常见树结构详解从二叉树到-b-树"></a> 常见树结构详解：从二叉树到 B+ 树</h1>
+    <div class="post-body" itemprop="articleBody"><h1 id="常见树结构详解从二叉树到-b-树"><a class="markdownIt-Anchor" href="#常见树结构详解从二叉树到-b-树"></a> 常见树结构详解：从二叉树到 B+ 树</h1>
 <blockquote>
 <p>本文系统梳理九种常见树结构的定义、核心算法与复杂度分析，覆盖二叉系列与多叉系列</p>
 </blockquote>
@@ -1135,7 +1043,6 @@ Splay 树单次操作最坏 <span class="katex"><span class="katex-mathml"><math
 <li>Fredkin, E. (1960). <em>Trie Memory</em>. CACM.</li>
 </ul>
 
-      
     </div>
 
     
@@ -1143,431 +1050,41 @@ Splay 树单次操作最坏 <span class="katex"><span class="katex-mathml"><math
     
 
     <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
+          <div class="followme">
+  <span>Welcome to my other publishing channels</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/S1mpleWind">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">Github</span>
+          </a>
+      </div>
+  </div>
 </div>
 
+          <div class="post-tags">
+              <a href="/tags/%E2%80%9CData-Structure/" rel="tag"># “Data Structure"</a>
+          </div>
 
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/04/25/deepseek-v4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="S1mpleWind">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="S1mpleWind's blog">
-      <meta itemprop="description" content="If you don't play, you won't learn.
-Do a big SMILE to today!
-">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | S1mpleWind's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/04/25/deepseek-v4/" class="post-title-link" itemprop="url">deepseek-v4</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-      
-
-      <time title="Created: 2026-04-25 17:02:17 / Modified: 17:05:58" itemprop="dateCreated datePublished" datetime="2026-04-25T17:02:17+08:00">2026-04-25</time>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="Word count in article">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">Word count in article: </span>
-      <span>81</span>
-    </span>
-    <span class="post-meta-item" title="Reading time">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>1 mins.</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>最近太忙了 有空再来补上ds-v4的技术博客</p>
-<p>目前看他们的技术报告的话主要就是</p>
-<ol>
-<li>hybrid attention：用了dsa和一个低秩投影之后的dense attn</li>
-</ol>
-<h2 id="todo"><a class="markdownIt-Anchor" href="#todo"></a> TODO</h2>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/04/21/median-algo/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="S1mpleWind">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="S1mpleWind's blog">
-      <meta itemprop="description" content="If you don't play, you won't learn.
-Do a big SMILE to today!
-">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | S1mpleWind's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/04/21/median-algo/" class="post-title-link" itemprop="url">median-algorithm</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-      
-
-      <time title="Created: 2026-04-21 10:23:14 / Modified: 11:40:43" itemprop="dateCreated datePublished" datetime="2026-04-21T10:23:14+08:00">2026-04-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E7%AE%97%E6%B3%95-Algorithm/" itemprop="url" rel="index"><span itemprop="name">算法/Algorithm</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="Word count in article">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">Word count in article: </span>
-      <span>3.5k</span>
-    </span>
-    <span class="post-meta-item" title="Reading time">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>6 mins.</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="中位数以及k位数选取的算法"><a class="markdownIt-Anchor" href="#中位数以及k位数选取的算法"></a> 中位数以及k位数选取的算法</h1>
-<ul>
-<li>中位数
-<ul>
-<li>众数</li>
-<li>归并有序序列</li>
-</ul>
-</li>
-<li>k位数</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2026/04/21/median-algo/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
-    </div>
 
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/04/15/suede-sh/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="S1mpleWind">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="S1mpleWind's blog">
-      <meta itemprop="description" content="If you don't play, you won't learn.
-Do a big SMILE to today!
-">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | S1mpleWind's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/04/15/suede-sh/" class="post-title-link" itemprop="url">suede-sh</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2026-04-15 13:27:42" itemprop="dateCreated datePublished" datetime="2026-04-15T13:27:42+08:00">2026-04-15</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-04-20 22:35:27" itemprop="dateModified" datetime="2026-04-20T22:35:27+08:00">2026-04-20</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/entertainment/" itemprop="url" rel="index"><span itemprop="name">entertainment</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="Word count in article">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">Word count in article: </span>
-      <span>17</span>
-    </span>
-    <span class="post-meta-item" title="Reading time">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>1 mins.</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="suede-shanghai"><a class="markdownIt-Anchor" href="#suede-shanghai"></a> Suede Shanghai</h1>
-<p>看帅老头</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2026/04/15/suede-sh/#more" rel="contents">
-                Read more &raquo;
-              </a>
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/04/29/high-energy/" rel="prev" title="high-energy">
+                  <i class="fa fa-angle-left"></i> high-energy
+                </a>
             </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/04/13/dsa-sglang/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="S1mpleWind">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="S1mpleWind's blog">
-      <meta itemprop="description" content="If you don't play, you won't learn.
-Do a big SMILE to today!
-">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | S1mpleWind's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/04/13/dsa-sglang/" class="post-title-link" itemprop="url">SGLang中DSA的实现以及相关分析</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2026-04-13 16:25:52" itemprop="dateCreated datePublished" datetime="2026-04-13T16:25:52+08:00">2026-04-13</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-04-28 15:24:54" itemprop="dateModified" datetime="2026-04-28T15:24:54+08:00">2026-04-28</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/llm-sys/" itemprop="url" rel="index"><span itemprop="name">llm-sys</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="Word count in article">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">Word count in article: </span>
-      <span>928</span>
-    </span>
-    <span class="post-meta-item" title="Reading time">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>2 mins.</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="sglang-dsa"><a class="markdownIt-Anchor" href="#sglang-dsa"></a> SGLang dsa</h1>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2026/04/13/dsa-sglang/#more" rel="contents">
-                Read more &raquo;
-              </a>
+            <div class="post-nav-item">
+                <a href="/2026/04/25/deepseek-v4/" rel="next" title="deepseek-v4">
+                  deepseek-v4 <i class="fa fa-angle-right"></i>
+                </a>
             </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
+          </div>
     </footer>
   </article>
 </div>
@@ -1575,450 +1092,7 @@ Do a big SMILE to today!
 
 
 
-    
 
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/04/09/DSA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="S1mpleWind">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="S1mpleWind's blog">
-      <meta itemprop="description" content="If you don't play, you won't learn.
-Do a big SMILE to today!
-">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | S1mpleWind's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/04/09/DSA/" class="post-title-link" itemprop="url">DSA</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2026-04-09 20:26:21" itemprop="dateCreated datePublished" datetime="2026-04-09T20:26:21+08:00">2026-04-09</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-04-28 14:57:00" itemprop="dateModified" datetime="2026-04-28T14:57:00+08:00">2026-04-28</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/llm-sys/" itemprop="url" rel="index"><span itemprop="name">llm-sys</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="Word count in article">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">Word count in article: </span>
-      <span>11k</span>
-    </span>
-    <span class="post-meta-item" title="Reading time">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>20 mins.</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="dsa-deepseek-sparse-attention"><a class="markdownIt-Anchor" href="#dsa-deepseek-sparse-attention"></a> DSA (Deepseek sparse attention)</h1>
-<p>最近在看 DSA 的内容，看看能不能优化一下写个算子啥的（虽然目前CUDA只会最简单的语法，先看算法）</p>
-<p>由于涉及到的内容比较多，所以系统的梳理一下相关的笔记，主要包括：</p>
-<ul>
-<li><a href="#1.kv-and-kvcache">KV and KVcache</a></li>
-<li><a href="#2.MLA">MLA(multi-head latent attention)</a></li>
-<li><a href="#3.DSA">DSA</a></li>
-<li><a href="#4.NSA">NSA</a></li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2026/04/09/DSA/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/04/08/jeju-tour/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="S1mpleWind">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="S1mpleWind's blog">
-      <meta itemprop="description" content="If you don't play, you won't learn.
-Do a big SMILE to today!
-">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | S1mpleWind's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/04/08/jeju-tour/" class="post-title-link" itemprop="url">jeju-tour</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2026-04-08 23:59:02" itemprop="dateCreated datePublished" datetime="2026-04-08T23:59:02+08:00">2026-04-08</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-04-09 09:41:49" itemprop="dateModified" datetime="2026-04-09T09:41:49+08:00">2026-04-09</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%B8%B8%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">游记</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="Word count in article">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">Word count in article: </span>
-      <span>1.6k</span>
-    </span>
-    <span class="post-meta-item" title="Reading time">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>3 mins.</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="jeju-tour"><a class="markdownIt-Anchor" href="#jeju-tour"></a> Jeju-tour</h1>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2026/04/08/jeju-tour/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/04/01/web-dev/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="S1mpleWind">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="S1mpleWind's blog">
-      <meta itemprop="description" content="If you don't play, you won't learn.
-Do a big SMILE to today!
-">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | S1mpleWind's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/04/01/web-dev/" class="post-title-link" itemprop="url">web_dev basics / front end</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-      
-
-      <time title="Created: 2026-04-01 16:49:07 / Modified: 19:56:19" itemprop="dateCreated datePublished" datetime="2026-04-01T16:49:07+08:00">2026-04-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/web/" itemprop="url" rel="index"><span itemprop="name">web</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="Word count in article">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">Word count in article: </span>
-      <span>1.5k</span>
-    </span>
-    <span class="post-meta-item" title="Reading time">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>3 mins.</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="web-dev-basic"><a class="markdownIt-Anchor" href="#web-dev-basic"></a> WEB Dev Basic</h1>
-<p>记录一下学习互联网应用开发的一些笔记，这里主要是一些比较大的概念</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2026/04/01/web-dev/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/03/23/diffusion-llm/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="S1mpleWind">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="S1mpleWind's blog">
-      <meta itemprop="description" content="If you don't play, you won't learn.
-Do a big SMILE to today!
-">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | S1mpleWind's blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/03/23/diffusion-llm/" class="post-title-link" itemprop="url">复刻的”镜像“与可能的“智能“</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2026-03-23 21:02:32" itemprop="dateCreated datePublished" datetime="2026-03-23T21:02:32+08:00">2026-03-23</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-04-09 18:49:38" itemprop="dateModified" datetime="2026-04-09T18:49:38+08:00">2026-04-09</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%9D%82%E8%B0%88/" itemprop="url" rel="index"><span itemprop="name">杂谈</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="Word count in article">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">Word count in article: </span>
-      <span>3.8k</span>
-    </span>
-    <span class="post-meta-item" title="Reading time">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>7 mins.</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>本篇blog本来只是一篇技术学习，但是在记录的时候迸发了一些灵感遂走向了不同的方向，由于直接记录了当时的思考历程而不是一个整体的写作，前后出现了一些观点的改变，涉及的技术细节也被简化，所以类别也被从<em>llm-algorithm</em>划分到了<em>杂谈</em></p>
-<p>思考的历程以<em>题外话</em>章节为主</p>
-<p>原标题 dLLM：AR  or Diffusion ?</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2026/03/23/diffusion-llm/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/2/"><i class="fa fa-angle-right"></i></a>
-  </nav>
 
 </div>
   </main>
