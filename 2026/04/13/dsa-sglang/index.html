@@ -180,7 +180,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#sglang-dsa"><span class="nav-number">1.</span> <span class="nav-text"> SGLang dsa</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#profile"><span class="nav-number">1.1.</span> <span class="nav-text"> profile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-number">1.2.</span> <span class="nav-text"> Reference</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SGLang-dsa"><span class="nav-number">1.</span> <span class="nav-text">SGLang dsa</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#profile"><span class="nav-number">1.1.</span> <span class="nav-text">profile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">1.2.</span> <span class="nav-text">Reference</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -324,13 +324,11 @@ Do a big SMILE to today!
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="sglang-dsa"><a class="markdownIt-Anchor" href="#sglang-dsa"></a> SGLang dsa</h1>
-<span id="more"></span>
-<h2 id="profile"><a class="markdownIt-Anchor" href="#profile"></a> profile</h2>
-<p>看看能不能找出这里sparse有没有什么明显的特征</p>
+    <div class="post-body" itemprop="articleBody"><h1 id="SGLang-dsa"><a href="#SGLang-dsa" class="headerlink" title="SGLang dsa"></a>SGLang dsa</h1><span id="more"></span>
+<h2 id="profile"><a href="#profile" class="headerlink" title="profile"></a>profile</h2><p>看看能不能找出这里sparse有没有什么明显的特征</p>
 <p>从longbench里找了一个长文本做了一次prefill，前 2048 token是直接使用的<code>standard mha</code>，也就是dense的attn</p>
 <p>这里画了几张 2048 - 8192 的heatmap（chunk prefill 的上限是8192，see in <code>srt/managers/scheduler.py</code>）</p>
-<p><img src="activation_heatmap.png" alt="activation_heatmap" />可以看到这里的“横线”和”斜线“是非常明显的，说明其实attn显示出了很强的sink特征和relative特征，<code>lightning indexer</code>选择的kv倾向于选择：</p>
+<p><img src="activation_heatmap.png" alt="activation_heatmap">可以看到这里的“横线”和”斜线“是非常明显的，说明其实attn显示出了很强的sink特征和relative特征，<code>lightning indexer</code>选择的kv倾向于选择：</p>
 <ol>
 <li><code>sink attn</code>：选取特定的绝对位置上的kv，维持全局性</li>
 <li><code>relative attn</code>：从当前query id向前看，每隔一些长度会选取一些kv</li>
@@ -341,17 +339,16 @@ Do a big SMILE to today!
 <li>斜线部分渐渐弱化</li>
 </ol>
 <p>也就是随着窗口变大，relative attn 会给 sink attn 让位</p>
-<p><img src="relative_distance_heatmap.png" alt="relative_distance_heatmap" /></p>
+<p><img src="relative_distance_heatmap.png" alt="relative_distance_heatmap"></p>
 <p>按照不同的 block size 进行切分之后，block内部选取indices的相同的比例</p>
-<p><img src="combined_similarity_analysis.png" alt="combined_similarity_analysis" /></p>
+<p><img src="combined_similarity_analysis.png" alt="combined_similarity_analysis"></p>
 <p>block内部选取indices的交集和并集</p>
-<p><img src="heatmap_block_distribution_highres.png" alt="heatmap_block_distribution_highres" />这张图似乎能印证上面的一些观察，交集似乎就是具备sink特征的，而交集中剔除并集的部分很可能就是relative特征的</p>
+<p><img src="heatmap_block_distribution_highres.png" alt="heatmap_block_distribution_highres">这张图似乎能印证上面的一些观察，交集似乎就是具备sink特征的，而交集中剔除并集的部分很可能就是relative特征的</p>
 <p>根据上面的比例信息，以及实际选取数量的表格(此处未列出)，交集和并集的数量和block所在的位置没有显著的关系，在远离dense之后都会趋于一个恒定的值</p>
 <p>如果说并集就是 sink 的话，那么就是随着seq的增长，前面的sink的宽度减少为了给靠后的token一个出现在attn里的机会，并且这个sink的数量是比较稳定的（在最后7-8k的时候出现了一点下降的趋势，可能在更长的时候会下降？）</p>
-<p><img src="attn_patterns_fixed_offset.png" alt="attn_patterns_fixed_offset" /></p>
-<p><img src="absolute_attention_heatmap_sparse_cleaned.png" alt="absolute_attention_heatmap_sparse_cleaned" /></p>
-<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h2>
-<p><a target="_blank" rel="noopener" href="https://www.lmsys.org/blog/2025-09-29-deepseek-V32/">SGLang blog</a></p>
+<p><img src="attn_patterns_fixed_offset.png" alt="attn_patterns_fixed_offset"></p>
+<p><img src="absolute_attention_heatmap_sparse_cleaned.png" alt="absolute_attention_heatmap_sparse_cleaned"></p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a target="_blank" rel="noopener" href="https://www.lmsys.org/blog/2025-09-29-deepseek-V32/">SGLang blog</a></p>
 <p><a target="_blank" rel="noopener" href="https://github.com/sgl-project/sglang/blob/main/docs/advanced_features/attention_backend.md">SGLang attn backend</a></p>
 <p><a target="_blank" rel="noopener" href="https://github.com/sgl-project/sglang/issues/11060">https://github.com/sgl-project/sglang/issues/11060</a></p>
 <p><a target="_blank" rel="noopener" href="https://github.com/sgl-project/sglang/blob/main/docs/basic_usage/deepseek_v32.md">https://github.com/sgl-project/sglang/blob/main/docs/basic_usage/deepseek_v32.md</a></p>
@@ -424,13 +421,13 @@ Do a big SMILE to today!
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="Word count total">104k</span>
+    <span title="Word count total">93k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">3:09</span>
+    <span title="Reading time total">2:49</span>
   </span>
 </div>
 <div class="busuanzi-count">
