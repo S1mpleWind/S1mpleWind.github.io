@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/black/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous" defer></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"s1mplewind.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.26.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="Flash-attention 学习一直在用但是还没真正去学习，最近在看有关dsa算子的部分，想要去看一下flash-mla的实现，但是flash-attn这个前置条件还没满足 趁着最近几天都没有什么workload，来学习一下">
+<meta property="og:type" content="article">
+<meta property="og:title" content="flash-attn">
+<meta property="og:url" content="http://s1mplewind.github.io/2026/05/06/flash-attn/index.html">
+<meta property="og:site_name" content="S1mpleWind&#39;s blog">
+<meta property="og:description" content="Flash-attention 学习一直在用但是还没真正去学习，最近在看有关dsa算子的部分，想要去看一下flash-mla的实现，但是flash-attn这个前置条件还没满足 趁着最近几天都没有什么workload，来学习一下">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/05/06/flash-attn/3pass.png">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/05/06/flash-attn/2passflash.png">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/05/06/flash-attn/0.png">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/05/06/flash-attn/1.png">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/05/06/flash-attn/p0.png">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/05/06/flash-attn/p2.png">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/05/06/flash-attn/pipe.png">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/05/06/flash-attn/sparse.png">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/05/06/flash-attn/backward.png">
+<meta property="article:published_time" content="2026-05-06T07:08:03.000Z">
+<meta property="article:modified_time" content="2026-05-07T01:49:23.623Z">
+<meta property="article:author" content="S1mpleWind">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://s1mplewind.github.io/2026/05/06/flash-attn/3pass.png">
+
+
+<link rel="canonical" href="http://s1mplewind.github.io/2026/05/06/flash-attn/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://s1mplewind.github.io/2026/05/06/flash-attn/","path":"2026/05/06/flash-attn/","title":"flash-attn"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>flash-attn | S1mpleWind's blog</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.10.1/mermaid.min.js","integrity":"sha256-BmQmdWDS8X2OTbrwELWK366LV6escyWhHHe0XCTU/Hk="}}</script>
+  <script src="/js/third-party/tags/mermaid.js" defer></script>
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+  <script src="/js/third-party/pace.js" defer></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" integrity="sha256-UF1fgpAiu3tPJN/uCqEUHNe7pnr+QR0SQDNfgglgtcM=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="/js/third-party/math/katex.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">S1mpleWind's blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">简约风的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">15</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">12</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">34</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="Searching..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Flash-attention-%E5%AD%A6%E4%B9%A0"><span class="nav-number">1.</span> <span class="nav-text">Flash-attention 学习</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0-Online-Softmax"><span class="nav-number">1.2.</span> <span class="nav-text">0. Online Softmax</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Flashattn-v1"><span class="nav-number">1.3.</span> <span class="nav-text">1. Flashattn-v1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Note"><span class="nav-number">1.3.1.</span> <span class="nav-text">Note</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#paper"><span class="nav-number">1.3.2.</span> <span class="nav-text">paper</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-pass"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">1-pass</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Sparse"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">Sparse</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Backward"><span class="nav-number">1.3.2.3.</span> <span class="nav-text">Backward</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Flashattn-v2"><span class="nav-number">1.4.</span> <span class="nav-text">2. Flashattn-v2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">1.5.</span> <span class="nav-text">Reference</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="S1mpleWind"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">S1mpleWind</p>
+  <div class="site-description" itemprop="description">If you don't play, you won't learn.
+Do a big SMILE to today!
+</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/S1mpleWind" title="gitHub → https:&#x2F;&#x2F;github.com&#x2F;S1mpleWind" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>gitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ivonjiao@gmail.com" title="E-Mail → mailto:ivonjiao@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/05/06/flash-attn/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="S1mpleWind">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="S1mpleWind's blog">
+      <meta itemprop="description" content="If you don't play, you won't learn.
+Do a big SMILE to today!
+">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="flash-attn | S1mpleWind's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          flash-attn
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2026-05-06 15:08:03" itemprop="dateCreated datePublished" datetime="2026-05-06T15:08:03+08:00">2026-05-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2026-05-07 09:49:23" itemprop="dateModified" datetime="2026-05-07T09:49:23+08:00">2026-05-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/llm-sys/" itemprop="url" rel="index"><span itemprop="name">llm-sys</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>3.1k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>6 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="Flash-attention-学习"><a href="#Flash-attention-学习" class="headerlink" title="Flash-attention 学习"></a>Flash-attention 学习</h1><p>一直在用但是还没真正去学习，最近在看有关dsa算子的部分，想要去看一下<code>flash-mla</code>的实现，但是<code>flash-attn</code>这个前置条件还没满足</p>
+<p>趁着最近几天都没有什么workload，来学习一下</p>
+<span id="more"></span>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>attention is all you need，在transformer架构里attn是最基本也是最重要的一个组件</p>
+<p>从最标准的self-attn，到后面出现的 Multi-Head Attn，Multi-Query Attn，Multi-Group Attn，DeepSeek Sparse Attn等等都是以他为基础的一些延伸</p>
+<p>在一次attn的计算中，最为特殊的一个运算就是$softmax$（这里使用的是<em>safe-softmax</em>，也就是在基础款之上减去里一个max值，防止数值溢出）</p>
+<script type="math/tex; mode=display">\text{softmax}(x_i) = \frac{e^{x_i - \max(x)}}{\sum_{j=1}^{N} e^{x_j - \max(x)}}</script><p>因为它不是线性的，不能运用结合律，也不像一个常见的 GEMM 运算一样可以进行诸如分块运算的性质，甚至你还需要寻觅一个$max$的值，这就意味着需要先把整个qk的结果得到之后再来做归一化</p>
+<p>因此flash-attn想做的就是将这个全局的过程进行解耦，能够像其他的矩阵运算一样进行分块运算，使用 Tiling 来读取 sRAM 进行片上的快速运算而不是完整从显存里读取大矩阵</p>
+<p>btw，至于一些如 Linear Attn 也是想要摆脱sm运算不可结合的特征，改变计算顺序让kv先计算得到一个更小的矩阵</p>
+<h2 id="0-Online-Softmax"><a href="#0-Online-Softmax" class="headerlink" title="0. Online Softmax"></a>0. Online Softmax</h2><p>如图所示，对于一个标准的self-attention，获取QK^T的结果需要进行三轮循环，本别是找到最大值，计算exp之和，最后计算QK^T里的元素</p>
+<p><img src="3pass.png" alt="3pass"></p>
+<p>能不能减少循环的次数呢？之所以需要三次循环，就是因为计算分母这里的指数之和的时候依赖一个最大值max(x)；但是这不是必须的，因为无论如何在最后一次循环的时候这个最大值$m<em>N$一定会被算出来。利用递推的思想，令$d_i’ = \sum</em>{j=1}^{i} e^{x_j - m_i}$，只要递推的找到$m_i$和$m_N$的关系并进行一次缩放就可以了</p>
+<p>换句话说，在$a<em>i = \frac{e^{x_i - m</em>{N}}}{\sum<em>{j}e</em>{x_j-m_N}}$里$e^{-m_N}$是出于安全原因引入的所有项共享的一个scalar，我们只要在每轮的时候都维护一个局部最大的scalar并一直更新，最终就能得到一个全局的最大scalar</p>
+<p>具体到递推的公式：</p>
+<script type="math/tex; mode=display">
+m_i = max(m_{i-1},x_i)\\</script><script type="math/tex; mode=display">
+d_i' = \sum_{j=1}^{i} e^{x_j-m_i}
+     = e^{m_{i-1} - m_i} \cdot\sum_{j=1}^{i-1} e^{x_j-m_{i-1}} + e^{x_i - m_i}
+     = e^{m_{i-1} - m_i} \cdot d_{i-1}' + e^{x_i - m_i}</script><p>于是就将多出来的一个循环又重新塞了回去</p>
+<p>那既然能把3pass压缩成2pass，能不能进一步压缩成1pass呢？</p>
+<p>答案是否定的。因为这里我们是结果导向的，只关心最终的$d_N.m_N$，中间产生的是没有真实用处的变量$m_i,d_i$；但是最后得到的$a_i$却是从1到N都是需要存下来的最终结果</p>
+<p>吗？这是<a target="_blank" rel="noopener" href="https://courses.cs.washington.edu/courses/cse599m/23sp/notes/flashattn.pdf">from online attn to flash-attn</a>得出的结论</p>
+<p>但是其实既然最后一轮一定能得到$m<em>N,d_N$，那么要做的其实就是递推维护一个$A_i=(a</em>{i,1},a<em>{i,2},\cdots, a</em>{i,i})$，其中$a<em>{i.j}= \frac{e^{x_j - m_i}}{d’_i}$，$a</em>{i.j} = a<em>{i-1,j} \cdot e^{m</em>{i-1} - m<em>i} \cdot \frac{d</em>{i-1}’}{d<em>{i}’}$，记这个变换为$f$，$A_i = (f(A</em>{i-1}),\frac{e^{x_i - m_i}}{d’_i})$（这里的下标意味着是第i轮循环中在第j个位置被维护的）</p>
+<p>（如果不能1pass的话，flash attn也是绝对做不到1pass的，因为它要使用$A$中所有的标量来对$V$进行加权）</p>
+<h2 id="1-Flashattn-v1"><a href="#1-Flashattn-v1" class="headerlink" title="1. Flashattn-v1"></a>1. Flashattn-v1</h2><p>应用上面的算法之后就得到了2pass flash attn，因为这篇note并没有发现online softmax 1pass的方法，因此它是从2pass出发的</p>
+<h3 id="Note"><a href="#Note" class="headerlink" title="Note"></a>Note</h3><p><img src="2passflash.png" alt="2passflash"></p>
+<p>当然我们已经经历过Online Softmax 从 2pass 到 1pass 的递推过程，我们能直接类比得出flash-attn，其实就差最后一步对$V$进行加权了</p>
+<p>复用刚刚的变换$f = e^{m<em>{i-1} - m_i} \cdot \frac{d</em>{i-1}’}{d_{i}’}$</p>
+<p>又从$A,V$到$o<em>i$的运算过程是一个加权，即在循环到第$i$轮的时候，$o_i’ = \sum</em>{j=1}^{i} a<em>{i.j} V[j,:]$，又有$a</em>{i.j} = a<em>{i-1,j} \cdot e^{m</em>{i-1} - m<em>i} \cdot \frac{d</em>{i-1}’}{d<em>{i}’}$，所以只要对$i-1$轮的结果进行一个$f$变换，再新增第$i$轮加进去的$a</em>{i,i} V[i,:]$即可</p>
+<p>最终得到的递推式：</p>
+<script type="math/tex; mode=display">
+o_i' = e^{m_{i-1} - m_i} \cdot \frac{d_{i-1}'}{d_{i}'} \cdot o_{i-1}' + a_{i,i} V[i,:]</script><p>至此就推导出了 flash attn 的理论部分</p>
+<h3 id="paper"><a href="#paper" class="headerlink" title="paper"></a>paper</h3><h4 id="1-pass"><a href="#1-pass" class="headerlink" title="1-pass"></a>1-pass</h4><p>而paper里的算法部分如下：</p>
+<p>这是standard的做法，需要完整计算出$S$并把它写回 HBM，然后再读取出来计算$P$并写回</p>
+<p><img src="0.png" alt="0"></p>
+<p>而这是flash attn的伪代码</p>
+<p><img src="1.png" alt="1"></p>
+<p>总体思路和上面的推导是一样的，只不过这里换了一点符号；同时引入了外层的大循环，因此角标会变成(row, colume)；并且把$\div \sum$的动作用矩阵乘法$diag(\mathcal{l})^{-1}$来代替</p>
+<p>而 paper 里的证明写的稍微复杂严谨了一些</p>
+<p>这是符号的定义<img src="p0.png" alt="p0"></p>
+<p>画线的部分就是代数上的关系，最后的一坨就是把等价关系代到递推式里得到的证明<img src="p2.png" alt="p2"></p>
+<p>这里还引入了一个 block size 的概念，</p>
+<script type="math/tex; mode=display">
+B_c = [\frac{M}{4d}], B_r = min([\frac{M}{4d}],d)</script><p>它其实就是把QKV分成确保SRAM能放下的小块，同时保证尽量打满SRAM</p>
+<script type="math/tex; mode=display">
+SRAM(Q_i) = SRAM(O_i) =  B_r d < [\frac{M}{4}]</script><script type="math/tex; mode=display">
+SRAM(K_j,V_j) = 2B_cd < [\frac{M}{2}]</script><p>这里最后再补充一张示意图</p>
+<p><img src="pipe.png" alt="pipe"></p>
+<p>可以看到flash attn通过数学的转换将需要读写 HBM 的运算变为在 SRAM 上进行，是非常优美的算法和硬件协同</p>
+<h4 id="Sparse"><a href="#Sparse" class="headerlink" title="Sparse"></a>Sparse</h4><p><img src="sparse.png" alt="sparse"></p>
+<h4 id="Backward"><a href="#Backward" class="headerlink" title="Backward"></a>Backward</h4><p><img src="backward.png" alt="backward"></p>
+<p>FlashAttention backward pass最主要的优化就是：Recompute。对比Standard Self Attention，FlashAttention在前向不需要保留S和P矩阵，所以backward的时候也要重新计算一遍S和P</p>
+<p>既然是重算，为什么还是优化呢？因为standard的实现里是要读取$S,P$，写回$dS,dP$的这个I/O过程的overhead远大于计算量的增加；同时也能减少OOM的风险</p>
+<p>这也就说明随着迭代，在芯片上计算是越来越廉价的，但是 I/O 还是很昂贵</p>
+<h2 id="2-Flashattn-v2"><a href="#2-Flashattn-v2" class="headerlink" title="2. Flashattn-v2"></a>2. Flashattn-v2</h2><p>这篇是对第一篇技术上的优化，暂时还没看</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://courses.cs.washington.edu/courses/cse599m/23sp/notes/flashattn.pdf">from online attn to flash-attn</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/668888063">zhihublog</a></li>
+<li>Flash-attn v1/v2 paper</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="followme">
+  <span>Welcome to my other publishing channels</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/S1mpleWind">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">Github</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/04/29/high-energy/" rel="next" title="high-energy">
+                  high-energy <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2025 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-fan"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">S1mpleWind</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="Word count total">109k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">3:19</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+</div><script
+    color="0,64,0"
+    opacity="0.8"
+    zIndex="-1"
+    count="109"
+    src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"
+></script>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/S1mpleWind" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
