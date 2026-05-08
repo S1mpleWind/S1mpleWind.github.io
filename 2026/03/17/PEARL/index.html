@@ -126,7 +126,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">15</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">12</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">34</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">15</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">12</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">35</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
         </a>
@@ -194,7 +194,7 @@ Do a big SMILE to today!
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -325,14 +325,14 @@ Do a big SMILE to today!
 <span id="more"></span>
 <h2 id="Core-Idea"><a href="#Core-Idea" class="headerlink" title="Core Idea"></a>Core Idea</h2><p>传统的 SD 基于这样的原则：在完成一个序列的 Draft token的输出之后才进行一次验证，也就是说验证和推理天然存在一个<strong>逻辑上的先后关系</strong>，验证的同时是没有推理的进行的，推理的同时也无法进行验证</p>
 <p>为了能够让这两个过程并行起来，<code>PEARL</code>提出了两种验证的策略来帮助</p>
-<p><style>.yoklrouwjoiz{zoom: 33%;}</style><img src="/2026/03/17/PEARL/pearl1.png" class="yoklrouwjoiz" alt="pearl1"></p>
+<p><style>.clnlitbhecyk{zoom: 33%;}</style><img src="/2026/03/17/PEARL/pearl1.png" class="clnlitbhecyk" alt="pearl1"></p>
 <hr>
 <h2 id="Core-Concept"><a href="#Core-Concept" class="headerlink" title="Core Concept"></a>Core Concept</h2><p>两种验证策略，<code>pre-verify</code>和<code>post-verify</code>:</p>
 <ul>
 <li><code>pre</code>：这个策略的目标就是为了打破验证要在<strong>完整推测</strong>之后发生的限制，对<strong>prefix</strong>，在<strong>第一个 Draft Token</strong>出现的同时就进行验证，如果第一个就不接受，后面的都不会接受；同时这个做法也没有打破逻辑上的先后关系，感觉所有的推理中其实都可以使用这种利用资源的办法</li>
 <li><code>post</code>：这个 verify 旨在打破 vanilla SD 中 draft 的生成要等待 verify 结束来提供一个<strong>prefix</strong>，将多次 draft generation 之间的间隔合并；换句话说，假如一次的 draft token 生成中全对，那么就能继续接着生成，draft model 还有没发挥完的潜力，所以不需要 verify 生成的 prefix 去“打扰”现在健康的生成；而当错误的验证发生的时候，就要重回到 pre 的验证阶段</li>
 </ul>
-<p><style>.ugkaqmhgbndd{zoom: 25%;}</style><img src="/2026/03/17/PEARL/pearl-pipe.png" class="ugkaqmhgbndd" alt="pearl-pipe"></p>
+<p><style>.oreqcxoumfiz{zoom: 25%;}</style><img src="/2026/03/17/PEARL/pearl-pipe.png" class="oreqcxoumfiz" alt="pearl-pipe"></p>
 <hr>
 <h2 id="Thinking"><a href="#Thinking" class="headerlink" title="Thinking"></a>Thinking</h2><p>这个方法看起来挺nature的，但是就像pipeline里的分支预测那样，依赖于预测方向的可能性，也就是 draft 的<strong>接受率</strong>，</p>
 <p>推导了一个计算公式，假设</p>
@@ -359,7 +359,7 @@ E\left[\frac{\text{token}}{\text{s}}\right]
 {(1-\alpha)t_s + \dfrac{\alpha(1-\alpha)t_s}{(1-\alpha^\gamma)^2}},
 \end{aligned}</script><p>而 vanilla SD的平均收益</p>
 <script type="math/tex; mode=display">U=\frac{\alpha k}{k t_g + t_v}</script><p>简单取$t_v = 10 t_g$，$\gamma$= 4，得到了如下的图像，可以看到接受率高的时候是有显著的收益的</p>
-<p><style>.gslguhhotsjr{zoom:25%;}</style><img src="/2026/03/17/PEARL/graph.png" class="gslguhhotsjr" alt="graph"></p>
+<p><style>.fdnxivnhlgyu{zoom:25%;}</style><img src="/2026/03/17/PEARL/graph.png" class="fdnxivnhlgyu" alt="graph"></p>
 <p>而且随着接受序列的边长，接受率是会下降的，也就是说真实的情况下不是等比数列，效果还要差一点</p>
 
     </div>

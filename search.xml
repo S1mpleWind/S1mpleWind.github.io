@@ -263,14 +263,14 @@ L &= N_x \cdot 0 + N_y \cdot 1 + N_z \cdot (-1) = N_y - N_z \\
 </ul>
 <span id="more"></span>
 <h2 id="1-kv-and-kvcache"><a href="#1-kv-and-kvcache" class="headerlink" title="1.kv and kvcache"></a>1.kv and kvcache</h2><h3 id="kv"><a href="#kv" class="headerlink" title="kv"></a>kv</h3><p>transformer 中最基础的东西，之前给一个朋友讲解的图</p>
-<p><style>.nmtvkmquwjmt{zoom: 33%;}</style><img src="/2026/04/09/DSA/transformer.jpg" class="nmtvkmquwjmt" alt="transformer"></p>
+<p><style>.evyjnshfowed{zoom: 33%;}</style><img src="/2026/04/09/DSA/transformer.jpg" class="evyjnshfowed" alt="transformer"></p>
 <p>上图是最原始的版本，每一次 layer 的计算都要完整的算出 NxN ，计算量巨大而且有很多重复的KV计算。其实能看到 Q 只需要计算最后一行，KV则是需要进行重复的计算。引入 kvcache之后能将计算复杂度压缩成<em>O(N)</em></p>
-<h3 id="kv-cache"><a href="#kv-cache" class="headerlink" title="kv-cache"></a>kv-cache</h3><p><style>.oquuzhofupga{zoom: 25%;}</style><img src="/2026/04/09/DSA/cache.jpg" class="oquuzhofupga" alt="cache"></p>
+<h3 id="kv-cache"><a href="#kv-cache" class="headerlink" title="kv-cache"></a>kv-cache</h3><p><style>.ukscintsedbe{zoom: 25%;}</style><img src="/2026/04/09/DSA/cache.jpg" class="ukscintsedbe" alt="cache"></p>
 <p>由于所有token对应的kv都是固定的，在”第一次”计算的时候就可以把原始序列对应的kv都缓存下来，此后再更新加入新产生的token对应的kv。可以看到使用cache将之前的token计算出的 kv 缓存下来，可以避免重复计算，同时每次decode的时候只用传递一个$x = X [:-1]$，而不用把整个序列都传进去</p>
 <p>这里所说的”第一次“拥有一个名字<strong>prefill</strong>，预先填好的；而后面的推理就是<strong>decode</strong>，之前 PD 分离的 blog 有空补上</p>
 <p>可以看到，这就是一个<em>用空间换时间</em>的思维，但是这样的 trade-off 似乎有些不平衡，参考<a href="https://zhuanlan.zhihu.com/p/1911795330434986569">知乎博客1</a>、<a href="https://zhuanlan.zhihu.com/p/16730036197">2</a>的内容，</p>
-<p><style>.lgrdrxcekmke{zoom:33%;}</style><img src="/2026/04/09/DSA/mem.png" class="lgrdrxcekmke" alt="mem"></p>
-<p><style>.xubskkgfsjqe{zoom:33%;}</style><img src="/2026/04/09/DSA/calcu.png" class="xubskkgfsjqe" alt="calcu"></p>
+<p><style>.qbsiigdymjqh{zoom:33%;}</style><img src="/2026/04/09/DSA/mem.png" class="qbsiigdymjqh" alt="mem"></p>
+<p><style>.xezbtazsqsqc{zoom:33%;}</style><img src="/2026/04/09/DSA/calcu.png" class="xezbtazsqsqc" alt="calcu"></p>
 <h3 id="idea"><a href="#idea" class="headerlink" title="idea"></a>idea</h3><p>其实核心的计算公式就是</p>
 <script type="math/tex; mode=display">
 o = \operatorname{softmax}\bigg(
@@ -294,14 +294,14 @@ o = \operatorname{softmax}\bigg(
 <script type="math/tex; mode=display">\begin{aligned} q_{t,i}^T \times k_{j,i} &= (\mathcal{R}_t W_{(i)}^{UQ} c_t^Q)^T \times \mathcal{R}_j W_{(i)}^{UK} c_j^{KV} \\ &= (c_t^Q)^T \times (W_{(i)}^{UQ})^T \mathcal{R}_t^T \mathcal{R}_j W_{(i)}^{UK} c_j^{KV} \\ &= (c_t^Q)^T \times (W_{(i)}^{UQ})^T \mathcal{R}_{t-j} W_{(i)}^{UK} \times c_j^{KV} \quad \end{aligned}</script><p>这就导致结合律无法被提前使用，计算开销会上升到和先计算 $K$一样。为此 deepseek 采用的方法是将位置编码单独作为一个低维的小向量，并将q / k与他们concat起来之后再做乘法，也就是</p>
 <script type="math/tex; mode=display">q_{t,i}^T \times k_{j,i} = \left[ q_{t,i}^C, q_{t,i}^R \right]^T \times \left[ k_{j,i}^C, k_{j,i}^R \right] = q_{t,i}^C k_{j,i}^C + q_{t,i}^R k_{j,i}^R</script><p>这样让位置编码自己一边玩去</p>
 <p>deepseek官方给出的公式，和上面的能对照起来</p>
-<p><style>.knrbfnoppuey{zoom: 33%;}</style><img src="/2026/04/09/DSA/dsformula.png" class="knrbfnoppuey" alt="dsformula"></p>
-<h3 id="模式"><a href="#模式" class="headerlink" title="模式"></a>模式</h3><p><style>.tkqonutswuqj{zoom: 33%;}</style><img src="/2026/04/09/DSA/mode.png" class="tkqonutswuqj" alt="mode"></p>
+<p><style>.kwxchshbonuh{zoom: 33%;}</style><img src="/2026/04/09/DSA/dsformula.png" class="kwxchshbonuh" alt="dsformula"></p>
+<h3 id="模式"><a href="#模式" class="headerlink" title="模式"></a>模式</h3><p><style>.emmoipgbcnbl{zoom: 33%;}</style><img src="/2026/04/09/DSA/mode.png" class="emmoipgbcnbl" alt="mode"></p>
 <h4 id="吸收模式-MQA-mode："><a href="#吸收模式-MQA-mode：" class="headerlink" title="吸收模式 / MQA mode："></a>吸收模式 / MQA mode：</h4><p>刚刚所说的把RoPE单独提取出来，就是为了能把上投影矩阵吸收到前面q的还原中进行一个$q<em>cW</em>{Uq}W_{UK}^T$，把还原高维 K 的步骤跳了；同时对V进行线性组合的时候也只需要对$c_t^{KV}$进行，之后再乘一个上投影矩阵，不需要还原的高维的V，节省了mem</p>
 <h4 id="非吸收模式-MQA-mode："><a href="#非吸收模式-MQA-mode：" class="headerlink" title="非吸收模式 / MQA mode："></a>非吸收模式 / MQA mode：</h4><p>训练/prefill的时候不用吸收。因为mla是计算和空间的trade-off，decode的时候对空间要求多，但是训练/prefill的bound是算力。开启吸收会额外增加3-4倍的计算</p>
 <h4 id="相关计算"><a href="#相关计算" class="headerlink" title="相关计算"></a>相关计算</h4><p>参考<a href="https://zhuanlan.zhihu.com/p/1911795330434986569">知乎博客1</a>，非吸收:</p>
-<script type="math/tex; mode=display">\underbrace{h_c N_q d_q (d_h + d_r)}_{\text{q to 128 heads}} + \underbrace{2h_c N c d_h}_{\text{c to k 128 heads}} + \underbrace{h_c N_q N (2d_h + d_r)}_{qk^\top + sv} + \underbrace{h_c N_q d_h d}_{o}</script><p><style>.bmkxjqtwbrwu{zoom:25%;}</style><img src="/2026/04/09/DSA/mla_mha_diagram-1775902491327-1.png" class="bmkxjqtwbrwu" alt="mla_mha_diagram"></p>
+<script type="math/tex; mode=display">\underbrace{h_c N_q d_q (d_h + d_r)}_{\text{q to 128 heads}} + \underbrace{2h_c N c d_h}_{\text{c to k 128 heads}} + \underbrace{h_c N_q N (2d_h + d_r)}_{qk^\top + sv} + \underbrace{h_c N_q d_h d}_{o}</script><p><style>.mdhrqwpfudym{zoom:25%;}</style><img src="/2026/04/09/DSA/mla_mha_diagram-1775902491327-1.png" class="mdhrqwpfudym" alt="mla_mha_diagram"></p>
 <p>吸收：</p>
-<script type="math/tex; mode=display">\underbrace{h_c N_q d_q (d_h + d_r) + h_c N_q d_h c}_{\text{q with } W_q W_k^\top} + \underbrace{h_c N_q N (2c + d_r)}_{qk + sv} + \underbrace{h_c N_q c d_h}_{W_v} + \underbrace{h_c N_q d_h d}_{W_o}</script><p><style>.qzjumfhvuvqc{zoom:25%;}</style><img src="/2026/04/09/DSA/mla_mqa_flow-1775902500980-3.png" class="qzjumfhvuvqc" alt="mla_mqa_flow"></p>
+<script type="math/tex; mode=display">\underbrace{h_c N_q d_q (d_h + d_r) + h_c N_q d_h c}_{\text{q with } W_q W_k^\top} + \underbrace{h_c N_q N (2c + d_r)}_{qk + sv} + \underbrace{h_c N_q c d_h}_{W_v} + \underbrace{h_c N_q d_h d}_{W_o}</script><p><style>.cxfjwsyqfblm{zoom:25%;}</style><img src="/2026/04/09/DSA/mla_mqa_flow-1775902500980-3.png" class="cxfjwsyqfblm" alt="mla_mqa_flow"></p>
 <p>这里$d_r$是位置编码的维度，$N_q$是Q的长度，两者最后的差是$2 h_c N_q N (d_h - c) + 2 h_c d_h c ( N - N_q)$ </p>
 <p>prefill阶段的$N=N_q$，吸收$\approx O(N^2(2d_h + d_r))$，非吸收$\approx O(N^2(2c + d_r))$，是吸收的4倍左右；</p>
 <p>decode阶段则是$N_q = 1$，吸收$\approx O(N(2 c d_h + 2d_h + d_r))$，非吸收$\approx O(N(2c + d_r))$，是吸收的1/128左右</p>
@@ -321,7 +321,7 @@ o = \operatorname{softmax}\bigg(
 </li>
 <li>[ ] DSA的两种模式从数学上是等价的，但是在浮点运算中使用结合律，精度上的损失是不可避免的，这是否会产生影响？</li>
 </ul>
-<h2 id="3-DSA"><a href="#3-DSA" class="headerlink" title="3.DSA"></a>3.DSA</h2><p><style>.dkxugycvvxrh{zoom:33%;}</style><img src="/2026/04/09/DSA/dsa-idea.png" class="dkxugycvvxrh" alt="dsa-idea"></p>
+<h2 id="3-DSA"><a href="#3-DSA" class="headerlink" title="3.DSA"></a>3.DSA</h2><p><style>.vvbpeigfrath{zoom:33%;}</style><img src="/2026/04/09/DSA/dsa-idea.png" class="vvbpeigfrath" alt="dsa-idea"></p>
 <p>如图，DSA就是在<strong>MQA模式的MLA</strong>的基础上再应用了一个sparse attention，要想获得这个attn，需要两个功能部件：</p>
 <ul>
 <li>给所有的 K/V 进行相关性的排名</li>
@@ -395,7 +395,7 @@ o = \operatorname{softmax}\bigg(
 </li>
 </ol>
 <h4 id="NSA-算子"><a href="#NSA-算子" class="headerlink" title="NSA 算子"></a>NSA 算子</h4><p>下图是 NSA (native sparse attention) 里设计的算子，下面可能会单独开一个章节去研究一下</p>
-<h4 id="nenybhgcgcrw-zoom-50"><a href="#nenybhgcgcrw-zoom-50" class="headerlink" title=".nenybhgcgcrw{zoom:50%;}"></a><style>.nenybhgcgcrw{zoom:50%;}</style><img src="/2026/04/09/DSA/nsakernel.png" class="nenybhgcgcrw" alt="nsakernel"></h4><p>未完待续</p>
+<h4 id="viyirrcntiit-zoom-50"><a href="#viyirrcntiit-zoom-50" class="headerlink" title=".viyirrcntiit{zoom:50%;}"></a><style>.viyirrcntiit{zoom:50%;}</style><img src="/2026/04/09/DSA/nsakernel.png" class="viyirrcntiit" alt="nsakernel"></h4><p>未完待续</p>
 <h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>本篇只到算力分析层面，具体 kernel 和其他的分析比如<em>compute bound 和 memory bound 的 trade off</em>单独开一篇<a href="https://s1mplewind.github.io/2026/04/13/dsa-sglang/">SGLang中DSA的实现和相关分析</a></p>
 <h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
 <li><a href="https://github.com/deepseek-ai/DeepSeek-V3.2-Exp/blob/main/DeepSeek_V3_2.pdf">deepseek paper v3_2</a></li>
@@ -409,6 +409,106 @@ o = \operatorname{softmax}\bigg(
       <categories>
         <category>llm-sys</category>
       </categories>
+  </entry>
+  <entry>
+    <title>EAGLE</title>
+    <url>/2026/02/13/EAGLE/</url>
+    <content><![CDATA[<h1 id="Extrapolation-Algorithm-for-Greater-Language-model-Efficiency-EAGLE-算法学习"><a href="#Extrapolation-Algorithm-for-Greater-Language-model-Efficiency-EAGLE-算法学习" class="headerlink" title="Extrapolation Algorithm for Greater Language-model Efficiency  , EAGLE 算法学习"></a>Extrapolation Algorithm for Greater Language-model Efficiency  , EAGLE 算法学习</h1><p>前面看完了<code>Medusa</code>方法，再看加速效果更好的<code>EAGLE</code></p>
+<h2 id="EAGLE"><a href="#EAGLE" class="headerlink" title="EAGLE"></a>EAGLE</h2><p>下图是这几种方法的对比：</p>
+<ul>
+<li>spec sampling 是 token-level</li>
+<li>Medusa 是利用一个 feature 用不同的 head 去预测不同位置的 token</li>
+<li>EAGLE 是将 token 和 feature 混合输入<span id="more"></span>
+<img src="contrast.png" alt="contrast"></li>
+</ul>
+<p>论文首先指出这个方法的提出和实现基于两个观察：</p>
+<ul>
+<li>feature-level 的自回归比 token-level 要容易，因为token的采样是随机的</li>
+<li>sampling 过程中产生的随机性会显著限制预测 next feature 的表现，而在输入中加入上次采样得到的 token ，能有效消除这种不确定性</li>
+</ul>
+<h3 id="提炼"><a href="#提炼" class="headerlink" title="提炼"></a>提炼</h3><p>看完整篇论文，我认为相较于 Medusa 利用多头去处理 feature ，EAGLE则是训练了一个针对 feature 的 draft model 。</p>
+<p>针对上面的<em>观察一</em>，我的理解是：一个标准的 llm 输入输出都是 token ，而 token 采样的时候引入了不确定性，这会要求模型有更多的参数和计算来提升精度，因此很难获取一个非常理想的 token-level 的 draft model  。并且由于 token-level 的问题是<strong>离散空间里稀疏变量</strong>的问题，而 feature 则是一个<strong>高维的连续向量</strong>。因此 feature 的变化是容易学习的，针对他设计的模型也更简单，推理也快得多</p>
+<p>而针对上面的<em>观察二</em>，我的理解是：在常规llm流程中，一般是 hidden<em>states -&gt; logits -&gt; 采样得到token -&gt; hidden_state，也就是说采样这一步给feature引入了不确定性。为了消除这个不确定性，可以把采样完的 token 和 hidden_state(feature) 一并输入；换句话说，从$f_i$出发，当前的 feature 并不知道自己要往哪个方向进行变化，因为是 token 的采样决定了它这一轮的变化，所以将采样完的 token 一并作为数据，相当于告诉了 $f_i$ 一个走向 $f</em>{i+1}$的方向，可以极大消除的不确定性，提高接受率。</p>
+<hr>
+<h3 id="论文节选"><a href="#论文节选" class="headerlink" title="论文节选"></a>论文节选</h3><h4 id="1-EAGLE-pipeline-Draft-Model"><a href="#1-EAGLE-pipeline-Draft-Model" class="headerlink" title="1. EAGLE pipeline / Draft Model"></a>1. EAGLE pipeline / Draft Model</h4><p>下图为 EAGLE 推理的流程：</p>
+<ul>
+<li>green : embedding</li>
+<li>orange : feature</li>
+<li>red : prediction of draft model</li>
+<li>blue (with snow icon) : target LLM parameter</li>
+</ul>
+<p><style>.vplvupthgkmo{zoom: 33%;}</style><img src="/2026/02/13/EAGLE/pipeline1.png" class="vplvupthgkmo" alt="pipeline1"></p>
+<p>可以看到这里 Draft Model 由三部分组成：</p>
+<ol>
+<li>Embedding Layer : 与目标 LLM 共享</li>
+<li>LM Head : 与目标 LLM 共享</li>
+<li>Autoregression Head ：由一层 FC layer 和一层 decoder 构成</li>
+</ol>
+<p>Draft Model 的输入是一个形状为 (bs, seq_len, hidden_size) 的 feature 和一个形状为 (bs, seq_len) 的 token 。token 序列会被 <code>embedding</code>层转换成 embedding ，最后合并成形状为 (bs, seq_len, 2*hidden_size) 的输入</p>
+<p>FC 层的作用是将 (bs, seq_len, 2*hidden_size) 降维成 (bs, seq_len, hidden_size)  </p>
+<p>在计算 draft 的时候，EAGLE 构建了一颗树。这棵 Draft Tree 的深度是$m$ ，拥有超过$m$个的 token 数，只会执行$m$步 forward。</p>
+<p>例如，下图是草稿生成的过程中构建的树，可以看到天然的不含有 Medusa 中那种缺乏逻辑性的分支。 这里深度为3，token数为10</p>
+<p><style>.khflanslwkti{zoom:50%;}</style><img src="/2026/02/13/EAGLE/pipeline2.png" class="khflanslwkti" alt="pipeline2"></p>
+<p>对于这颗树的构建规则，附录中有提到一些：</p>
+<ul>
+<li>greedy：每个节点选择 top k 作为儿子</li>
+<li>intuition：高概率的分支应该更深/更广</li>
+</ul>
+<p>最终都使用了这颗静态的树</p>
+<p><img src="static-tree-1771773783330-7.png" alt="static-tree"></p>
+<p><del>具体的后面看完代码之后可能我会来补</del></p>
+<p>（EAGLE-2改成动态树了，不看这一块了）</p>
+<h4 id="2-Training"><a href="#2-Training" class="headerlink" title="2.Training"></a>2.Training</h4><p>这是草稿模型进行一次前向传播$\hat{f}_{i+1} = DraftModel([f_i; e(t_i)])$</p>
+<p>预测下一个 feature 使用了残差的方式，并使用了 <em>Smooth L1</em> 作为损失</p>
+<script type="math/tex; mode=display">L_{reg} = Smooth \space L1 (f_{i+1} , Draft\_Model(T_{2:i+1}, F_{1:i}))</script><p>而预测下一个 token 则是一个 <em>Classification loss</em></p>
+<script type="math/tex; mode=display">p_{i+2} = Softmax(LM Head(f_{i+1}))</script><script type="math/tex; mode=display">\hat{p}*{i+2} = Softmax(LM Head(\hat{f}*{i+1}))</script><script type="math/tex; mode=display">L_{cls} = CrossEntropy(p_{i+2}, \hat{p}_{i+2})</script><p>最后联合回归损失和分类损失，得到$L = L<em>{reg} + w</em>{cls}*L_{cls}$</p>
+<p>通常分类损失是显著大的，所以论文中将权重$w$设置为了 0.1</p>
+<h4 id="3-Verify"><a href="#3-Verify" class="headerlink" title="3.Verify"></a>3.Verify</h4><p>使用了和 <code>Medusa</code>中类似的 Tree Attention</p>
+<hr>
+<h2 id="EAGLE-2"><a href="#EAGLE-2" class="headerlink" title="EAGLE-2"></a>EAGLE-2</h2><p>和第一版的主要区别是<strong><em>树</em></strong>的变化 （Context-aware dynamic draft tree）</p>
+<p>文章在开头首先指出了 EAGLE 和 Medusa 使用的都是同样的静态 draft tree ，这本质上基于了一个假设：一个 token 的接受率很大程度上取决于他在这个树上的位置</p>
+<p>但是这和 spec sampling 中 <em>“some tokens are simpler  and can be predicted by smaller models”</em>会产生冲突，实验也发现了 token 接受率还和上下文密切相关。因此静态树有天然的限制。在不同的 context 下动态的调整树会更好</p>
+<p>要想拥有更适应 context 的动态结构，就需要原始 LLM 对上下文的推导。但是这与加速的目的相悖了。但是 EAGLE 的实验结果证明了 draft model 具有良好的校准性（Well-calibrated），它的置信度分数（即概率）能够很好地近似 Draft Token 的接受率</p>
+<p>EAGLE-2 基于这一点事实展开，通过动态树的构建提高了接受率（acceptance rate）</p>
+<h3 id="Well-Calibrated-Draft-Model"><a href="#Well-Calibrated-Draft-Model" class="headerlink" title="Well-Calibrated Draft Model"></a>Well-Calibrated Draft Model</h3><p><style>.rnkqiheoqpds{zoom: 80%;}</style><img src="/2026/02/13/EAGLE/cali.png" class="rnkqiheoqpds" alt="cali"></p>
+<p>EAGLE-2 提供了这样一张统计图，其中$Confidence(x) = P<em>{draft}(x) = \frac{\exp(Logit_x)}{\sum \exp(Logit_i)}$，$\text{Acceptance Rate} = \min\left(1, \frac{P</em>{target}(x)}{P_{draft}(x)}\right)$</p>
+<p>Confidence 就是 Draft 预测的分布；而接受率在贪婪搜索下就是 $P<em>{target}$和 $P</em>{draft}$预测的最可能的结果一致，在随机采样中是如果 target 认为这个词出现的概率比 Draft 预测的概率还大，那么就是 1.0 的接受率，否则按照比例接受</p>
+<p>这样的校准性能够避免使用 Target LLM 对上下文的推导，仅仅用 Draft 就能寻找动态树的路径</p>
+<h3 id="Expansion-of-tree"><a href="#Expansion-of-tree" class="headerlink" title="Expansion of tree"></a>Expansion of tree</h3><p>Tree Attention 可以很好的并行验证，但是token太多开销过大，因此需要选择性的添加token</p>
+<p>因为否定一个 token 就是截断这条路径，所以衡量一个 token 的价值的值是 Global Acceptance，即$V<em>i = \prod</em>{i<em>j \in Path(root,t_i)} p_j \approx \prod</em>{i_j \in Path(root,t_i)} c_j$，然后留下 top-k的 token</p>
+<h3 id="Reranking-Nodes"><a href="#Reranking-Nodes" class="headerlink" title="Reranking Nodes"></a>Reranking Nodes</h3><p>经过 expand 之后，还要进行一次排序筛选，保留所有节点中期望收益最高，也就是 Global Acceptance最大的 $m$ 个 token</p>
+<p>这一步会有一个现象，就是浅层的 token 会比深层的 token 更有优势，因为每一次都是乘一个小于 1 的数，所以当模型很<strong>自信</strong>的时候，会生成更深的路径，一次推理中能走更多的步骤；而当模型很<strong>困惑</strong>的时候，树的结构趋向于“收缩”，预测趋于浅层，节省深层 token 验证的资源，提高整体期望值</p>
+<p>示例：</p>
+<p><style>.lkkkifrrsdld{zoom:67%;}</style><img src="/2026/02/13/EAGLE/build-dy-tree.png" class="lkkkifrrsdld" alt="build-dy-tree"></p>
+<p>用 tree-attention 验证：</p>
+<p><style>.nwllsshmyyrh{zoom:50%;}</style><img src="/2026/02/13/EAGLE/verify-2.png" class="nwllsshmyyrh" alt="verify-2"></p>
+<hr>
+<h2 id="EAGLE-3"><a href="#EAGLE-3" class="headerlink" title="EAGLE-3"></a>EAGLE-3</h2><p>第三版主要是在训练上</p>
+<h3 id="新的训练架构"><a href="#新的训练架构" class="headerlink" title="新的训练架构"></a>新的训练架构</h3><h4 id="Training-time-test"><a href="#Training-time-test" class="headerlink" title="Training-time test"></a>Training-time test</h4><p>EAGLE 的训练是基于 feature-level 的，训练的损失是联合回归损失和分类损失$L = L<em>{reg} + w</em>{cls}*L<em>{cls}$。$L</em>{reg}$是feature的损失，但是$L_{cls}$的 token 损失其实才是最终的目标。这也就意味着 feature 会施加一个额外的约束，让 Draft Model 很难在更大的 training data 中获益。为此 EAGLE-3 做了这样的尝试：</p>
+<ol>
+<li>取消 feature 的 loss ：$0\text{-}\alpha$显著提高，但是feature的预测显著下降导致$1\text{-}\alpha$以及后续急剧下降</li>
+<li>当前的训练是割裂的训练每一步，最终得到是一个<strong>单步预测器</strong>，因此幻觉可能在推理的过程中积累。通过在训练中加入推理得到的数据，可以很好的解决；同时可以把 feature 以这种形式加入训练</li>
+</ol>
+<p><img src="train-evolution.png" alt="train-evolution"></p>
+<p>上图展示了两种方法的逻辑，这种新的方法被命名为 training-time test</p>
+<h4 id="特征利用"><a href="#特征利用" class="headerlink" title="特征利用"></a>特征利用</h4><p>过去只使用最后的一层 hidden_layer 这个 feature ， 但是现在充分利用了其他的更多的 feature</p>
+<h3 id="Scaling-Law"><a href="#Scaling-Law" class="headerlink" title="Scaling Law"></a>Scaling Law</h3><p>新的架构随着 Data 的增长，Accept Rate 也显示出了增长</p>
+<h3 id="Pipeline"><a href="#Pipeline" class="headerlink" title="Pipeline"></a>Pipeline</h3><p>第三版的pipeline如下图。除了增加了底层的 hidden_state 的使用；同时由于训练的时候使用的新方法，draft 部分原本的单步预测器也变成了更 transformer 的 decoder；decoder输入的序列中，会重复使用生成的 draft feature，对应了训练得到的”<strong>轨迹感</strong>“，能根据前面所有步骤形成的动态趋势进行自我修正</p>
+<p><img src="eagle-3-pipe.png" alt="eagle-3-pipe"></p>
+<h3 id="Training"><a href="#Training" class="headerlink" title="Training"></a>Training</h3><p>唯一要训练的部分就是 transformer decoder，训练的时候用了 tree-mask，从一个序列里产出的只能看到它这条路径上的Key（示意图里用 token 来代替了 feature 的表示）</p>
+<p><style>.guzghgeqfksc{zoom:67%;}</style><img src="/2026/02/13/EAGLE/eagle-treemask.png" class="guzghgeqfksc" alt="eagle-treemask"></p>
+<p>对于每一步的训练，由于浅层的错误是更致命的，所以可能会给不同深度的节点分配训练权重，看代码的时候看看</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>EAGLE 由于加入了 token 的选择，可以加强 spec 过程中的上下文逻辑，减轻不确定性，从而获得更高的 Accept Rate</p>
+<p>第二版通过动态树的结构，算是优化了算力的调度，让计算资源流向了更有用的 token ，提升了推理效率</p>
+<p>第三版主要是在训练上增强，提升了 Draft Model 的表现</p>
+]]></content>
+      <categories>
+        <category>llm-inference</category>
+      </categories>
+      <tags>
+        <tag>LLM-inference</tag>
+      </tags>
   </entry>
   <entry>
     <title>E³-PRUNER</title>
@@ -473,106 +573,6 @@ o = \operatorname{softmax}\bigg(
       <categories>
         <category>llm-inference</category>
       </categories>
-  </entry>
-  <entry>
-    <title>EAGLE</title>
-    <url>/2026/02/13/EAGLE/</url>
-    <content><![CDATA[<h1 id="Extrapolation-Algorithm-for-Greater-Language-model-Efficiency-EAGLE-算法学习"><a href="#Extrapolation-Algorithm-for-Greater-Language-model-Efficiency-EAGLE-算法学习" class="headerlink" title="Extrapolation Algorithm for Greater Language-model Efficiency  , EAGLE 算法学习"></a>Extrapolation Algorithm for Greater Language-model Efficiency  , EAGLE 算法学习</h1><p>前面看完了<code>Medusa</code>方法，再看加速效果更好的<code>EAGLE</code></p>
-<h2 id="EAGLE"><a href="#EAGLE" class="headerlink" title="EAGLE"></a>EAGLE</h2><p>下图是这几种方法的对比：</p>
-<ul>
-<li>spec sampling 是 token-level</li>
-<li>Medusa 是利用一个 feature 用不同的 head 去预测不同位置的 token</li>
-<li>EAGLE 是将 token 和 feature 混合输入<span id="more"></span>
-<img src="contrast.png" alt="contrast"></li>
-</ul>
-<p>论文首先指出这个方法的提出和实现基于两个观察：</p>
-<ul>
-<li>feature-level 的自回归比 token-level 要容易，因为token的采样是随机的</li>
-<li>sampling 过程中产生的随机性会显著限制预测 next feature 的表现，而在输入中加入上次采样得到的 token ，能有效消除这种不确定性</li>
-</ul>
-<h3 id="提炼"><a href="#提炼" class="headerlink" title="提炼"></a>提炼</h3><p>看完整篇论文，我认为相较于 Medusa 利用多头去处理 feature ，EAGLE则是训练了一个针对 feature 的 draft model 。</p>
-<p>针对上面的<em>观察一</em>，我的理解是：一个标准的 llm 输入输出都是 token ，而 token 采样的时候引入了不确定性，这会要求模型有更多的参数和计算来提升精度，因此很难获取一个非常理想的 token-level 的 draft model  。并且由于 token-level 的问题是<strong>离散空间里稀疏变量</strong>的问题，而 feature 则是一个<strong>高维的连续向量</strong>。因此 feature 的变化是容易学习的，针对他设计的模型也更简单，推理也快得多</p>
-<p>而针对上面的<em>观察二</em>，我的理解是：在常规llm流程中，一般是 hidden<em>states -&gt; logits -&gt; 采样得到token -&gt; hidden_state，也就是说采样这一步给feature引入了不确定性。为了消除这个不确定性，可以把采样完的 token 和 hidden_state(feature) 一并输入；换句话说，从$f_i$出发，当前的 feature 并不知道自己要往哪个方向进行变化，因为是 token 的采样决定了它这一轮的变化，所以将采样完的 token 一并作为数据，相当于告诉了 $f_i$ 一个走向 $f</em>{i+1}$的方向，可以极大消除的不确定性，提高接受率。</p>
-<hr>
-<h3 id="论文节选"><a href="#论文节选" class="headerlink" title="论文节选"></a>论文节选</h3><h4 id="1-EAGLE-pipeline-Draft-Model"><a href="#1-EAGLE-pipeline-Draft-Model" class="headerlink" title="1. EAGLE pipeline / Draft Model"></a>1. EAGLE pipeline / Draft Model</h4><p>下图为 EAGLE 推理的流程：</p>
-<ul>
-<li>green : embedding</li>
-<li>orange : feature</li>
-<li>red : prediction of draft model</li>
-<li>blue (with snow icon) : target LLM parameter</li>
-</ul>
-<p><style>.zjjrrkgpujes{zoom: 33%;}</style><img src="/2026/02/13/EAGLE/pipeline1.png" class="zjjrrkgpujes" alt="pipeline1"></p>
-<p>可以看到这里 Draft Model 由三部分组成：</p>
-<ol>
-<li>Embedding Layer : 与目标 LLM 共享</li>
-<li>LM Head : 与目标 LLM 共享</li>
-<li>Autoregression Head ：由一层 FC layer 和一层 decoder 构成</li>
-</ol>
-<p>Draft Model 的输入是一个形状为 (bs, seq_len, hidden_size) 的 feature 和一个形状为 (bs, seq_len) 的 token 。token 序列会被 <code>embedding</code>层转换成 embedding ，最后合并成形状为 (bs, seq_len, 2*hidden_size) 的输入</p>
-<p>FC 层的作用是将 (bs, seq_len, 2*hidden_size) 降维成 (bs, seq_len, hidden_size)  </p>
-<p>在计算 draft 的时候，EAGLE 构建了一颗树。这棵 Draft Tree 的深度是$m$ ，拥有超过$m$个的 token 数，只会执行$m$步 forward。</p>
-<p>例如，下图是草稿生成的过程中构建的树，可以看到天然的不含有 Medusa 中那种缺乏逻辑性的分支。 这里深度为3，token数为10</p>
-<p><style>.ywilsemkzfcc{zoom:50%;}</style><img src="/2026/02/13/EAGLE/pipeline2.png" class="ywilsemkzfcc" alt="pipeline2"></p>
-<p>对于这颗树的构建规则，附录中有提到一些：</p>
-<ul>
-<li>greedy：每个节点选择 top k 作为儿子</li>
-<li>intuition：高概率的分支应该更深/更广</li>
-</ul>
-<p>最终都使用了这颗静态的树</p>
-<p><img src="static-tree-1771773783330-7.png" alt="static-tree"></p>
-<p><del>具体的后面看完代码之后可能我会来补</del></p>
-<p>（EAGLE-2改成动态树了，不看这一块了）</p>
-<h4 id="2-Training"><a href="#2-Training" class="headerlink" title="2.Training"></a>2.Training</h4><p>这是草稿模型进行一次前向传播$\hat{f}_{i+1} = DraftModel([f_i; e(t_i)])$</p>
-<p>预测下一个 feature 使用了残差的方式，并使用了 <em>Smooth L1</em> 作为损失</p>
-<script type="math/tex; mode=display">L_{reg} = Smooth \space L1 (f_{i+1} , Draft\_Model(T_{2:i+1}, F_{1:i}))</script><p>而预测下一个 token 则是一个 <em>Classification loss</em></p>
-<script type="math/tex; mode=display">p_{i+2} = Softmax(LM Head(f_{i+1}))</script><script type="math/tex; mode=display">\hat{p}*{i+2} = Softmax(LM Head(\hat{f}*{i+1}))</script><script type="math/tex; mode=display">L_{cls} = CrossEntropy(p_{i+2}, \hat{p}_{i+2})</script><p>最后联合回归损失和分类损失，得到$L = L<em>{reg} + w</em>{cls}*L_{cls}$</p>
-<p>通常分类损失是显著大的，所以论文中将权重$w$设置为了 0.1</p>
-<h4 id="3-Verify"><a href="#3-Verify" class="headerlink" title="3.Verify"></a>3.Verify</h4><p>使用了和 <code>Medusa</code>中类似的 Tree Attention</p>
-<hr>
-<h2 id="EAGLE-2"><a href="#EAGLE-2" class="headerlink" title="EAGLE-2"></a>EAGLE-2</h2><p>和第一版的主要区别是<strong><em>树</em></strong>的变化 （Context-aware dynamic draft tree）</p>
-<p>文章在开头首先指出了 EAGLE 和 Medusa 使用的都是同样的静态 draft tree ，这本质上基于了一个假设：一个 token 的接受率很大程度上取决于他在这个树上的位置</p>
-<p>但是这和 spec sampling 中 <em>“some tokens are simpler  and can be predicted by smaller models”</em>会产生冲突，实验也发现了 token 接受率还和上下文密切相关。因此静态树有天然的限制。在不同的 context 下动态的调整树会更好</p>
-<p>要想拥有更适应 context 的动态结构，就需要原始 LLM 对上下文的推导。但是这与加速的目的相悖了。但是 EAGLE 的实验结果证明了 draft model 具有良好的校准性（Well-calibrated），它的置信度分数（即概率）能够很好地近似 Draft Token 的接受率</p>
-<p>EAGLE-2 基于这一点事实展开，通过动态树的构建提高了接受率（acceptance rate）</p>
-<h3 id="Well-Calibrated-Draft-Model"><a href="#Well-Calibrated-Draft-Model" class="headerlink" title="Well-Calibrated Draft Model"></a>Well-Calibrated Draft Model</h3><p><style>.pmakbyqspqpl{zoom: 80%;}</style><img src="/2026/02/13/EAGLE/cali.png" class="pmakbyqspqpl" alt="cali"></p>
-<p>EAGLE-2 提供了这样一张统计图，其中$Confidence(x) = P<em>{draft}(x) = \frac{\exp(Logit_x)}{\sum \exp(Logit_i)}$，$\text{Acceptance Rate} = \min\left(1, \frac{P</em>{target}(x)}{P_{draft}(x)}\right)$</p>
-<p>Confidence 就是 Draft 预测的分布；而接受率在贪婪搜索下就是 $P<em>{target}$和 $P</em>{draft}$预测的最可能的结果一致，在随机采样中是如果 target 认为这个词出现的概率比 Draft 预测的概率还大，那么就是 1.0 的接受率，否则按照比例接受</p>
-<p>这样的校准性能够避免使用 Target LLM 对上下文的推导，仅仅用 Draft 就能寻找动态树的路径</p>
-<h3 id="Expansion-of-tree"><a href="#Expansion-of-tree" class="headerlink" title="Expansion of tree"></a>Expansion of tree</h3><p>Tree Attention 可以很好的并行验证，但是token太多开销过大，因此需要选择性的添加token</p>
-<p>因为否定一个 token 就是截断这条路径，所以衡量一个 token 的价值的值是 Global Acceptance，即$V<em>i = \prod</em>{i<em>j \in Path(root,t_i)} p_j \approx \prod</em>{i_j \in Path(root,t_i)} c_j$，然后留下 top-k的 token</p>
-<h3 id="Reranking-Nodes"><a href="#Reranking-Nodes" class="headerlink" title="Reranking Nodes"></a>Reranking Nodes</h3><p>经过 expand 之后，还要进行一次排序筛选，保留所有节点中期望收益最高，也就是 Global Acceptance最大的 $m$ 个 token</p>
-<p>这一步会有一个现象，就是浅层的 token 会比深层的 token 更有优势，因为每一次都是乘一个小于 1 的数，所以当模型很<strong>自信</strong>的时候，会生成更深的路径，一次推理中能走更多的步骤；而当模型很<strong>困惑</strong>的时候，树的结构趋向于“收缩”，预测趋于浅层，节省深层 token 验证的资源，提高整体期望值</p>
-<p>示例：</p>
-<p><style>.psmamdejsjhm{zoom:67%;}</style><img src="/2026/02/13/EAGLE/build-dy-tree.png" class="psmamdejsjhm" alt="build-dy-tree"></p>
-<p>用 tree-attention 验证：</p>
-<p><style>.qtdqaljpjlmw{zoom:50%;}</style><img src="/2026/02/13/EAGLE/verify-2.png" class="qtdqaljpjlmw" alt="verify-2"></p>
-<hr>
-<h2 id="EAGLE-3"><a href="#EAGLE-3" class="headerlink" title="EAGLE-3"></a>EAGLE-3</h2><p>第三版主要是在训练上</p>
-<h3 id="新的训练架构"><a href="#新的训练架构" class="headerlink" title="新的训练架构"></a>新的训练架构</h3><h4 id="Training-time-test"><a href="#Training-time-test" class="headerlink" title="Training-time test"></a>Training-time test</h4><p>EAGLE 的训练是基于 feature-level 的，训练的损失是联合回归损失和分类损失$L = L<em>{reg} + w</em>{cls}*L<em>{cls}$。$L</em>{reg}$是feature的损失，但是$L_{cls}$的 token 损失其实才是最终的目标。这也就意味着 feature 会施加一个额外的约束，让 Draft Model 很难在更大的 training data 中获益。为此 EAGLE-3 做了这样的尝试：</p>
-<ol>
-<li>取消 feature 的 loss ：$0\text{-}\alpha$显著提高，但是feature的预测显著下降导致$1\text{-}\alpha$以及后续急剧下降</li>
-<li>当前的训练是割裂的训练每一步，最终得到是一个<strong>单步预测器</strong>，因此幻觉可能在推理的过程中积累。通过在训练中加入推理得到的数据，可以很好的解决；同时可以把 feature 以这种形式加入训练</li>
-</ol>
-<p><img src="train-evolution.png" alt="train-evolution"></p>
-<p>上图展示了两种方法的逻辑，这种新的方法被命名为 training-time test</p>
-<h4 id="特征利用"><a href="#特征利用" class="headerlink" title="特征利用"></a>特征利用</h4><p>过去只使用最后的一层 hidden_layer 这个 feature ， 但是现在充分利用了其他的更多的 feature</p>
-<h3 id="Scaling-Law"><a href="#Scaling-Law" class="headerlink" title="Scaling Law"></a>Scaling Law</h3><p>新的架构随着 Data 的增长，Accept Rate 也显示出了增长</p>
-<h3 id="Pipeline"><a href="#Pipeline" class="headerlink" title="Pipeline"></a>Pipeline</h3><p>第三版的pipeline如下图。除了增加了底层的 hidden_state 的使用；同时由于训练的时候使用的新方法，draft 部分原本的单步预测器也变成了更 transformer 的 decoder；decoder输入的序列中，会重复使用生成的 draft feature，对应了训练得到的”<strong>轨迹感</strong>“，能根据前面所有步骤形成的动态趋势进行自我修正</p>
-<p><img src="eagle-3-pipe.png" alt="eagle-3-pipe"></p>
-<h3 id="Training"><a href="#Training" class="headerlink" title="Training"></a>Training</h3><p>唯一要训练的部分就是 transformer decoder，训练的时候用了 tree-mask，从一个序列里产出的只能看到它这条路径上的Key（示意图里用 token 来代替了 feature 的表示）</p>
-<p><style>.stbmlrejfllj{zoom:67%;}</style><img src="/2026/02/13/EAGLE/eagle-treemask.png" class="stbmlrejfllj" alt="eagle-treemask"></p>
-<p>对于每一步的训练，由于浅层的错误是更致命的，所以可能会给不同深度的节点分配训练权重，看代码的时候看看</p>
-<hr>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>EAGLE 由于加入了 token 的选择，可以加强 spec 过程中的上下文逻辑，减轻不确定性，从而获得更高的 Accept Rate</p>
-<p>第二版通过动态树的结构，算是优化了算力的调度，让计算资源流向了更有用的 token ，提升了推理效率</p>
-<p>第三版主要是在训练上增强，提升了 Draft Model 的表现</p>
-]]></content>
-      <categories>
-        <category>llm-inference</category>
-      </categories>
-      <tags>
-        <tag>LLM-inference</tag>
-      </tags>
   </entry>
   <entry>
     <title>GPU-Architecture</title>
@@ -710,6 +710,177 @@ o = \operatorname{softmax}\bigg(
       </categories>
       <tags>
         <tag>GPU</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>南京博物院</title>
+    <url>/2026/02/13/NanjingMuseum/</url>
+    <content><![CDATA[<h1 id="南京博物院"><a href="#南京博物院" class="headerlink" title="南京博物院"></a>南京博物院</h1><p>本南京人第一次来南京博物院</p>
+<span id="more"></span>
+<p><img src="gate.jpg" alt="gate"></p>
+<p>今天天气挺好的，南博有不少人</p>
+<p>南京博物院有好几个馆：</p>
+<ul>
+<li><p>历史馆</p>
+</li>
+<li><p>数字馆</p>
+</li>
+<li><p>民国馆</p>
+</li>
+<li><p>艺术馆</p>
+</li>
+<li><p>非遗馆</p>
+</li>
+</ul>
+<p>历史馆就是最传统的博物馆，也最有意思</p>
+<h2 id="历史馆"><a href="#历史馆" class="headerlink" title="历史馆"></a>历史馆</h2><p>历史馆从史前时期开始介绍江苏地区的历史，一直到民国前</p>
+<p><img src="elephant.jpg" alt="elephant"></p>
+<p>大猛犸象</p>
+<p><img src="spoon.jpg" alt="spoon"></p>
+<p>一个好像没有使用功能的小勺子</p>
+<p><img src="bronzepot.jpg" alt="bronzepot"></p>
+<p>青铜壶</p>
+<p><img src="bronze-crossbow.jpg" alt="bronze-crossbow"></p>
+<p>西汉示器的铜弩机</p>
+<p>这里的<em>错金银</em>工艺，指的就是把金丝/银丝嵌到器具里开好的槽中</p>
+<p><img src="Ox-shape-lamp.jpg" alt="Ox-shape-lamp"></p>
+<p>铜牛灯，虽然看着很像羊</p>
+<p><img src="pillow.jpg" alt="pillow"></p>
+<p>宋朝的瓷枕，感觉直接枕的话有点高<img src="bow.jpg" alt="bow"></p>
+<p>纹路很精美的茶盏</p>
+<p><img src="lion.jpg" alt="lion"></p>
+<p>狮子砖雕</p>
+<p><img src="horse.jpg" alt="horse"></p>
+<p>某个马头的复制品</p>
+<p><img src="seat.jpg" alt="seat"></p>
+<p>气派的座位和屏风，好像使用的珐琅工艺</p>
+<h2 id="数字馆"><a href="#数字馆" class="headerlink" title="数字馆"></a>数字馆</h2><p>没意思，放了点数字影像，不如在家看</p>
+<h2 id="民国馆"><a href="#民国馆" class="headerlink" title="民国馆"></a>民国馆</h2><p>感觉各地的民国馆都是这种交互式的商业街，<img src="street.jpg" alt="street"></p>
+<p>火车头模型<img src="train.jpg" alt="train"></p>
+<h2 id="非遗馆"><a href="#非遗馆" class="headerlink" title="非遗馆"></a>非遗馆</h2><p>介绍了种种非遗，并且有相应的商品柜台</p>
+<h2 id="艺术馆"><a href="#艺术馆" class="headerlink" title="艺术馆"></a>艺术馆</h2><p>有一大半的展厅都没开，就看了几个</p>
+<h4 id="傅抱石-毛主席诗词画展"><a href="#傅抱石-毛主席诗词画展" class="headerlink" title="傅抱石 毛主席诗词画展"></a>傅抱石 毛主席诗词画展</h4><p>展示了傅抱石为毛主席的诗词做的创作 下为《更喜岷山千里雪》</p>
+<p><img src="qianlixue.jpg" alt="qianlixue"></p>
+<h4 id="吴为山雕塑展"><a href="#吴为山雕塑展" class="headerlink" title="吴为山雕塑展"></a>吴为山雕塑展</h4><p><em>写意雕塑</em>，感觉很有意思，鲁迅的青铜雕塑就很简洁有力</p>
+<p>这个《老子出关》非常写意了<img src="laozi.jpg" alt="laozi"></p>
+<h4 id="荷花专题展"><a href="#荷花专题展" class="headerlink" title="荷花专题展"></a>荷花专题展</h4><p><img src="lutos.jpg" alt="lutos"></p>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>旁边的明故宫遗址有好多人逛公园，天气确实好<img src="whether.jpg" alt="whether"></p>
+<p>有大爷在练书法<img src="calligraphy.jpg" alt="calligraphy"></p>
+]]></content>
+      <categories>
+        <category>游记</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>PD/DT-separation</title>
+    <url>/2026/03/20/PD-DT-separation/</url>
+    <content><![CDATA[<h1 id="有关PD-DT分离的一些想法"><a href="#有关PD-DT分离的一些想法" class="headerlink" title="有关PD/DT分离的一些想法"></a>有关PD/DT分离的一些想法</h1><p>最近实验室让看了有关这方面的论文，包括但不限kimi的<a href="[zhenghuawei923/Mooncake-kimi-ai: Mooncake is the serving platform for Kimi, a leading LLM service provided by Moonshot AI. kimiAI大模型](https://github.com/zhenghuawei923/Mooncake-kimi-ai">mooncake</a>)，以及tri-dao最新的<a href="[Speculative Speculative Decoding | OpenReview](https://openreview.net/forum?id=aL1Wnml9Ef">SSD</a>)</p>
+<h2 id="Mooncake"><a href="#Mooncake" class="headerlink" title="Mooncake"></a>Mooncake</h2><p>PD 分离的工程实现</p>
+<h2 id="SSD"><a href="#SSD" class="headerlink" title="SSD"></a>SSD</h2><p>在一个“节点”内部实现的一种简单的DT分离</p>
+<h2 id="一些想法"><a href="#一些想法" class="headerlink" title="一些想法"></a>一些想法</h2><p>如果要从现有的 PD 分离的方法中借鉴，那就要弄清现在两种方法的相似和不同</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>PD</th>
+<th>DT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>生命周期</td>
+<td>prefill的生命周期短，且在一轮独立的处理中，只会出现一次；<br />decode的生命周期就更长，会一直generate直到满足条件</td>
+<td>Draft阶段的推测是非常轻量的，所以它的生命周期更短<br />而 Target 的验证虽然一次性并行，但是本身是大的，所以周期长</td>
+</tr>
+<tr>
+<td>计算特性</td>
+<td>prefill阶段是密集型计算，规模随输入长度的增长而呈square/linear增长<br />decode阶段则是访存密集型，需要频繁的读写kvcache</td>
+<td>Verify 阶段同样是密集型计算，但是其增长取决于生成的 draft token 的长度以及可能生成的 draft 树<br />Draft阶段取决于生成的策略，从最naive的串行到 EAGLE 之类的树状结构，再到PEARL生成的串行的异步，以及SSD的网状的结果，计算特性会有所不同，并发的程度也不一样</td>
+</tr>
+<tr>
+<td>交互特性</td>
+<td>在一轮独立的处理，两者只会交互一次，传输KVCache</td>
+<td>在不依赖异步策略的一轮处理中，两者会多次交互，但是逻辑上的先后特性被完整转化成了时间上的先后顺序<br />而在实施了异步策略的一轮处理里，这个交互的逻辑就会变得更加复杂</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+]]></content>
+      <categories>
+        <category>llm-inference</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>PEARL</title>
+    <url>/2026/03/17/PEARL/</url>
+    <content><![CDATA[<h1 id="PEARL-论文阅读"><a href="#PEARL-论文阅读" class="headerlink" title="PEARL 论文阅读"></a>PEARL 论文阅读</h1><p>之前读 <code>EAGLE</code> 的时候就看到这位老哥在底下附上这篇 paper，最近要看 PD 分离有关的文字，正好看看这篇，记录一下</p>
+<span id="more"></span>
+<h2 id="Core-Idea"><a href="#Core-Idea" class="headerlink" title="Core Idea"></a>Core Idea</h2><p>传统的 SD 基于这样的原则：在完成一个序列的 Draft token的输出之后才进行一次验证，也就是说验证和推理天然存在一个<strong>逻辑上的先后关系</strong>，验证的同时是没有推理的进行的，推理的同时也无法进行验证</p>
+<p>为了能够让这两个过程并行起来，<code>PEARL</code>提出了两种验证的策略来帮助</p>
+<p><style>.clnlitbhecyk{zoom: 33%;}</style><img src="/2026/03/17/PEARL/pearl1.png" class="clnlitbhecyk" alt="pearl1"></p>
+<hr>
+<h2 id="Core-Concept"><a href="#Core-Concept" class="headerlink" title="Core Concept"></a>Core Concept</h2><p>两种验证策略，<code>pre-verify</code>和<code>post-verify</code>:</p>
+<ul>
+<li><code>pre</code>：这个策略的目标就是为了打破验证要在<strong>完整推测</strong>之后发生的限制，对<strong>prefix</strong>，在<strong>第一个 Draft Token</strong>出现的同时就进行验证，如果第一个就不接受，后面的都不会接受；同时这个做法也没有打破逻辑上的先后关系，感觉所有的推理中其实都可以使用这种利用资源的办法</li>
+<li><code>post</code>：这个 verify 旨在打破 vanilla SD 中 draft 的生成要等待 verify 结束来提供一个<strong>prefix</strong>，将多次 draft generation 之间的间隔合并；换句话说，假如一次的 draft token 生成中全对，那么就能继续接着生成，draft model 还有没发挥完的潜力，所以不需要 verify 生成的 prefix 去“打扰”现在健康的生成；而当错误的验证发生的时候，就要重回到 pre 的验证阶段</li>
+</ul>
+<p><style>.oreqcxoumfiz{zoom: 25%;}</style><img src="/2026/03/17/PEARL/pearl-pipe.png" class="oreqcxoumfiz" alt="pearl-pipe"></p>
+<hr>
+<h2 id="Thinking"><a href="#Thinking" class="headerlink" title="Thinking"></a>Thinking</h2><p>这个方法看起来挺nature的，但是就像pipeline里的分支预测那样，依赖于预测方向的可能性，也就是 draft 的<strong>接受率</strong>，</p>
+<p>推导了一个计算公式，假设</p>
+<ul>
+<li>$t_g$generate time</li>
+<li>$t_v$verify time</li>
+<li>$\gamma$一次draft生成的最大长度</li>
+<li>$\alpha$每个token的接受率</li>
+<li>$t_1$一个section的时间</li>
+</ul>
+<p>从一次推理的开始出发，也就是从一次<code>pre-verify</code>出发，一共有两种可能：verify 成功 / 失败</p>
+<p>失败的情况下，</p>
+<script type="math/tex; mode=display">t_f = max(\gamma t_g , t_v)</script><script type="math/tex; mode=display">n_t = 1</script><p>而成功的情况下，有可能连续进行多次的post-verity，概率为</p>
+<script type="math/tex; mode=display">P(accept = a\gamma + b) = \alpha^{a\gamma +b} (1-\alpha)</script><script type="math/tex; mode=display">t_s=(a+1)t_f</script><p>进行一下加权的计算，得到</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+E[n] &= (1-\alpha)\cdot 1 + \alpha \sum_{k=1}^{\infty} k \cdot \alpha^k (1-\alpha)
+= 1 - \alpha + \frac{\alpha^2}{1-\alpha}, \\
+E[t] &= (1-\alpha)t_s + \alpha \sum_{a=0}^{\infty} (a+1)t_s \cdot \alpha^{a\gamma} (1-\alpha)
+= (1-\alpha)t_s + \frac{\alpha(1-\alpha)t_s}{(1-\alpha^\gamma)^2}, \\
+E\left[\frac{\text{token}}{\text{s}}\right]
+&= \frac{E[n]}{E[t]}
+= \frac{1 - \alpha + \dfrac{\alpha^2}{1-\alpha}}
+{(1-\alpha)t_s + \dfrac{\alpha(1-\alpha)t_s}{(1-\alpha^\gamma)^2}},
+\end{aligned}</script><p>而 vanilla SD的平均收益</p>
+<script type="math/tex; mode=display">U=\frac{\alpha k}{k t_g + t_v}</script><p>简单取$t_v = 10 t_g$，$\gamma$= 4，得到了如下的图像，可以看到接受率高的时候是有显著的收益的</p>
+<p><style>.fdnxivnhlgyu{zoom:25%;}</style><img src="/2026/03/17/PEARL/graph.png" class="fdnxivnhlgyu" alt="graph"></p>
+<p>而且随着接受序列的边长，接受率是会下降的，也就是说真实的情况下不是等比数列，效果还要差一点</p>
+]]></content>
+      <categories>
+        <category>llm-inference</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Ray</title>
+    <url>/2026/03/13/Ray/</url>
+    <content><![CDATA[<h1 id="Ray-集群架构"><a href="#Ray-集群架构" class="headerlink" title="Ray 集群架构"></a>Ray 集群架构</h1><p>要想在多卡环境下进行训练，进行不同卡之间的通信和协同是必不可少的</p>
+<p>这里将简单记录一下对<strong>Ray</strong>集群架构的学习</p>
+<p>TODO:有空来补上</p>
+<p>看来这个坑要很久之后才能填上了</p>
+]]></content>
+      <categories>
+        <category>Architecture</category>
+      </categories>
+      <tags>
+        <tag>集群架构</tag>
       </tags>
   </entry>
   <entry>
@@ -1478,160 +1649,9 @@ git reset 会改变当前分支的指向，让分支回到某个历史提交。<
       </tags>
   </entry>
   <entry>
-    <title>PD/DT-separation</title>
-    <url>/2026/03/20/PD-DT-separation/</url>
-    <content><![CDATA[<h1 id="有关PD-DT分离的一些想法"><a href="#有关PD-DT分离的一些想法" class="headerlink" title="有关PD/DT分离的一些想法"></a>有关PD/DT分离的一些想法</h1><p>最近实验室让看了有关这方面的论文，包括但不限kimi的<a href="[zhenghuawei923/Mooncake-kimi-ai: Mooncake is the serving platform for Kimi, a leading LLM service provided by Moonshot AI. kimiAI大模型](https://github.com/zhenghuawei923/Mooncake-kimi-ai">mooncake</a>)，以及tri-dao最新的<a href="[Speculative Speculative Decoding | OpenReview](https://openreview.net/forum?id=aL1Wnml9Ef">SSD</a>)</p>
-<h2 id="Mooncake"><a href="#Mooncake" class="headerlink" title="Mooncake"></a>Mooncake</h2><p>PD 分离的工程实现</p>
-<h2 id="SSD"><a href="#SSD" class="headerlink" title="SSD"></a>SSD</h2><p>在一个“节点”内部实现的一种简单的DT分离</p>
-<h2 id="一些想法"><a href="#一些想法" class="headerlink" title="一些想法"></a>一些想法</h2><p>如果要从现有的 PD 分离的方法中借鉴，那就要弄清现在两种方法的相似和不同</p>
-<div class="table-container">
-<table>
-<thead>
-<tr>
-<th></th>
-<th>PD</th>
-<th>DT</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>生命周期</td>
-<td>prefill的生命周期短，且在一轮独立的处理中，只会出现一次；<br />decode的生命周期就更长，会一直generate直到满足条件</td>
-<td>Draft阶段的推测是非常轻量的，所以它的生命周期更短<br />而 Target 的验证虽然一次性并行，但是本身是大的，所以周期长</td>
-</tr>
-<tr>
-<td>计算特性</td>
-<td>prefill阶段是密集型计算，规模随输入长度的增长而呈square/linear增长<br />decode阶段则是访存密集型，需要频繁的读写kvcache</td>
-<td>Verify 阶段同样是密集型计算，但是其增长取决于生成的 draft token 的长度以及可能生成的 draft 树<br />Draft阶段取决于生成的策略，从最naive的串行到 EAGLE 之类的树状结构，再到PEARL生成的串行的异步，以及SSD的网状的结果，计算特性会有所不同，并发的程度也不一样</td>
-</tr>
-<tr>
-<td>交互特性</td>
-<td>在一轮独立的处理，两者只会交互一次，传输KVCache</td>
-<td>在不依赖异步策略的一轮处理中，两者会多次交互，但是逻辑上的先后特性被完整转化成了时间上的先后顺序<br />而在实施了异步策略的一轮处理里，这个交互的逻辑就会变得更加复杂</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
-]]></content>
-      <categories>
-        <category>llm-inference</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>PEARL</title>
-    <url>/2026/03/17/PEARL/</url>
-    <content><![CDATA[<h1 id="PEARL-论文阅读"><a href="#PEARL-论文阅读" class="headerlink" title="PEARL 论文阅读"></a>PEARL 论文阅读</h1><p>之前读 <code>EAGLE</code> 的时候就看到这位老哥在底下附上这篇 paper，最近要看 PD 分离有关的文字，正好看看这篇，记录一下</p>
-<span id="more"></span>
-<h2 id="Core-Idea"><a href="#Core-Idea" class="headerlink" title="Core Idea"></a>Core Idea</h2><p>传统的 SD 基于这样的原则：在完成一个序列的 Draft token的输出之后才进行一次验证，也就是说验证和推理天然存在一个<strong>逻辑上的先后关系</strong>，验证的同时是没有推理的进行的，推理的同时也无法进行验证</p>
-<p>为了能够让这两个过程并行起来，<code>PEARL</code>提出了两种验证的策略来帮助</p>
-<p><style>.yoklrouwjoiz{zoom: 33%;}</style><img src="/2026/03/17/PEARL/pearl1.png" class="yoklrouwjoiz" alt="pearl1"></p>
-<hr>
-<h2 id="Core-Concept"><a href="#Core-Concept" class="headerlink" title="Core Concept"></a>Core Concept</h2><p>两种验证策略，<code>pre-verify</code>和<code>post-verify</code>:</p>
-<ul>
-<li><code>pre</code>：这个策略的目标就是为了打破验证要在<strong>完整推测</strong>之后发生的限制，对<strong>prefix</strong>，在<strong>第一个 Draft Token</strong>出现的同时就进行验证，如果第一个就不接受，后面的都不会接受；同时这个做法也没有打破逻辑上的先后关系，感觉所有的推理中其实都可以使用这种利用资源的办法</li>
-<li><code>post</code>：这个 verify 旨在打破 vanilla SD 中 draft 的生成要等待 verify 结束来提供一个<strong>prefix</strong>，将多次 draft generation 之间的间隔合并；换句话说，假如一次的 draft token 生成中全对，那么就能继续接着生成，draft model 还有没发挥完的潜力，所以不需要 verify 生成的 prefix 去“打扰”现在健康的生成；而当错误的验证发生的时候，就要重回到 pre 的验证阶段</li>
-</ul>
-<p><style>.ugkaqmhgbndd{zoom: 25%;}</style><img src="/2026/03/17/PEARL/pearl-pipe.png" class="ugkaqmhgbndd" alt="pearl-pipe"></p>
-<hr>
-<h2 id="Thinking"><a href="#Thinking" class="headerlink" title="Thinking"></a>Thinking</h2><p>这个方法看起来挺nature的，但是就像pipeline里的分支预测那样，依赖于预测方向的可能性，也就是 draft 的<strong>接受率</strong>，</p>
-<p>推导了一个计算公式，假设</p>
-<ul>
-<li>$t_g$generate time</li>
-<li>$t_v$verify time</li>
-<li>$\gamma$一次draft生成的最大长度</li>
-<li>$\alpha$每个token的接受率</li>
-<li>$t_1$一个section的时间</li>
-</ul>
-<p>从一次推理的开始出发，也就是从一次<code>pre-verify</code>出发，一共有两种可能：verify 成功 / 失败</p>
-<p>失败的情况下，</p>
-<script type="math/tex; mode=display">t_f = max(\gamma t_g , t_v)</script><script type="math/tex; mode=display">n_t = 1</script><p>而成功的情况下，有可能连续进行多次的post-verity，概率为</p>
-<script type="math/tex; mode=display">P(accept = a\gamma + b) = \alpha^{a\gamma +b} (1-\alpha)</script><script type="math/tex; mode=display">t_s=(a+1)t_f</script><p>进行一下加权的计算，得到</p>
-<script type="math/tex; mode=display">
-\begin{aligned}
-E[n] &= (1-\alpha)\cdot 1 + \alpha \sum_{k=1}^{\infty} k \cdot \alpha^k (1-\alpha)
-= 1 - \alpha + \frac{\alpha^2}{1-\alpha}, \\
-E[t] &= (1-\alpha)t_s + \alpha \sum_{a=0}^{\infty} (a+1)t_s \cdot \alpha^{a\gamma} (1-\alpha)
-= (1-\alpha)t_s + \frac{\alpha(1-\alpha)t_s}{(1-\alpha^\gamma)^2}, \\
-E\left[\frac{\text{token}}{\text{s}}\right]
-&= \frac{E[n]}{E[t]}
-= \frac{1 - \alpha + \dfrac{\alpha^2}{1-\alpha}}
-{(1-\alpha)t_s + \dfrac{\alpha(1-\alpha)t_s}{(1-\alpha^\gamma)^2}},
-\end{aligned}</script><p>而 vanilla SD的平均收益</p>
-<script type="math/tex; mode=display">U=\frac{\alpha k}{k t_g + t_v}</script><p>简单取$t_v = 10 t_g$，$\gamma$= 4，得到了如下的图像，可以看到接受率高的时候是有显著的收益的</p>
-<p><style>.gslguhhotsjr{zoom:25%;}</style><img src="/2026/03/17/PEARL/graph.png" class="gslguhhotsjr" alt="graph"></p>
-<p>而且随着接受序列的边长，接受率是会下降的，也就是说真实的情况下不是等比数列，效果还要差一点</p>
-]]></content>
-      <categories>
-        <category>llm-inference</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>南京博物院</title>
-    <url>/2026/02/13/NanjingMuseum/</url>
-    <content><![CDATA[<h1 id="南京博物院"><a href="#南京博物院" class="headerlink" title="南京博物院"></a>南京博物院</h1><p>本南京人第一次来南京博物院</p>
-<span id="more"></span>
-<p><img src="gate.jpg" alt="gate"></p>
-<p>今天天气挺好的，南博有不少人</p>
-<p>南京博物院有好几个馆：</p>
-<ul>
-<li><p>历史馆</p>
-</li>
-<li><p>数字馆</p>
-</li>
-<li><p>民国馆</p>
-</li>
-<li><p>艺术馆</p>
-</li>
-<li><p>非遗馆</p>
-</li>
-</ul>
-<p>历史馆就是最传统的博物馆，也最有意思</p>
-<h2 id="历史馆"><a href="#历史馆" class="headerlink" title="历史馆"></a>历史馆</h2><p>历史馆从史前时期开始介绍江苏地区的历史，一直到民国前</p>
-<p><img src="elephant.jpg" alt="elephant"></p>
-<p>大猛犸象</p>
-<p><img src="spoon.jpg" alt="spoon"></p>
-<p>一个好像没有使用功能的小勺子</p>
-<p><img src="bronzepot.jpg" alt="bronzepot"></p>
-<p>青铜壶</p>
-<p><img src="bronze-crossbow.jpg" alt="bronze-crossbow"></p>
-<p>西汉示器的铜弩机</p>
-<p>这里的<em>错金银</em>工艺，指的就是把金丝/银丝嵌到器具里开好的槽中</p>
-<p><img src="Ox-shape-lamp.jpg" alt="Ox-shape-lamp"></p>
-<p>铜牛灯，虽然看着很像羊</p>
-<p><img src="pillow.jpg" alt="pillow"></p>
-<p>宋朝的瓷枕，感觉直接枕的话有点高<img src="bow.jpg" alt="bow"></p>
-<p>纹路很精美的茶盏</p>
-<p><img src="lion.jpg" alt="lion"></p>
-<p>狮子砖雕</p>
-<p><img src="horse.jpg" alt="horse"></p>
-<p>某个马头的复制品</p>
-<p><img src="seat.jpg" alt="seat"></p>
-<p>气派的座位和屏风，好像使用的珐琅工艺</p>
-<h2 id="数字馆"><a href="#数字馆" class="headerlink" title="数字馆"></a>数字馆</h2><p>没意思，放了点数字影像，不如在家看</p>
-<h2 id="民国馆"><a href="#民国馆" class="headerlink" title="民国馆"></a>民国馆</h2><p>感觉各地的民国馆都是这种交互式的商业街，<img src="street.jpg" alt="street"></p>
-<p>火车头模型<img src="train.jpg" alt="train"></p>
-<h2 id="非遗馆"><a href="#非遗馆" class="headerlink" title="非遗馆"></a>非遗馆</h2><p>介绍了种种非遗，并且有相应的商品柜台</p>
-<h2 id="艺术馆"><a href="#艺术馆" class="headerlink" title="艺术馆"></a>艺术馆</h2><p>有一大半的展厅都没开，就看了几个</p>
-<h4 id="傅抱石-毛主席诗词画展"><a href="#傅抱石-毛主席诗词画展" class="headerlink" title="傅抱石 毛主席诗词画展"></a>傅抱石 毛主席诗词画展</h4><p>展示了傅抱石为毛主席的诗词做的创作 下为《更喜岷山千里雪》</p>
-<p><img src="qianlixue.jpg" alt="qianlixue"></p>
-<h4 id="吴为山雕塑展"><a href="#吴为山雕塑展" class="headerlink" title="吴为山雕塑展"></a>吴为山雕塑展</h4><p><em>写意雕塑</em>，感觉很有意思，鲁迅的青铜雕塑就很简洁有力</p>
-<p>这个《老子出关》非常写意了<img src="laozi.jpg" alt="laozi"></p>
-<h4 id="荷花专题展"><a href="#荷花专题展" class="headerlink" title="荷花专题展"></a>荷花专题展</h4><p><img src="lutos.jpg" alt="lutos"></p>
-<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>旁边的明故宫遗址有好多人逛公园，天气确实好<img src="whether.jpg" alt="whether"></p>
-<p>有大爷在练书法<img src="calligraphy.jpg" alt="calligraphy"></p>
-]]></content>
-      <categories>
-        <category>游记</category>
-      </categories>
+    <title>Singapore-pt2</title>
+    <url>/2025/07/05/Singapore-pt2/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>Singapore-pt1</title>
@@ -1690,13 +1710,13 @@ E\left[\frac{\text{token}}{\text{s}}\right]
 <p>中午随便找了附近一家的商场的食阁吃了点<img src="2d5bec702fe8cfa7f3543df661d5182b.jpg" alt="2d5bec702fe8cfa7f3543df661d5182b"></p>
 <h3 id="National-Museum"><a href="#National-Museum" class="headerlink" title="National Museum"></a>National Museum</h3><p>下午去到了sg的national museum</p>
 <p>这是路上看到的一所学校的大楼</p>
-<p><style>.luaclvcwjshg{zoom:33%;}</style><img src="/2025/06/28/Singapore-pt1/0f1671246836660576eadd08eb106caf.jpg" class="luaclvcwjshg" alt="0f1671246836660576eadd08eb106caf"></p>
-<p><style>.jbmbmuxcumqd{zoom:50%;}</style><img src="/2025/06/28/Singapore-pt1/89dd3664558775acbb86621ffd60a37e.jpg" class="jbmbmuxcumqd" alt="89dd3664558775acbb86621ffd60a37e"></p>
+<p><style>.fsauxukgasni{zoom:33%;}</style><img src="/2025/06/28/Singapore-pt1/0f1671246836660576eadd08eb106caf.jpg" class="fsauxukgasni" alt="0f1671246836660576eadd08eb106caf"></p>
+<p><style>.gqzkgisdqsqt{zoom:50%;}</style><img src="/2025/06/28/Singapore-pt1/89dd3664558775acbb86621ffd60a37e.jpg" class="gqzkgisdqsqt" alt="89dd3664558775acbb86621ffd60a37e"></p>
 <p>整个museum其实没什么东西，毕竟sg感觉历史也很有限；很大的一部分展品也是下南洋带过去的</p>
-<p><style>.wqprbkdisxqf{zoom:50%;}</style><img src="/2025/06/28/Singapore-pt1/e4b7b380a1f74fdf4ce7c9757d89413e.jpg" class="wqprbkdisxqf" alt="e4b7b380a1f74fdf4ce7c9757d89413e"></p>
-<p><style>.frimeinquidh{zoom:50%;}</style><img src="/2025/06/28/Singapore-pt1/f513af079cdb02c07c0268cb51c044ea.jpg" class="frimeinquidh" alt="f513af079cdb02c07c0268cb51c044ea"></p>
+<p><style>.vyxhwgpjfuce{zoom:50%;}</style><img src="/2025/06/28/Singapore-pt1/e4b7b380a1f74fdf4ce7c9757d89413e.jpg" class="vyxhwgpjfuce" alt="e4b7b380a1f74fdf4ce7c9757d89413e"></p>
+<p><style>.frkytzjwghdb{zoom:50%;}</style><img src="/2025/06/28/Singapore-pt1/f513af079cdb02c07c0268cb51c044ea.jpg" class="frkytzjwghdb" alt="f513af079cdb02c07c0268cb51c044ea"></p>
 <p>但是他们好像对被殖民的时期还挺感激？</p>
-<p><style>.uvxugjlpgvpq{zoom:50%;}</style><img src="/2025/06/28/Singapore-pt1/1c8611af95511d73f9c22d437719687f.jpg" class="uvxugjlpgvpq" alt="1c8611af95511d73f9c22d437719687f"></p>
+<p><style>.cnwtiskokeax{zoom:50%;}</style><img src="/2025/06/28/Singapore-pt1/1c8611af95511d73f9c22d437719687f.jpg" class="cnwtiskokeax" alt="1c8611af95511d73f9c22d437719687f"></p>
 <h3 id="Guitar-workshop"><a href="#Guitar-workshop" class="headerlink" title="Guitar workshop"></a>Guitar workshop</h3><p>下午找到了一家二手吉他行看了看</p>
 <p><img src="b28b5bbdc04ba8c60725a712796837b0.jpg" alt="b28b5bbdc04ba8c60725a712796837b0"></p>
 <p>一墙的fender哇，不过看着都是量产的，而且有挺多被原来的主人改造了</p>
@@ -1738,26 +1758,6 @@ E\left[\frac{\text{token}}{\text{s}}\right]
       <categories>
         <category>游记</category>
       </categories>
-  </entry>
-  <entry>
-    <title>Ray</title>
-    <url>/2026/03/13/Ray/</url>
-    <content><![CDATA[<h1 id="Ray-集群架构"><a href="#Ray-集群架构" class="headerlink" title="Ray 集群架构"></a>Ray 集群架构</h1><p>要想在多卡环境下进行训练，进行不同卡之间的通信和协同是必不可少的</p>
-<p>这里将简单记录一下对<strong>Ray</strong>集群架构的学习</p>
-<p>TODO:有空来补上</p>
-<p>看来这个坑要很久之后才能填上了</p>
-]]></content>
-      <categories>
-        <category>Architecture</category>
-      </categories>
-      <tags>
-        <tag>集群架构</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Singapore-pt2</title>
-    <url>/2025/07/05/Singapore-pt2/</url>
-    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>Singapore-pt3</title>
@@ -2007,16 +2007,6 @@ E\left[\frac{\text{token}}{\text{s}}\right]
       <tags>
         <tag>vpn</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>deepseek-v4</title>
-    <url>/2026/04/25/deepseek-v4/</url>
-    <content><![CDATA[<p>最近太忙了 有空再来补上ds-v4的技术博客</p>
-<p>目前看他们的技术报告的话主要就是</p>
-<ol>
-<li>hybrid attention：用了dsa和一个低秩投影之后的dense attn</li>
-</ol>
-<h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h2>]]></content>
   </entry>
   <entry>
     <title>bridge-card</title>
@@ -2352,53 +2342,14 @@ E\left[\frac{\text{token}}{\text{s}}\right]
       </tags>
   </entry>
   <entry>
-    <title>SGLang-DSA-profile</title>
-    <url>/2026/04/13/dsa-sglang/</url>
-    <content><![CDATA[<h1 id="SGLang-dsa"><a href="#SGLang-dsa" class="headerlink" title="SGLang dsa"></a>SGLang dsa</h1><span id="more"></span>
-<h2 id="profile"><a href="#profile" class="headerlink" title="profile"></a>profile</h2><h3 id="goal"><a href="#goal" class="headerlink" title="goal"></a>goal</h3><p>本次实验的目标是：</p>
+    <title>deepseek-v4</title>
+    <url>/2026/04/25/deepseek-v4/</url>
+    <content><![CDATA[<p>最近太忙了 有空再来补上ds-v4的技术博客</p>
+<p>目前看他们的技术报告的话主要就是</p>
 <ol>
-<li>绘制heatmap来观察在一个seq里attn的pattern是什么样的</li>
-<li>统计一下不同的block-size内部选取kv indice的交集和并集的情况</li>
+<li>hybrid attention：用了dsa和一个低秩投影之后的dense attn</li>
 </ol>
-<h3 id="layer0"><a href="#layer0" class="headerlink" title="layer0"></a>layer0</h3><p>（layer0的attn pattern其实比较特殊，后面更深入的其他的layer的pattern其实比较相似，所以这里的分析的重要性弱于后面的分析）</p>
-<p>从longbench里找了一个长文本做了一次prefill，前 2048 token是直接使用的<code>standard mha</code>，也就是dense的attn</p>
-<p>这里画了几张 2048 - 8192 的heatmap（chunk prefill 的上限是8192，see in <code>srt/managers/scheduler.py</code>）</p>
-<p><img src="activation_heatmap.png" alt="activation_heatmap">可以看到这里的“横线”和”斜线“是非常明显的，说明其实attn显示出了很强的sink特征和relative特征，<code>lightning indexer</code>选择的kv倾向于选择：</p>
-<ol>
-<li><code>sink attn</code>：选取特定的绝对位置上的kv，维持全局性</li>
-<li><code>relative attn</code>：从当前query id向前看，每隔一些长度会选取一些kv</li>
-</ol>
-<p>随着窗口的长度增加还有在这样的特征：</p>
-<ol>
-<li>横线部分基本保持</li>
-<li>斜线部分渐渐弱化</li>
-</ol>
-<p>也就是随着窗口变大，relative attn 会给 sink attn 让位</p>
-<p><img src="relative_distance_heatmap.png" alt="relative_distance_heatmap"></p>
-<p>block内部选取indices的交集和并集</p>
-<p><img src="heatmap_block_distribution_highres.png" alt="heatmap_block_distribution_highres">这张图似乎能印证上面的一些观察，交集似乎就是具备sink特征的，而交集中剔除并集的部分很可能就是relative特征的</p>
-<p>根据上面的比例信息，以及实际选取数量的表格(此处未列出)，交集和并集的数量和block所在的位置没有显著的关系，在远离dense之后都会趋于一个恒定的值</p>
-<p>如果说并集就是 sink 的话，那么就是随着seq的增长，前面的sink的宽度减少为了给靠后的token一个出现在attn里的机会，并且这个sink的数量是比较稳定的（在最后7-8k的时候出现了一点下降的趋势，可能在更长的时候会下降？）</p>
-<p><img src="attn_patterns_fixed_offset.png" alt="attn_patterns_fixed_offset"></p>
-<p><img src="absolute_attention_heatmap_sparse_cleaned.png" alt="absolute_attention_heatmap_sparse_cleaned"></p>
-<h3 id="other-layer"><a href="#other-layer" class="headerlink" title="other layer"></a>other layer</h3><p>layer0之后的层的pattern都比较相似</p>
-<p>从heatmap里可以看出attn主要以<em>local</em>为主，<em>stride</em>为辅</p>
-<p><img src="absolute_attention_heatmap.png" alt="absolute_attention_heatmap"><br><img src="combined_metrics_layer_10.png" alt="combined_metrics_layer_10"></p>
-<p>可以看到这里的曲线的形状在直到chunk size 为128的时候都被很好的保持，说明128个相邻token之间选取的kv indices的相似度会比较高，平均数能达到755 ，也就是占到 1/3 左右；</p>
-<p> 下面的图是对locality进行了一些的分析</p>
-<p><img src="relative_distance_heatmap-1778035547754-4.png" alt="relative_distance_heatmap"><img src="relative_absolute_locality_layer_10.png" alt="relative_absolute_locality_layer_10"></p>
-<p>可以看到在128为一组里选取的local的相似度也是很高的</p>
-<h2 id="trade-off"><a href="#trade-off" class="headerlink" title="trade off"></a>trade off</h2><p>SGLang里的实现是 &lt;2048 直接使用 standard MHA，超过的部分才启用 MHA mode MLA；</p>
-<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a href="https://www.lmsys.org/blog/2025-09-29-deepseek-V32/">SGLang blog</a></p>
-<p><a href="https://github.com/sgl-project/sglang/blob/main/docs/advanced_features/attention_backend.md">SGLang attn backend</a></p>
-<p><a href="https://github.com/sgl-project/sglang/issues/11060">https://github.com/sgl-project/sglang/issues/11060</a></p>
-<p><a href="https://github.com/sgl-project/sglang/blob/main/docs/basic_usage/deepseek_v32.md">https://github.com/sgl-project/sglang/blob/main/docs/basic_usage/deepseek_v32.md</a></p>
-<p><a href="https://github.com/deepseek-ai/FlashMLA">https://github.com/deepseek-ai/FlashMLA</a></p>
-<p><a href="https://github.com/sgl-project/sglang/pull/11892">sglang-pr</a></p>
-]]></content>
-      <categories>
-        <category>llm-sys</category>
-      </categories>
+<h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h2>]]></content>
   </entry>
   <entry>
     <title>复刻的”镜像“与可能的“智能“</title>
@@ -2447,6 +2398,63 @@ E\left[\frac{\text{token}}{\text{s}}\right]
 ]]></content>
       <categories>
         <category>杂谈</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>dsa-op</title>
+    <url>/2026/05/08/dsa-op/</url>
+    <content><![CDATA[<h1 id="DSA算子分析"><a href="#DSA算子分析" class="headerlink" title="DSA算子分析"></a>DSA算子分析</h1><p>经过了前置的学习<a href="https://s1mplewind.github.io/2026/04/09/DSA/">DSA</a>以及<a href="https://s1mplewind.github.io/2026/05/06/flash-attn/">FA</a>的学习之后，是时候分析一下现有的dsa算子了</p>
+<p>分析的来源目前均为推理引擎SGLang中现有的实现</p>
+<span id="more"></span>
+<h2 id="flash-mla"><a href="#flash-mla" class="headerlink" title="flash-mla"></a>flash-mla</h2><h2 id="flash-mla-sparse"><a href="#flash-mla-sparse" class="headerlink" title="flash-mla-sparse"></a>flash-mla-sparse</h2><h2 id="fa3"><a href="#fa3" class="headerlink" title="fa3"></a>fa3</h2>]]></content>
+  </entry>
+  <entry>
+    <title>SGLang-DSA-profile</title>
+    <url>/2026/04/13/dsa-sglang/</url>
+    <content><![CDATA[<h1 id="SGLang-dsa"><a href="#SGLang-dsa" class="headerlink" title="SGLang dsa"></a>SGLang dsa</h1><span id="more"></span>
+<h2 id="profile"><a href="#profile" class="headerlink" title="profile"></a>profile</h2><h3 id="goal"><a href="#goal" class="headerlink" title="goal"></a>goal</h3><p>本次实验的目标是：</p>
+<ol>
+<li>绘制heatmap来观察在一个seq里attn的pattern是什么样的</li>
+<li>统计一下不同的block-size内部选取kv indice的交集和并集的情况</li>
+</ol>
+<h3 id="layer0"><a href="#layer0" class="headerlink" title="layer0"></a>layer0</h3><p>（layer0的attn pattern其实比较特殊，后面更深入的其他的layer的pattern其实比较相似，所以这里的分析的重要性弱于后面的分析）</p>
+<p>从longbench里找了一个长文本做了一次prefill，前 2048 token是直接使用的<code>standard mha</code>，也就是dense的attn</p>
+<p>这里画了几张 2048 - 8192 的heatmap（chunk prefill 的上限是8192，see in <code>srt/managers/scheduler.py</code>）</p>
+<p><img src="activation_heatmap.png" alt="activation_heatmap">可以看到这里的“横线”和”斜线“是非常明显的，说明其实attn显示出了很强的sink特征和relative特征，<code>lightning indexer</code>选择的kv倾向于选择：</p>
+<ol>
+<li><code>sink attn</code>：选取特定的绝对位置上的kv，维持全局性</li>
+<li><code>relative attn</code>：从当前query id向前看，每隔一些长度会选取一些kv</li>
+</ol>
+<p>随着窗口的长度增加还有在这样的特征：</p>
+<ol>
+<li>横线部分基本保持</li>
+<li>斜线部分渐渐弱化</li>
+</ol>
+<p>也就是随着窗口变大，relative attn 会给 sink attn 让位</p>
+<p><img src="relative_distance_heatmap.png" alt="relative_distance_heatmap"></p>
+<p>block内部选取indices的交集和并集</p>
+<p><img src="heatmap_block_distribution_highres.png" alt="heatmap_block_distribution_highres">这张图似乎能印证上面的一些观察，交集似乎就是具备sink特征的，而交集中剔除并集的部分很可能就是relative特征的</p>
+<p>根据上面的比例信息，以及实际选取数量的表格(此处未列出)，交集和并集的数量和block所在的位置没有显著的关系，在远离dense之后都会趋于一个恒定的值</p>
+<p>如果说并集就是 sink 的话，那么就是随着seq的增长，前面的sink的宽度减少为了给靠后的token一个出现在attn里的机会，并且这个sink的数量是比较稳定的（在最后7-8k的时候出现了一点下降的趋势，可能在更长的时候会下降？）</p>
+<p><img src="attn_patterns_fixed_offset.png" alt="attn_patterns_fixed_offset"></p>
+<p><img src="absolute_attention_heatmap_sparse_cleaned.png" alt="absolute_attention_heatmap_sparse_cleaned"></p>
+<h3 id="other-layer"><a href="#other-layer" class="headerlink" title="other layer"></a>other layer</h3><p>layer0之后的层的pattern都比较相似</p>
+<p>从heatmap里可以看出attn主要以<em>local</em>为主，<em>stride</em>为辅</p>
+<p><img src="absolute_attention_heatmap.png" alt="absolute_attention_heatmap"><br><img src="combined_metrics_layer_10.png" alt="combined_metrics_layer_10"></p>
+<p>可以看到这里的曲线的形状在直到chunk size 为128的时候都被很好的保持，说明128个相邻token之间选取的kv indices的相似度会比较高，平均数能达到755 ，也就是占到 1/3 左右；</p>
+<p> 下面的图是对locality进行了一些的分析</p>
+<p><img src="relative_distance_heatmap-1778035547754-4.png" alt="relative_distance_heatmap"><img src="relative_absolute_locality_layer_10.png" alt="relative_absolute_locality_layer_10"></p>
+<p>可以看到在128为一组里选取的local的相似度也是很高的</p>
+<h2 id="trade-off"><a href="#trade-off" class="headerlink" title="trade off"></a>trade off</h2><p>SGLang里的实现是 &lt;2048 直接使用 standard MHA，超过的部分才启用 MHA mode MLA；</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a href="https://www.lmsys.org/blog/2025-09-29-deepseek-V32/">SGLang blog</a></p>
+<p><a href="https://github.com/sgl-project/sglang/blob/main/docs/advanced_features/attention_backend.md">SGLang attn backend</a></p>
+<p><a href="https://github.com/sgl-project/sglang/issues/11060">https://github.com/sgl-project/sglang/issues/11060</a></p>
+<p><a href="https://github.com/sgl-project/sglang/blob/main/docs/basic_usage/deepseek_v32.md">https://github.com/sgl-project/sglang/blob/main/docs/basic_usage/deepseek_v32.md</a></p>
+<p><a href="https://github.com/deepseek-ai/FlashMLA">https://github.com/deepseek-ai/FlashMLA</a></p>
+<p><a href="https://github.com/sgl-project/sglang/pull/11892">sglang-pr</a></p>
+]]></content>
+      <categories>
+        <category>llm-sys</category>
       </categories>
   </entry>
   <entry>
@@ -2560,6 +2568,15 @@ SRAM(K_j,V_j) = 2B_cd < [\frac{M}{2}]</script><p>这里最后再补充一张示�
       </categories>
   </entry>
   <entry>
+    <title>Hello world!</title>
+    <url>/2025/12/06/hello-world/</url>
+    <content><![CDATA[<h1 id="Hello-world"><a href="#Hello-world" class="headerlink" title="Hello world !"></a>Hello world !</h1><p>this is gonna be my first blog, wish I‘ll have fun building it hh.</p>
+<h2 id="创建博客的原因"><a href="#创建博客的原因" class="headerlink" title="创建博客的原因"></a>创建博客的原因</h2><p>在这个社交媒体的时代，博客似乎已经丧失了他原本的社交属性（或许本来就没什么属性）。</p>
+<p>它变得更加像是日记一类私人的记录，但是也为了愿意来探访的人打开了一扇门</p>
+<p>anyway，我的博客从今天启程，以后可能用来记录生活或者技术</p>
+<h2 id="END"><a href="#END" class="headerlink" title="END"></a>END</h2>]]></content>
+  </entry>
+  <entry>
     <title>high-energy</title>
     <url>/2026/04/29/high-energy/</url>
     <content><![CDATA[<h1 id="杂谈一篇——与LLM共处的精力困境"><a href="#杂谈一篇——与LLM共处的精力困境" class="headerlink" title="杂谈一篇——与LLM共处的精力困境"></a>杂谈一篇——与LLM共处的精力困境</h1><p>终于算是把最近的任务都基本上完结了，打算在接下来的几天和五一假期看一些感兴趣的东西，先了结一下这篇文章</p>
@@ -2656,41 +2673,32 @@ SRAM(K_j,V_j) = 2B_cd < [\frac{M}{2}]</script><p>这里最后再补充一张示�
     <url>/2026/04/08/jeju-tour/</url>
     <content><![CDATA[<h1 id="Jeju-tour"><a href="#Jeju-tour" class="headerlink" title="Jeju-tour"></a>Jeju-tour</h1><span id="more"></span>
 <h2 id="day-1-9-81park-amp-挟才海水浴场-amp-涯月邑"><a href="#day-1-9-81park-amp-挟才海水浴场-amp-涯月邑" class="headerlink" title="day 1: 9.81park&amp;挟才海水浴场&amp;涯月邑"></a>day 1: 9.81park&amp;挟才海水浴场&amp;涯月邑</h2><h3 id="9-81-park"><a href="#9-81-park" class="headerlink" title="9.81 park"></a>9.81 park</h3><p>一个设施齐全的游乐场</p>
-<h4 id="卡丁车"><a href="#卡丁车" class="headerlink" title="卡丁车"></a>卡丁车</h4><p>先玩了无动力卡丁车<br>全程不踩刹车过弯的时候能很明显感受到横向的加速度，爽<style>.gmeukvthcqtj{zoom: 25%;}</style><img src="/2026/04/08/jeju-tour/e601cf9859018cb8465a1d5498389518.jpg" class="gmeukvthcqtj" alt="e601cf9859018cb8465a1d5498389518"></p>
+<h4 id="卡丁车"><a href="#卡丁车" class="headerlink" title="卡丁车"></a>卡丁车</h4><p>先玩了无动力卡丁车<br>全程不踩刹车过弯的时候能很明显感受到横向的加速度，爽<style>.otemvkoxgqrj{zoom: 25%;}</style><img src="/2026/04/08/jeju-tour/e601cf9859018cb8465a1d5498389518.jpg" class="otemvkoxgqrj" alt="e601cf9859018cb8465a1d5498389518"></p>
 <p>可惜了买的是4圈的票，在第二赛道开了三圈才拿到 master- license，没机会体验x赛道了<br>（壁垒第二赛道左边的道，比右边慢</p>
 <h4 id="真人cs"><a href="#真人cs" class="headerlink" title="真人cs"></a>真人cs</h4><p>虐待老年人</p>
-<p><style>.iggdrngsqhrd{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/53494babbd83132c0f35e2cbdfd4aa10.jpg" class="iggdrngsqhrd" alt="53494babbd83132c0f35e2cbdfd4aa10"></p>
-<h3 id="挟才海水浴场"><a href="#挟才海水浴场" class="headerlink" title="挟才海水浴场"></a>挟才海水浴场</h3><p>很蓝很清的海水<style>.zxzlnrdvaqmu{zoom: 33%;}</style><img src="/2026/04/08/jeju-tour/5a5ccecabfdbccf596023526700fa213.jpg" class="zxzlnrdvaqmu" alt="5a5ccecabfdbccf596023526700fa213"><br>四月的水温有点凉，但是穿着短裤下水也能接受<br>海风非常舒服<br>午饭吃了烤肉 好吃<style>.atvdybfehpof{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/676b8e6c617fccf938c937808240a45a.jpg" class="atvdybfehpof" alt="676b8e6c617fccf938c937808240a45a"></p>
-<h3 id="涯月邑"><a href="#涯月邑" class="headerlink" title="涯月邑"></a>涯月邑</h3><p>到上一站坐bus之后步行了半个小时到了涯月邑，沙滩没有挟才的好，但是周围有很多咖啡店可以出片<style>.cmjoxdcgsmly{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/15244c418395b661f8287bef1004c9ce.jpg" class="cmjoxdcgsmly" alt="15244c418395b661f8287bef1004c9ce"><style>.alssppmyvqcj{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/421aa2a1333321f0d244bce5576a206a.jpg" class="alssppmyvqcj" alt="421aa2a1333321f0d244bce5576a206a"><br>晚饭吃了steak，铸铁锅很有风味<style>.cgmrutovenqq{zoom: 25%;}</style><img src="/2026/04/08/jeju-tour/1d8bea52040dee13d77b80cd4f84e16b.jpg" class="cgmrutovenqq" alt="1d8bea52040dee13d77b80cd4f84e16b"><br>可惜晚上云多了 没看到落日</p>
-<h2 id="day2-wind1947-amp-偶来市场-amp-柱状节理带"><a href="#day2-wind1947-amp-偶来市场-amp-柱状节理带" class="headerlink" title="day2: wind1947 &amp; 偶来市场 &amp; 柱状节理带"></a>day2: wind1947 &amp; 偶来市场 &amp; 柱状节理带</h2><h3 id="1947"><a href="#1947" class="headerlink" title="1947"></a>1947</h3><p>去的路上顺带看了济州大学的樱花<style>.iuxyzyoejpeq{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/sakura.jpg" class="iuxyzyoejpeq" alt="sakura"></p>
+<p><style>.burbnmhlkgpq{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/53494babbd83132c0f35e2cbdfd4aa10.jpg" class="burbnmhlkgpq" alt="53494babbd83132c0f35e2cbdfd4aa10"></p>
+<h3 id="挟才海水浴场"><a href="#挟才海水浴场" class="headerlink" title="挟才海水浴场"></a>挟才海水浴场</h3><p>很蓝很清的海水<style>.ndynictpkoyz{zoom: 33%;}</style><img src="/2026/04/08/jeju-tour/5a5ccecabfdbccf596023526700fa213.jpg" class="ndynictpkoyz" alt="5a5ccecabfdbccf596023526700fa213"><br>四月的水温有点凉，但是穿着短裤下水也能接受<br>海风非常舒服<br>午饭吃了烤肉 好吃<style>.ffdhblpoutxo{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/676b8e6c617fccf938c937808240a45a.jpg" class="ffdhblpoutxo" alt="676b8e6c617fccf938c937808240a45a"></p>
+<h3 id="涯月邑"><a href="#涯月邑" class="headerlink" title="涯月邑"></a>涯月邑</h3><p>到上一站坐bus之后步行了半个小时到了涯月邑，沙滩没有挟才的好，但是周围有很多咖啡店可以出片<style>.rvsasbiscxpf{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/15244c418395b661f8287bef1004c9ce.jpg" class="rvsasbiscxpf" alt="15244c418395b661f8287bef1004c9ce"><style>.niordotafonm{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/421aa2a1333321f0d244bce5576a206a.jpg" class="niordotafonm" alt="421aa2a1333321f0d244bce5576a206a"><br>晚饭吃了steak，铸铁锅很有风味<style>.tnorixkjyjif{zoom: 25%;}</style><img src="/2026/04/08/jeju-tour/1d8bea52040dee13d77b80cd4f84e16b.jpg" class="tnorixkjyjif" alt="1d8bea52040dee13d77b80cd4f84e16b"><br>可惜晚上云多了 没看到落日</p>
+<h2 id="day2-wind1947-amp-偶来市场-amp-柱状节理带"><a href="#day2-wind1947-amp-偶来市场-amp-柱状节理带" class="headerlink" title="day2: wind1947 &amp; 偶来市场 &amp; 柱状节理带"></a>day2: wind1947 &amp; 偶来市场 &amp; 柱状节理带</h2><h3 id="1947"><a href="#1947" class="headerlink" title="1947"></a>1947</h3><p>去的路上顺带看了济州大学的樱花<style>.jonuidcejurq{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/sakura.jpg" class="jonuidcejurq" alt="sakura"></p>
 <p>这次是有动力的柴油卡丁车了 全程踩着油门，加速的时候有推背感，弯道的横向加速度也很明显，爽的<br>就是车子有点震，而且头盔老是飞</p>
-<h3 id="偶来"><a href="#偶来" class="headerlink" title="偶来"></a>偶来</h3><p>一个集市，进去先买了一筐🍊，皮薄肉厚，好吃<br>然后又尝了烤肉寿司、烤包子、丑橘汁、橘子年糕，都挺好吃的<style>.xtynpsquuowx{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/24d73d400c418e87cfb040192101444c.jpg" class="xtynpsquuowx" alt="24d73d400c418e87cfb040192101444c"><style>.ekkxoujxttuc{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/ec896faf7a8dcd07289c166abd0863bb.jpg" class="ekkxoujxttuc" alt="ec896faf7a8dcd07289c166abd0863bb"></p>
-<h3 id="柱状节理带"><a href="#柱状节理带" class="headerlink" title="柱状节理带"></a>柱状节理带</h3><p>火山岩浆冷却之后形成的六棱柱地貌<br>可惜天气不好，但是拍出来还是很震撼的<style>.zmbgeohljmmv{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/3eeaf91f6bc7510d0f72db1e1a7abbb6.jpg" class="zmbgeohljmmv" alt="3eeaf91f6bc7510d0f72db1e1a7abbb6"></p>
-<p>晚饭吃了酒店旁边一家烤肉 好吃<style>.fdullybyadmo{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/014061a780fd52e19226348459912313.jpg" class="fdullybyadmo" alt="014061a780fd52e19226348459912313"><br>回去的路上又整了炸鸡和年糕，非常juicy<style>.xhftykupgtio{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/23f18c67d62d45929f51465f98f47e03.jpg" class="xhftykupgtio" alt="23f18c67d62d45929f51465f98f47e03"></p>
-<h2 id="day3-日出峰-amp-牛岛"><a href="#day3-日出峰-amp-牛岛" class="headerlink" title="day3 日出峰&amp;牛岛"></a>day3 日出峰&amp;牛岛</h2><h3 id="日出峰"><a href="#日出峰" class="headerlink" title="日出峰"></a>日出峰</h3><p>海边的一座山峰，不是很高，爬了一二十分钟就能登顶，能俯瞰一部分的济州岛，眺望大海，景色不错<style>.wojylkplvivo{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/flower.jpg" class="wojylkplvivo" alt="flower"><style>.mdkmcaghfeqg{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/richufeng.jpg" class="mdkmcaghfeqg" alt="richufeng"></p>
-<h3 id="牛岛"><a href="#牛岛" class="headerlink" title="牛岛"></a>牛岛</h3><p>从小路走，乘着邮轮到牛岛，一座非常惬意的小岛<br>租了电助力单车之后开始逆时针环岛，景色非常放松，也有很多可以拍照打卡的地方<style>.lldvrigwwivo{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/piano.jpg" class="lldvrigwwivo" alt="piano"></p>
-<p>午饭吃了一家peanut burger（好像在一家海鲜饭旁边），猪肉烤的很好，牛肉也很juicy<style>.ohxarcmbesxs{zoom: 25%;}</style><img src="/2026/04/08/jeju-tour/burger.jpg" class="ohxarcmbesxs" alt="burger"></p>
-<p>牛岛边上的小岛吃到的peanut ice cream，好吃<br>一个奶奶从头开始做的，花生碎很香，冰淇淋的口感很清爽，味道比较淡，和甜甜的花生碎很搭，不过如果冰淇淋味道能浓一点就更好了<style>.qjgngdtsjzwr{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/peanut-icecream.jpg" class="qjgngdtsjzwr" alt="peanut-icecream"></p>
-<p>路上王哥拍到了落日<style>.xxrnhzfqrxlr{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/0cd96e03d686d3772ff7fc70b32e412c.jpg" class="xxrnhzfqrxlr" alt="0cd96e03d686d3772ff7fc70b32e412c"></p>
-<p>晚饭搜刮到了一家土豆脊骨汤，民俗脊骨汤的分店，似乎去对了地方，遇到的食客都是韩国人，还遇到了一个热情的黑龙江的朝鲜族阿姨教我们吃饭hhh<style>.sxyxhdcezdbq{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/d194a317c3dda4b06ad48963c480e728.jpg" class="sxyxhdcezdbq" alt="d194a317c3dda4b06ad48963c480e728"></p>
-<h2 id="day4"><a href="#day4" class="headerlink" title="day4"></a>day4</h2><h3 id="snoopy-garden"><a href="#snoopy-garden" class="headerlink" title="snoopy garden"></a>snoopy garden</h3><p>很美的一个花园，造景非常细节，对应snoopy里一些场景和情节<br>还有好多狗狗友好的小路<style>.fspmlixkijkr{zoom: 50%;}</style><img src="/2026/04/08/jeju-tour/1bceed035ea45c9c293aa9bf21f1fff7.jpg" class="fspmlixkijkr" alt="1bceed035ea45c9c293aa9bf21f1fff7"></p>
+<h3 id="偶来"><a href="#偶来" class="headerlink" title="偶来"></a>偶来</h3><p>一个集市，进去先买了一筐🍊，皮薄肉厚，好吃<br>然后又尝了烤肉寿司、烤包子、丑橘汁、橘子年糕，都挺好吃的<style>.kkdshblntvgl{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/24d73d400c418e87cfb040192101444c.jpg" class="kkdshblntvgl" alt="24d73d400c418e87cfb040192101444c"><style>.hxbggevnlbfq{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/ec896faf7a8dcd07289c166abd0863bb.jpg" class="hxbggevnlbfq" alt="ec896faf7a8dcd07289c166abd0863bb"></p>
+<h3 id="柱状节理带"><a href="#柱状节理带" class="headerlink" title="柱状节理带"></a>柱状节理带</h3><p>火山岩浆冷却之后形成的六棱柱地貌<br>可惜天气不好，但是拍出来还是很震撼的<style>.gdsnijqjfqok{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/3eeaf91f6bc7510d0f72db1e1a7abbb6.jpg" class="gdsnijqjfqok" alt="3eeaf91f6bc7510d0f72db1e1a7abbb6"></p>
+<p>晚饭吃了酒店旁边一家烤肉 好吃<style>.jyngthxkqjij{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/014061a780fd52e19226348459912313.jpg" class="jyngthxkqjij" alt="014061a780fd52e19226348459912313"><br>回去的路上又整了炸鸡和年糕，非常juicy<style>.tziujepjsvyu{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/23f18c67d62d45929f51465f98f47e03.jpg" class="tziujepjsvyu" alt="23f18c67d62d45929f51465f98f47e03"></p>
+<h2 id="day3-日出峰-amp-牛岛"><a href="#day3-日出峰-amp-牛岛" class="headerlink" title="day3 日出峰&amp;牛岛"></a>day3 日出峰&amp;牛岛</h2><h3 id="日出峰"><a href="#日出峰" class="headerlink" title="日出峰"></a>日出峰</h3><p>海边的一座山峰，不是很高，爬了一二十分钟就能登顶，能俯瞰一部分的济州岛，眺望大海，景色不错<style>.yuyntruqhbxe{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/flower.jpg" class="yuyntruqhbxe" alt="flower"><style>.srmhfvokrldv{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/richufeng.jpg" class="srmhfvokrldv" alt="richufeng"></p>
+<h3 id="牛岛"><a href="#牛岛" class="headerlink" title="牛岛"></a>牛岛</h3><p>从小路走，乘着邮轮到牛岛，一座非常惬意的小岛<br>租了电助力单车之后开始逆时针环岛，景色非常放松，也有很多可以拍照打卡的地方<style>.pnmsodiutibl{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/piano.jpg" class="pnmsodiutibl" alt="piano"></p>
+<p>午饭吃了一家peanut burger（好像在一家海鲜饭旁边），猪肉烤的很好，牛肉也很juicy<style>.nrnqmwgwpnqp{zoom: 25%;}</style><img src="/2026/04/08/jeju-tour/burger.jpg" class="nrnqmwgwpnqp" alt="burger"></p>
+<p>牛岛边上的小岛吃到的peanut ice cream，好吃<br>一个奶奶从头开始做的，花生碎很香，冰淇淋的口感很清爽，味道比较淡，和甜甜的花生碎很搭，不过如果冰淇淋味道能浓一点就更好了<style>.rvqvxvewhlrk{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/peanut-icecream.jpg" class="rvqvxvewhlrk" alt="peanut-icecream"></p>
+<p>路上王哥拍到了落日<style>.fpxpgbmbnjxj{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/0cd96e03d686d3772ff7fc70b32e412c.jpg" class="fpxpgbmbnjxj" alt="0cd96e03d686d3772ff7fc70b32e412c"></p>
+<p>晚饭搜刮到了一家土豆脊骨汤，民俗脊骨汤的分店，似乎去对了地方，遇到的食客都是韩国人，还遇到了一个热情的黑龙江的朝鲜族阿姨教我们吃饭hhh<style>.xfgrieotrapy{zoom:25%;}</style><img src="/2026/04/08/jeju-tour/d194a317c3dda4b06ad48963c480e728.jpg" class="xfgrieotrapy" alt="d194a317c3dda4b06ad48963c480e728"></p>
+<h2 id="day4"><a href="#day4" class="headerlink" title="day4"></a>day4</h2><h3 id="snoopy-garden"><a href="#snoopy-garden" class="headerlink" title="snoopy garden"></a>snoopy garden</h3><p>很美的一个花园，造景非常细节，对应snoopy里一些场景和情节<br>还有好多狗狗友好的小路<style>.xdpcyqtaudhf{zoom: 50%;}</style><img src="/2026/04/08/jeju-tour/1bceed035ea45c9c293aa9bf21f1fff7.jpg" class="xdpcyqtaudhf" alt="1bceed035ea45c9c293aa9bf21f1fff7"></p>
 <p>可惜的是主题餐厅出餐要1h就没有吃，最后在门口吃了一个红豆馅饼，很香</p>
-<h3 id="月汀里-tyimbjxfevvu-zoom-33"><a href="#月汀里-tyimbjxfevvu-zoom-33" class="headerlink" title="月汀里.tyimbjxfevvu{zoom:33%;}"></a>月汀里<style>.tyimbjxfevvu{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/4078ce22cd741a987580906c23e67bc9.jpg" class="tyimbjxfevvu" alt="4078ce22cd741a987580906c23e67bc9"></h3><p>午饭在月汀里一家专门做猪排的店，猪排很juicy可惜被馅饼填了肚子没吃完<style>.wrkfjxwmpbfl{zoom: 25%;}</style><img src="/2026/04/08/jeju-tour/6983327a1fd86b85c2960f0a1e778e3d.jpg" class="wrkfjxwmpbfl" alt="6983327a1fd86b85c2960f0a1e778e3d"><br>月汀里浴场的沙滩也很好，能下水的区域比挟才窄一点，但是也有咖啡馆</p>
+<h3 id="月汀里-teeptfuugpsq-zoom-33"><a href="#月汀里-teeptfuugpsq-zoom-33" class="headerlink" title="月汀里.teeptfuugpsq{zoom:33%;}"></a>月汀里<style>.teeptfuugpsq{zoom:33%;}</style><img src="/2026/04/08/jeju-tour/4078ce22cd741a987580906c23e67bc9.jpg" class="teeptfuugpsq" alt="4078ce22cd741a987580906c23e67bc9"></h3><p>午饭在月汀里一家专门做猪排的店，猪排很juicy可惜被馅饼填了肚子没吃完<style>.recbmrngluhc{zoom: 25%;}</style><img src="/2026/04/08/jeju-tour/6983327a1fd86b85c2960f0a1e778e3d.jpg" class="recbmrngluhc" alt="6983327a1fd86b85c2960f0a1e778e3d"><br>月汀里浴场的沙滩也很好，能下水的区域比挟才窄一点，但是也有咖啡馆</p>
 <p>最后走之前吃了炸鸡块 好吃</p>
 <h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>感谢wsq王哥的领导和max林总的摄影！</p>
 ]]></content>
       <categories>
         <category>游记</category>
       </categories>
-  </entry>
-  <entry>
-    <title>Hello world!</title>
-    <url>/2025/12/06/hello-world/</url>
-    <content><![CDATA[<h1 id="Hello-world"><a href="#Hello-world" class="headerlink" title="Hello world !"></a>Hello world !</h1><p>this is gonna be my first blog, wish I‘ll have fun building it hh.</p>
-<h2 id="创建博客的原因"><a href="#创建博客的原因" class="headerlink" title="创建博客的原因"></a>创建博客的原因</h2><p>在这个社交媒体的时代，博客似乎已经丧失了他原本的社交属性（或许本来就没什么属性）。</p>
-<p>它变得更加像是日记一类私人的记录，但是也为了愿意来探访的人打开了一扇门</p>
-<p>anyway，我的博客从今天启程，以后可能用来记录生活或者技术</p>
-<h2 id="END"><a href="#END" class="headerlink" title="END"></a>END</h2>]]></content>
   </entry>
   <entry>
     <title>leetcode-217</title>
@@ -2869,6 +2877,73 @@ SRAM(K_j,V_j) = 2B_cd < [\frac{M}{2}]</script><p>这里最后再补充一张示�
       </categories>
   </entry>
   <entry>
+    <title>pytorch框架</title>
+    <url>/2026/02/23/pytorch/</url>
+    <content><![CDATA[<h1 id="Pytorch框架学习"><a href="#Pytorch框架学习" class="headerlink" title="Pytorch框架学习"></a>Pytorch框架学习</h1><p>用 Pytorch 的时候都是用 llm 生成的代码，只会往<code>nn</code>模块里加点功能层，调用它提供的 Loss</p>
+<p>现在有空了多了解一点</p>
+<span id="more"></span>
+<h2 id="Pytorch中重要的元素"><a href="#Pytorch中重要的元素" class="headerlink" title="Pytorch中重要的元素"></a>Pytorch中重要的元素</h2><h3 id="1-Tensor"><a href="#1-Tensor" class="headerlink" title="1. Tensor"></a>1. Tensor</h3><p>tensor，张量，是记录一个多维空间里的点或向量的容器</p>
+<p>它可以是 <code>标量-&gt;向量-&gt;矩阵-&gt;张量</code></p>
+<h3 id="2-Autograd-N-Dynamic-Computation-Graph"><a href="#2-Autograd-N-Dynamic-Computation-Graph" class="headerlink" title="2.Autograd N Dynamic Computation Graph"></a>2.Autograd N Dynamic Computation Graph</h3><p>Pytorch 最特色的就是它的<strong>自动求导</strong>，他会在<strong>执行</strong>前向传播的时候记录下一个动态图，相当于实时构建与销毁一个 DAG</p>
+<p>只需要在初始化 Tensor 的时候传入<code>requires_grad = true</code></p>
+<p>动态计算图的优点有：</p>
+<ul>
+<li>更加灵活，更适用于条件判断或递归</li>
+<li>方便调试和修改，能直接查看中间结果</li>
+</ul>
+<h3 id="3-nn-Module"><a href="#3-nn-Module" class="headerlink" title="3. nn.Module"></a>3. <code>nn.Module</code></h3><p><code>neural network</code>模块是对复杂运算的封装，同时兼容与优化器<code>torch.optim</code>一起使用</p>
+<p>相当于一个大的黑盒子（整个 ResNet）里面可以装着很多中等的黑盒子（Residual Block），中等的里面装着小的黑盒子（Conv2d / ReLU等等）</p>
+<p>要想定义一个 model，有两张方法：使用 <em>自定义类</em> 或者是用 <em>Sequential</em></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">特性</th>
+<th style="text-align:left">自定义类 (继承 nn.Module)</th>
+<th style="text-align:left">nn.Sequential</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>forward 定义</strong></td>
+<td style="text-align:left">必须手动定义</td>
+<td style="text-align:left">自动按顺序执行</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>灵活性</strong></td>
+<td style="text-align:left">高（可以有任何复杂逻辑）</td>
+<td style="text-align:left">低（只能是简单顺序结构）</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>适用场景</strong></td>
+<td style="text-align:left">复杂网络、多分支、跳跃连接</td>
+<td style="text-align:left">简单顺序网络、快速原型</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="Sequential"><a href="#Sequential" class="headerlink" title="Sequential"></a>Sequential</h4><p>无需定义新的类，只用按顺序组合层</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model = nn.Sequential(</span><br><span class="line">    nn.Conv2d(<span class="number">3</span>, <span class="number">32</span>, <span class="number">3</span>),</span><br><span class="line">    nn.ReLU(),</span><br><span class="line">    nn.Conv2d(<span class="number">32</span>, <span class="number">64</span>, <span class="number">3</span>),</span><br><span class="line">    nn.ReLU(),</span><br><span class="line">    nn.Flatten(),</span><br><span class="line">    nn.Linear(<span class="number">64</span> * <span class="number">26</span> * <span class="number">26</span>, <span class="number">10</span>)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h4 id="自定义"><a href="#自定义" class="headerlink" title="自定义"></a>自定义</h4><p>从 <code>nn.module</code>继承一个子类，需要在<code>__init__</code>的时候定义<strong>网络层</strong>，同时在<code>forward</code>中定义数据流动的顺序</p>
+<h2 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h2><ol>
+<li><p><strong>目标（Loss Function）</strong>：定义一个“完美状态”与“当前状态”的距离</p>
+</li>
+<li><p><strong>感知（Forward）</strong>：系统根据现有参数对输入做出判断</p>
+</li>
+<li><p><strong>反馈（Backward）</strong>：系统发现判断错了，利用微积分算出梯度下降的方向</p>
+</li>
+<li><p><strong>修正（Optimizer）</strong>：根据反馈，微调参数</p>
+</li>
+</ol>
+<h2 id="Pytorch架构"><a href="#Pytorch架构" class="headerlink" title="Pytorch架构"></a>Pytorch架构</h2><p>示意图如下</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│                    PyTorch 生态系统                          │</span><br><span class="line">├─────────────────────────────────────────────────────────────┤</span><br><span class="line">│  torchvision  │  torchtext  │  torchaudio  │  其他专业库     │</span><br><span class="line">├─────────────────────────────────────────────────────────────┤</span><br><span class="line">│                     PyTorch 核心                            │</span><br><span class="line">├───────────────┬─────────────────┬───────────────────────────┤</span><br><span class="line">│   torch.nn    │   torch.optim   │      torch.utils          │</span><br><span class="line">│   (神经网络)   │   (优化器)      │      (工具函数)           │</span><br><span class="line">├───────────────┼─────────────────┼───────────────────────────┤</span><br><span class="line">│               │                 │   torch.utils.data        │</span><br><span class="line">│  torch 核心   │  autograd       │   (数据加载)              │</span><br><span class="line">│  (张量计算)    │  (自动微分)     │                           │</span><br><span class="line">└───────────────┴─────────────────┴───────────────────────────┘</span><br></pre></td></tr></table></figure>
+<p><img src="iGWbOXL.png" alt="img"></p>
+]]></content>
+      <categories>
+        <category>ML</category>
+      </categories>
+  </entry>
+  <entry>
     <title>suede-sh</title>
     <url>/2026/04/15/suede-sh/</url>
     <content><![CDATA[<h1 id="Suede-Shanghai"><a href="#Suede-Shanghai" class="headerlink" title="Suede Shanghai"></a>Suede Shanghai</h1><p>看帅老头</p>
@@ -2973,73 +3048,6 @@ SRAM(K_j,V_j) = 2B_cd < [\frac{M}{2}]</script><p>这里最后再补充一张示�
       <tags>
         <tag>llm-training</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>pytorch框架</title>
-    <url>/2026/02/23/pytorch/</url>
-    <content><![CDATA[<h1 id="Pytorch框架学习"><a href="#Pytorch框架学习" class="headerlink" title="Pytorch框架学习"></a>Pytorch框架学习</h1><p>用 Pytorch 的时候都是用 llm 生成的代码，只会往<code>nn</code>模块里加点功能层，调用它提供的 Loss</p>
-<p>现在有空了多了解一点</p>
-<span id="more"></span>
-<h2 id="Pytorch中重要的元素"><a href="#Pytorch中重要的元素" class="headerlink" title="Pytorch中重要的元素"></a>Pytorch中重要的元素</h2><h3 id="1-Tensor"><a href="#1-Tensor" class="headerlink" title="1. Tensor"></a>1. Tensor</h3><p>tensor，张量，是记录一个多维空间里的点或向量的容器</p>
-<p>它可以是 <code>标量-&gt;向量-&gt;矩阵-&gt;张量</code></p>
-<h3 id="2-Autograd-N-Dynamic-Computation-Graph"><a href="#2-Autograd-N-Dynamic-Computation-Graph" class="headerlink" title="2.Autograd N Dynamic Computation Graph"></a>2.Autograd N Dynamic Computation Graph</h3><p>Pytorch 最特色的就是它的<strong>自动求导</strong>，他会在<strong>执行</strong>前向传播的时候记录下一个动态图，相当于实时构建与销毁一个 DAG</p>
-<p>只需要在初始化 Tensor 的时候传入<code>requires_grad = true</code></p>
-<p>动态计算图的优点有：</p>
-<ul>
-<li>更加灵活，更适用于条件判断或递归</li>
-<li>方便调试和修改，能直接查看中间结果</li>
-</ul>
-<h3 id="3-nn-Module"><a href="#3-nn-Module" class="headerlink" title="3. nn.Module"></a>3. <code>nn.Module</code></h3><p><code>neural network</code>模块是对复杂运算的封装，同时兼容与优化器<code>torch.optim</code>一起使用</p>
-<p>相当于一个大的黑盒子（整个 ResNet）里面可以装着很多中等的黑盒子（Residual Block），中等的里面装着小的黑盒子（Conv2d / ReLU等等）</p>
-<p>要想定义一个 model，有两张方法：使用 <em>自定义类</em> 或者是用 <em>Sequential</em></p>
-<div class="table-container">
-<table>
-<thead>
-<tr>
-<th style="text-align:left">特性</th>
-<th style="text-align:left">自定义类 (继承 nn.Module)</th>
-<th style="text-align:left">nn.Sequential</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left"><strong>forward 定义</strong></td>
-<td style="text-align:left">必须手动定义</td>
-<td style="text-align:left">自动按顺序执行</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>灵活性</strong></td>
-<td style="text-align:left">高（可以有任何复杂逻辑）</td>
-<td style="text-align:left">低（只能是简单顺序结构）</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>适用场景</strong></td>
-<td style="text-align:left">复杂网络、多分支、跳跃连接</td>
-<td style="text-align:left">简单顺序网络、快速原型</td>
-</tr>
-</tbody>
-</table>
-</div>
-<h4 id="Sequential"><a href="#Sequential" class="headerlink" title="Sequential"></a>Sequential</h4><p>无需定义新的类，只用按顺序组合层</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model = nn.Sequential(</span><br><span class="line">    nn.Conv2d(<span class="number">3</span>, <span class="number">32</span>, <span class="number">3</span>),</span><br><span class="line">    nn.ReLU(),</span><br><span class="line">    nn.Conv2d(<span class="number">32</span>, <span class="number">64</span>, <span class="number">3</span>),</span><br><span class="line">    nn.ReLU(),</span><br><span class="line">    nn.Flatten(),</span><br><span class="line">    nn.Linear(<span class="number">64</span> * <span class="number">26</span> * <span class="number">26</span>, <span class="number">10</span>)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<h4 id="自定义"><a href="#自定义" class="headerlink" title="自定义"></a>自定义</h4><p>从 <code>nn.module</code>继承一个子类，需要在<code>__init__</code>的时候定义<strong>网络层</strong>，同时在<code>forward</code>中定义数据流动的顺序</p>
-<h2 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h2><ol>
-<li><p><strong>目标（Loss Function）</strong>：定义一个“完美状态”与“当前状态”的距离</p>
-</li>
-<li><p><strong>感知（Forward）</strong>：系统根据现有参数对输入做出判断</p>
-</li>
-<li><p><strong>反馈（Backward）</strong>：系统发现判断错了，利用微积分算出梯度下降的方向</p>
-</li>
-<li><p><strong>修正（Optimizer）</strong>：根据反馈，微调参数</p>
-</li>
-</ol>
-<h2 id="Pytorch架构"><a href="#Pytorch架构" class="headerlink" title="Pytorch架构"></a>Pytorch架构</h2><p>示意图如下</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│                    PyTorch 生态系统                          │</span><br><span class="line">├─────────────────────────────────────────────────────────────┤</span><br><span class="line">│  torchvision  │  torchtext  │  torchaudio  │  其他专业库     │</span><br><span class="line">├─────────────────────────────────────────────────────────────┤</span><br><span class="line">│                     PyTorch 核心                            │</span><br><span class="line">├───────────────┬─────────────────┬───────────────────────────┤</span><br><span class="line">│   torch.nn    │   torch.optim   │      torch.utils          │</span><br><span class="line">│   (神经网络)   │   (优化器)      │      (工具函数)           │</span><br><span class="line">├───────────────┼─────────────────┼───────────────────────────┤</span><br><span class="line">│               │                 │   torch.utils.data        │</span><br><span class="line">│  torch 核心   │  autograd       │   (数据加载)              │</span><br><span class="line">│  (张量计算)    │  (自动微分)     │                           │</span><br><span class="line">└───────────────┴─────────────────┴───────────────────────────┘</span><br></pre></td></tr></table></figure>
-<p><img src="iGWbOXL.png" alt="img"></p>
-]]></content>
-      <categories>
-        <category>ML</category>
-      </categories>
   </entry>
   <entry>
     <title>web_dev basics / front end</title>

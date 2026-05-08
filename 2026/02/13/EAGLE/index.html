@@ -134,7 +134,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">15</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">12</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">34</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">15</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">12</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">35</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
         </a>
@@ -202,7 +202,7 @@ Do a big SMILE to today!
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -353,7 +353,7 @@ Do a big SMILE to today!
 <li>red : prediction of draft model</li>
 <li>blue (with snow icon) : target LLM parameter</li>
 </ul>
-<p><style>.zjjrrkgpujes{zoom: 33%;}</style><img src="/2026/02/13/EAGLE/pipeline1.png" class="zjjrrkgpujes" alt="pipeline1"></p>
+<p><style>.vplvupthgkmo{zoom: 33%;}</style><img src="/2026/02/13/EAGLE/pipeline1.png" class="vplvupthgkmo" alt="pipeline1"></p>
 <p>可以看到这里 Draft Model 由三部分组成：</p>
 <ol>
 <li>Embedding Layer : 与目标 LLM 共享</li>
@@ -364,7 +364,7 @@ Do a big SMILE to today!
 <p>FC 层的作用是将 (bs, seq_len, 2*hidden_size) 降维成 (bs, seq_len, hidden_size)  </p>
 <p>在计算 draft 的时候，EAGLE 构建了一颗树。这棵 Draft Tree 的深度是$m$ ，拥有超过$m$个的 token 数，只会执行$m$步 forward。</p>
 <p>例如，下图是草稿生成的过程中构建的树，可以看到天然的不含有 Medusa 中那种缺乏逻辑性的分支。 这里深度为3，token数为10</p>
-<p><style>.ywilsemkzfcc{zoom:50%;}</style><img src="/2026/02/13/EAGLE/pipeline2.png" class="ywilsemkzfcc" alt="pipeline2"></p>
+<p><style>.khflanslwkti{zoom:50%;}</style><img src="/2026/02/13/EAGLE/pipeline2.png" class="khflanslwkti" alt="pipeline2"></p>
 <p>对于这颗树的构建规则，附录中有提到一些：</p>
 <ul>
 <li>greedy：每个节点选择 top k 作为儿子</li>
@@ -386,7 +386,7 @@ Do a big SMILE to today!
 <p>但是这和 spec sampling 中 <em>“some tokens are simpler  and can be predicted by smaller models”</em>会产生冲突，实验也发现了 token 接受率还和上下文密切相关。因此静态树有天然的限制。在不同的 context 下动态的调整树会更好</p>
 <p>要想拥有更适应 context 的动态结构，就需要原始 LLM 对上下文的推导。但是这与加速的目的相悖了。但是 EAGLE 的实验结果证明了 draft model 具有良好的校准性（Well-calibrated），它的置信度分数（即概率）能够很好地近似 Draft Token 的接受率</p>
 <p>EAGLE-2 基于这一点事实展开，通过动态树的构建提高了接受率（acceptance rate）</p>
-<h3 id="Well-Calibrated-Draft-Model"><a href="#Well-Calibrated-Draft-Model" class="headerlink" title="Well-Calibrated Draft Model"></a>Well-Calibrated Draft Model</h3><p><style>.pmakbyqspqpl{zoom: 80%;}</style><img src="/2026/02/13/EAGLE/cali.png" class="pmakbyqspqpl" alt="cali"></p>
+<h3 id="Well-Calibrated-Draft-Model"><a href="#Well-Calibrated-Draft-Model" class="headerlink" title="Well-Calibrated Draft Model"></a>Well-Calibrated Draft Model</h3><p><style>.rnkqiheoqpds{zoom: 80%;}</style><img src="/2026/02/13/EAGLE/cali.png" class="rnkqiheoqpds" alt="cali"></p>
 <p>EAGLE-2 提供了这样一张统计图，其中$Confidence(x) = P<em>{draft}(x) = \frac{\exp(Logit_x)}{\sum \exp(Logit_i)}$，$\text{Acceptance Rate} = \min\left(1, \frac{P</em>{target}(x)}{P_{draft}(x)}\right)$</p>
 <p>Confidence 就是 Draft 预测的分布；而接受率在贪婪搜索下就是 $P<em>{target}$和 $P</em>{draft}$预测的最可能的结果一致，在随机采样中是如果 target 认为这个词出现的概率比 Draft 预测的概率还大，那么就是 1.0 的接受率，否则按照比例接受</p>
 <p>这样的校准性能够避免使用 Target LLM 对上下文的推导，仅仅用 Draft 就能寻找动态树的路径</p>
@@ -395,9 +395,9 @@ Do a big SMILE to today!
 <h3 id="Reranking-Nodes"><a href="#Reranking-Nodes" class="headerlink" title="Reranking Nodes"></a>Reranking Nodes</h3><p>经过 expand 之后，还要进行一次排序筛选，保留所有节点中期望收益最高，也就是 Global Acceptance最大的 $m$ 个 token</p>
 <p>这一步会有一个现象，就是浅层的 token 会比深层的 token 更有优势，因为每一次都是乘一个小于 1 的数，所以当模型很<strong>自信</strong>的时候，会生成更深的路径，一次推理中能走更多的步骤；而当模型很<strong>困惑</strong>的时候，树的结构趋向于“收缩”，预测趋于浅层，节省深层 token 验证的资源，提高整体期望值</p>
 <p>示例：</p>
-<p><style>.psmamdejsjhm{zoom:67%;}</style><img src="/2026/02/13/EAGLE/build-dy-tree.png" class="psmamdejsjhm" alt="build-dy-tree"></p>
+<p><style>.lkkkifrrsdld{zoom:67%;}</style><img src="/2026/02/13/EAGLE/build-dy-tree.png" class="lkkkifrrsdld" alt="build-dy-tree"></p>
 <p>用 tree-attention 验证：</p>
-<p><style>.qtdqaljpjlmw{zoom:50%;}</style><img src="/2026/02/13/EAGLE/verify-2.png" class="qtdqaljpjlmw" alt="verify-2"></p>
+<p><style>.nwllsshmyyrh{zoom:50%;}</style><img src="/2026/02/13/EAGLE/verify-2.png" class="nwllsshmyyrh" alt="verify-2"></p>
 <hr>
 <h2 id="EAGLE-3"><a href="#EAGLE-3" class="headerlink" title="EAGLE-3"></a>EAGLE-3</h2><p>第三版主要是在训练上</p>
 <h3 id="新的训练架构"><a href="#新的训练架构" class="headerlink" title="新的训练架构"></a>新的训练架构</h3><h4 id="Training-time-test"><a href="#Training-time-test" class="headerlink" title="Training-time test"></a>Training-time test</h4><p>EAGLE 的训练是基于 feature-level 的，训练的损失是联合回归损失和分类损失$L = L<em>{reg} + w</em>{cls}*L<em>{cls}$。$L</em>{reg}$是feature的损失，但是$L_{cls}$的 token 损失其实才是最终的目标。这也就意味着 feature 会施加一个额外的约束，让 Draft Model 很难在更大的 training data 中获益。为此 EAGLE-3 做了这样的尝试：</p>
@@ -412,7 +412,7 @@ Do a big SMILE to today!
 <h3 id="Pipeline"><a href="#Pipeline" class="headerlink" title="Pipeline"></a>Pipeline</h3><p>第三版的pipeline如下图。除了增加了底层的 hidden_state 的使用；同时由于训练的时候使用的新方法，draft 部分原本的单步预测器也变成了更 transformer 的 decoder；decoder输入的序列中，会重复使用生成的 draft feature，对应了训练得到的”<strong>轨迹感</strong>“，能根据前面所有步骤形成的动态趋势进行自我修正</p>
 <p><img src="eagle-3-pipe.png" alt="eagle-3-pipe"></p>
 <h3 id="Training"><a href="#Training" class="headerlink" title="Training"></a>Training</h3><p>唯一要训练的部分就是 transformer decoder，训练的时候用了 tree-mask，从一个序列里产出的只能看到它这条路径上的Key（示意图里用 token 来代替了 feature 的表示）</p>
-<p><style>.stbmlrejfllj{zoom:67%;}</style><img src="/2026/02/13/EAGLE/eagle-treemask.png" class="stbmlrejfllj" alt="eagle-treemask"></p>
+<p><style>.guzghgeqfksc{zoom:67%;}</style><img src="/2026/02/13/EAGLE/eagle-treemask.png" class="guzghgeqfksc" alt="eagle-treemask"></p>
 <p>对于每一步的训练，由于浅层的错误是更致命的，所以可能会给不同深度的节点分配训练权重，看代码的时候看看</p>
 <hr>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>EAGLE 由于加入了 token 的选择，可以加强 spec 过程中的上下文逻辑，减轻不确定性，从而获得更高的 Accept Rate</p>
