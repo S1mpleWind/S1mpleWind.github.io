@@ -22,15 +22,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"s1mplewind.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.26.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="DSA算子分析经过了前置的学习DSA以及FA的学习之后，是时候分析一下现有的dsa算子了 分析的来源目前均为推理引擎SGLang中现有的实现">
+    <meta name="description" content="DSA算子分析 经过了前置的学习DSA以及FA的学习之后，是时候分析一下现有的dsa算子了 分析的来源目前均为推理引擎SGLang中现有的实现 由于我现在接触到的是H卡，所以下面的分析基本都以 Hopper 架构为基础">
 <meta property="og:type" content="article">
 <meta property="og:title" content="dsa-op">
 <meta property="og:url" content="http://s1mplewind.github.io/2026/05/08/dsa-op/index.html">
 <meta property="og:site_name" content="S1mpleWind&#39;s blog">
-<meta property="og:description" content="DSA算子分析经过了前置的学习DSA以及FA的学习之后，是时候分析一下现有的dsa算子了 分析的来源目前均为推理引擎SGLang中现有的实现">
+<meta property="og:description" content="DSA算子分析 经过了前置的学习DSA以及FA的学习之后，是时候分析一下现有的dsa算子了 分析的来源目前均为推理引擎SGLang中现有的实现 由于我现在接触到的是H卡，所以下面的分析基本都以 Hopper 架构为基础">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2026-05-08T12:05:57.000Z">
-<meta property="article:modified_time" content="2026-05-08T12:10:33.863Z">
+<meta property="article:modified_time" content="2026-05-09T09:02:09.720Z">
 <meta property="article:author" content="S1mpleWind">
 <meta name="twitter:card" content="summary">
 
@@ -173,7 +173,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#DSA%E7%AE%97%E5%AD%90%E5%88%86%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">DSA算子分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#flash-mla"><span class="nav-number">1.1.</span> <span class="nav-text">flash-mla</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#flash-mla-sparse"><span class="nav-number">1.2.</span> <span class="nav-text">flash-mla-sparse</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fa3"><span class="nav-number">1.3.</span> <span class="nav-text">fa3</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#dsa%E7%AE%97%E5%AD%90%E5%88%86%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text"> DSA算子分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#sglang-nsa-backend"><span class="nav-number">1.1.</span> <span class="nav-text"> SGLang nsa backend</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#flashmla-sparse"><span class="nav-number">1.2.</span> <span class="nav-text"> flashmla-sparse</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#quick-qa"><span class="nav-number">1.2.1.</span> <span class="nav-text"> Quick QA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#op"><span class="nav-number">1.2.2.</span> <span class="nav-text"> op</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fa3"><span class="nav-number">1.3.</span> <span class="nav-text"> fa3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-number">1.4.</span> <span class="nav-text"> Reference</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -266,9 +266,15 @@ Do a big SMILE to today!
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2026-05-08 20:05:57 / Modified: 20:10:33" itemprop="dateCreated datePublished" datetime="2026-05-08T20:05:57+08:00">2026-05-08</time>
+      <time title="Created: 2026-05-08 20:05:57" itemprop="dateCreated datePublished" datetime="2026-05-08T20:05:57+08:00">2026-05-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2026-05-09 17:02:09" itemprop="dateModified" datetime="2026-05-09T17:02:09+08:00">2026-05-09</time>
     </span>
 
   
@@ -285,14 +291,14 @@ Do a big SMILE to today!
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">Word count in article: </span>
-      <span>97</span>
+      <span>1k</span>
     </span>
     <span class="post-meta-item" title="Reading time">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>1 mins.</span>
+      <span>2 mins.</span>
     </span>
 </div>
 
@@ -302,10 +308,48 @@ Do a big SMILE to today!
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="DSA算子分析"><a href="#DSA算子分析" class="headerlink" title="DSA算子分析"></a>DSA算子分析</h1><p>经过了前置的学习<a href="https://s1mplewind.github.io/2026/04/09/DSA/">DSA</a>以及<a href="https://s1mplewind.github.io/2026/05/06/flash-attn/">FA</a>的学习之后，是时候分析一下现有的dsa算子了</p>
+    <div class="post-body" itemprop="articleBody"><h1 id="dsa算子分析"><a class="markdownIt-Anchor" href="#dsa算子分析"></a> DSA算子分析</h1>
+<p>经过了前置的学习<a href="https://s1mplewind.github.io/2026/04/09/DSA/">DSA</a>以及<a href="https://s1mplewind.github.io/2026/05/06/flash-attn/">FA</a>的学习之后，是时候分析一下现有的dsa算子了</p>
 <p>分析的来源目前均为推理引擎SGLang中现有的实现</p>
+<p>由于我现在接触到的是H卡，所以下面的分析基本都以 Hopper 架构为基础</p>
 <span id="more"></span>
-<h2 id="flash-mla"><a href="#flash-mla" class="headerlink" title="flash-mla"></a>flash-mla</h2><h2 id="flash-mla-sparse"><a href="#flash-mla-sparse" class="headerlink" title="flash-mla-sparse"></a>flash-mla-sparse</h2><h2 id="fa3"><a href="#fa3" class="headerlink" title="fa3"></a>fa3</h2>
+<h2 id="sglang-nsa-backend"><a class="markdownIt-Anchor" href="#sglang-nsa-backend"></a> SGLang nsa backend</h2>
+<p>nsa prefill/decode 注意力算子的选项包括：</p>
+<ul>
+<li><code>flashmla_sparse</code>：来自 <code>flash_mla</code> 库的 <code>flash_mla_sparse_fwd</code> 算子。可在 Hopper 和 Blackwell GPU 上运行。需要 bf16 格式的 q, kv 输入。</li>
+<li><code>flashmla_kv</code>：来自 <code>flash_mla</code> 库的 <code>flash_mla_with_kvcache</code> 算子。可在 Hopper 和 Blackwell GPU 上运行。需要 bf16 格式的 q 和 fp8 格式的 k_cache 输入。</li>
+<li><code>fa3</code>：来自 <code>flash_attn</code> 库的 <code>flash_attn_with_kvcache</code> 算子。仅能在 Hopper GPU 上运行。需要 bf16 格式的 q, kv 输入。</li>
+<li><code>tilelang</code>：可在 GPU、HPU 和 NPU 上运行的 <code>tilelang</code> 实现。</li>
+<li><code>aiter</code>：AMD HPU 上的 Aiter 算子。仅能用作 decode 算子。</li>
+</ul>
+<p>基于benchmark，H200 和 B200 的默认配置设置如下：</p>
+<ul>
+<li>H200：<code>flashmla_sparse</code> prefill 注意力（短序列 prefill 通过 FlashAttention varlen 使用 MHA），<code>fa3</code> decode 注意力</li>
+<li>B200：<code>flashmla_auto</code> prefill 注意力（短序列 prefill 通过 TRT-LLM ragged 使用 MHA），<code>flashmla_kv</code> decode 注意力</li>
+</ul>
+<h2 id="flashmla-sparse"><a class="markdownIt-Anchor" href="#flashmla-sparse"></a> flashmla-sparse</h2>
+<h3 id="quick-qa"><a class="markdownIt-Anchor" href="#quick-qa"></a> Quick QA</h3>
+<p>Q：为什么不用fa3：</p>
+<p>A：因为<code>fa3</code>的实现里虽然支持kv page且paged寻址天然就支持随机访问，但是它不能处理不同Q使用了不同的kv地址的情况，除非退化为每个SM只执行一个Q，效率极低</p>
+<p>Q：为什么不用MHA mode</p>
+<p>A：</p>
+<ul>
+<li>Dense prefill MHA vs MQA：MHA计算量小，prefill compute-bound → 选MHA</li>
+<li>Sparse prefill MHA vs MQA：
+<ul>
+<li>top-k大幅减少了KV数量 → compute-bound假设减弱</li>
+<li>MQA不需要展开K/V → 避免了L_q × top-k × n_heads的巨型中间tensor→ MQA的IO优势反而更突出</li>
+</ul>
+</li>
+</ul>
+<h3 id="op"><a class="markdownIt-Anchor" href="#op"></a> op</h3>
+<blockquote></blockquote>
+<h2 id="fa3"><a class="markdownIt-Anchor" href="#fa3"></a> fa3</h2>
+<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h2>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.sglang.com.cn/basic_usage/deepseek_v32.html">sglang doc</a></li>
+</ul>
+
     </div>
 
     
@@ -370,13 +414,13 @@ Do a big SMILE to today!
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="Word count total">100k</span>
+    <span title="Word count total">117k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">3:02</span>
+    <span title="Reading time total">3:33</span>
   </span>
 </div>
 <div class="busuanzi-count">
