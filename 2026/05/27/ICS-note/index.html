@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/black/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous" defer></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"s1mplewind.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.26.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="ICS-note ICS2 note, organized based on slides and textbook  因为最近太忙了，其实草稿箱里有好几篇blog都没空动笔， 先拿这篇 ics 的复习笔记水一水，后面应该会增加更多思路性的东西，能把整篇穿起来">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ICS2-note">
+<meta property="og:url" content="http://s1mplewind.github.io/2026/05/27/ICS-note/index.html">
+<meta property="og:site_name" content="S1mpleWind&#39;s blog">
+<meta property="og:description" content="ICS-note ICS2 note, organized based on slides and textbook  因为最近太忙了，其实草稿箱里有好几篇blog都没空动笔， 先拿这篇 ics 的复习笔记水一水，后面应该会增加更多思路性的东西，能把整篇穿起来">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/05/27/ICS-note/cc87cbcb356fe6dba523352732179f7e.jpg">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/05/27/ICS-note/12f1c33ea3c1bb59ba2909b4380696cf.jpg">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/05/27/ICS-note/bf60e8ec73a339a3560063aa442f6861.jpg">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/05/27/ICS-note/1ff8407363186e9a060a0ee691026f21.jpg">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/05/27/ICS-note/a8763ecf92a3a34fd2a02a403d13c335.jpg">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/05/27/ICS-note/intel.png">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/05/27/ICS-note/VMA.png">
+<meta property="og:image" content="http://s1mplewind.github.io/2026/05/27/ICS-note/mmap.jpg">
+<meta property="article:published_time" content="2026-05-27T14:49:07.000Z">
+<meta property="article:modified_time" content="2026-05-27T14:19:37.765Z">
+<meta property="article:author" content="S1mpleWind">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://s1mplewind.github.io/2026/05/27/ICS-note/cc87cbcb356fe6dba523352732179f7e.jpg">
+
+
+<link rel="canonical" href="http://s1mplewind.github.io/2026/05/27/ICS-note/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://s1mplewind.github.io/2026/05/27/ICS-note/","path":"2026/05/27/ICS-note/","title":"ICS2-note"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ICS2-note | S1mpleWind's blog</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.10.1/mermaid.min.js","integrity":"sha256-BmQmdWDS8X2OTbrwELWK366LV6escyWhHHe0XCTU/Hk="}}</script>
+  <script src="/js/third-party/tags/mermaid.js" defer></script>
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+  <script src="/js/third-party/pace.js" defer></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" integrity="sha256-UF1fgpAiu3tPJN/uCqEUHNe7pnr+QR0SQDNfgglgtcM=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="/js/third-party/math/katex.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">S1mpleWind's blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">简约风的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">15</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">13</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">37</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="Searching..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ics-note"><span class="nav-number">1.</span> <span class="nav-text"> ICS-note</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#menu"><span class="nav-number">1.1.</span> <span class="nav-text"> Menu</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#to-be-archived"><span class="nav-number">1.2.</span> <span class="nav-text"> To be archived</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#memory-hierachy"><span class="nav-number">1.3.</span> <span class="nav-text"> Memory Hierachy</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#storage"><span class="nav-number">1.3.1.</span> <span class="nav-text"> Storage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ram"><span class="nav-number">1.3.2.</span> <span class="nav-text"> RAM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#locality"><span class="nav-number">1.3.3.</span> <span class="nav-text"> Locality</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mem-hierachy"><span class="nav-number">1.3.4.</span> <span class="nav-text"> Mem Hierachy</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#cache"><span class="nav-number">1.3.4.1.</span> <span class="nav-text"> Cache</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cache-memory"><span class="nav-number">1.3.5.</span> <span class="nav-text"> Cache Memory</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#general-organization-of-cache"><span class="nav-number">1.3.5.1.</span> <span class="nav-text"> General organization of cache</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#direct-mapping-cache"><span class="nav-number">1.3.5.2.</span> <span class="nav-text"> Direct mapping cache</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#writing-cache"><span class="nav-number">1.3.6.</span> <span class="nav-text"> Writing Cache</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#memory-mountain"><span class="nav-number">1.3.7.</span> <span class="nav-text"> Memory Mountain</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exceptional-control-flow"><span class="nav-number">1.4.</span> <span class="nav-text"> Exceptional Control Flow</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#process-control-exception"><span class="nav-number">1.4.1.</span> <span class="nav-text"> Process Control (Exception)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#reaping"><span class="nav-number">1.4.1.1.</span> <span class="nav-text"> reaping</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sleep"><span class="nav-number">1.4.1.2.</span> <span class="nav-text"> sleep</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#execve"><span class="nav-number">1.4.1.3.</span> <span class="nav-text"> execve</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#signals"><span class="nav-number">1.4.2.</span> <span class="nav-text"> Signals</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#sending-signal"><span class="nav-number">1.4.2.1.</span> <span class="nav-text"> Sending Signal</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#process-groups"><span class="nav-number">1.4.2.1.1.</span> <span class="nav-text"> Process Groups</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#kill-function"><span class="nav-number">1.4.2.1.2.</span> <span class="nav-text"> kill function</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#alarm-function"><span class="nav-number">1.4.2.1.3.</span> <span class="nav-text"> alarm function</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#receiving-signal"><span class="nav-number">1.4.2.2.</span> <span class="nav-text"> Receiving Signal</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#pending-signal-set"><span class="nav-number">1.4.2.2.1.</span> <span class="nav-text"> Pending Signal Set</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#sighandler"><span class="nav-number">1.4.2.2.2.</span> <span class="nav-text"> sighandler</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#blocking-n-unblocking"><span class="nav-number">1.4.2.3.</span> <span class="nav-text"> Blocking N Unblocking</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sighandler-design"><span class="nav-number">1.4.2.4.</span> <span class="nav-text"> Sighandler Design</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#avoid-nasty-concurrency-bugs"><span class="nav-number">1.4.2.5.</span> <span class="nav-text"> Avoid Nasty Concurrency Bugs</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#explictly-waiting-4-signals"><span class="nav-number">1.4.2.6.</span> <span class="nav-text"> Explictly waiting 4 signals</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nonlocal-jumps"><span class="nav-number">1.4.3.</span> <span class="nav-text"> Nonlocal Jumps</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sys-level-io"><span class="nav-number">1.5.</span> <span class="nav-text"> Sys-level I&#x2F;O</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#unix-io"><span class="nav-number">1.5.1.</span> <span class="nav-text"> Unix IO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#opening-and-closing-files"><span class="nav-number">1.5.2.</span> <span class="nav-text"> Opening and Closing Files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sharing-files"><span class="nav-number">1.5.3.</span> <span class="nav-text"> Sharing Files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#io-redirection"><span class="nav-number">1.5.4.</span> <span class="nav-text"> IO Redirection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rio"><span class="nav-number">1.5.5.</span> <span class="nav-text"> RIO</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#no-buffer-version"><span class="nav-number">1.5.5.1.</span> <span class="nav-text"> no-buffer version</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#with-buffer"><span class="nav-number">1.5.5.2.</span> <span class="nav-text"> with buffer:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#standard-io"><span class="nav-number">1.5.6.</span> <span class="nav-text"> Standard I&#x2F;O</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#virtual-memory"><span class="nav-number">1.6.</span> <span class="nav-text"> Virtual Memory</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#physical-and-virtual-memory"><span class="nav-number">1.6.1.</span> <span class="nav-text"> Physical and Virtual Memory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vm-as-a-tool-for-caching"><span class="nav-number">1.6.2.</span> <span class="nav-text"> VM as a tool for caching</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#page-table-and-address-translation"><span class="nav-number">1.6.3.</span> <span class="nav-text"> Page Table and Address Translation</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#page-fault"><span class="nav-number">1.6.3.1.</span> <span class="nav-text"> page fault</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#functionalities-of-pt"><span class="nav-number">1.6.4.</span> <span class="nav-text"> Functionalities of PT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tlb"><span class="nav-number">1.6.5.</span> <span class="nav-text"> TLB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#multi-level-page-table"><span class="nav-number">1.6.6.</span> <span class="nav-text"> Multi-level Page Table</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vma"><span class="nav-number">1.6.7.</span> <span class="nav-text"> VMA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#memory-mapping"><span class="nav-number">1.6.8.</span> <span class="nav-text"> Memory Mapping</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#fork-revisit"><span class="nav-number">1.6.8.1.</span> <span class="nav-text"> fork() revisit</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#user-level"><span class="nav-number">1.6.8.2.</span> <span class="nav-text"> User-level</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#page-swapping-and-replacement-policy"><span class="nav-number">1.6.9.</span> <span class="nav-text"> Page Swapping and Replacement Policy</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="S1mpleWind"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">S1mpleWind</p>
+  <div class="site-description" itemprop="description">If you don't play, you won't learn.
+Do a big SMILE to today!
+</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/S1mpleWind" title="gitHub → https:&#x2F;&#x2F;github.com&#x2F;S1mpleWind" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>gitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ivonjiao@gmail.com" title="E-Mail → mailto:ivonjiao@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://s1mplewind.github.io/2026/05/27/ICS-note/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="S1mpleWind">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="S1mpleWind's blog">
+      <meta itemprop="description" content="If you don't play, you won't learn.
+Do a big SMILE to today!
+">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ICS2-note | S1mpleWind's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ICS2-note
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2026-05-27 22:49:07 / Modified: 22:19:37" itemprop="dateCreated datePublished" datetime="2026-05-27T22:49:07+08:00">2026-05-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/OS/" itemprop="url" rel="index"><span itemprop="name">OS</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>6.2k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>11 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="ics-note"><a class="markdownIt-Anchor" href="#ics-note"></a> ICS-note</h1>
+<p>ICS2 note, organized based on slides and textbook</p>
+<blockquote>
+<p>因为最近太忙了，其实草稿箱里有好几篇blog都没空动笔，</p>
+<p>先拿这篇 ics 的复习笔记水一水，后面应该会增加更多思路性的东西，能把整篇穿起来</p>
+</blockquote>
+<span id="more"></span>
+<h2 id="menu"><a class="markdownIt-Anchor" href="#menu"></a> Menu</h2>
+<h2 id="to-be-archived"><a class="markdownIt-Anchor" href="#to-be-archived"></a> To be archived</h2>
+<p>errno: simplest way is to give it to a global variable</p>
+<p>Process Scheduling:</p>
+<ul>
+<li>
+<p>FIFO</p>
+</li>
+<li>
+<p>SJF</p>
+</li>
+<li>
+<p>STCF</p>
+</li>
+</ul>
+<hr />
+<h2 id="memory-hierachy"><a class="markdownIt-Anchor" href="#memory-hierachy"></a> Memory Hierachy</h2>
+<h3 id="storage"><a class="markdownIt-Anchor" href="#storage"></a> Storage</h3>
+<ul>
+<li>Disk, rotate</li>
+<li>SSD</li>
+<li>SRAM</li>
+<li>DRAM</li>
+</ul>
+<h3 id="ram"><a class="markdownIt-Anchor" href="#ram"></a> RAM</h3>
+<h3 id="locality"><a class="markdownIt-Anchor" href="#locality"></a> Locality</h3>
+<p><em>temporal locality</em>:  recent visited data will be visited again</p>
+<p><em>spatial locality</em>: data nearby will have more chance of being visited</p>
+<h3 id="mem-hierachy"><a class="markdownIt-Anchor" href="#mem-hierachy"></a> Mem Hierachy</h3>
+<h4 id="cache"><a class="markdownIt-Anchor" href="#cache"></a> Cache</h4>
+<p>higer level, less space</p>
+<p>Cache miss: fetch from a higher level, then overwriting an existing block if full (evicting)</p>
+<p>Placement policy: restrict to a smmal subset of lower level cache</p>
+<p>Miss types:</p>
+<ul>
+<li><em>cold miss</em>: warm up the cache</li>
+<li><em>conflict miss</em>: unhealthy miss, 'cause the cache is not full, <em>map policy</em> doesn’t behave well</li>
+<li>capacity Miss: this a healthy miss</li>
+</ul>
+<h3 id="cache-memory"><a class="markdownIt-Anchor" href="#cache-memory"></a> Cache Memory</h3>
+<h4 id="general-organization-of-cache"><a class="markdownIt-Anchor" href="#general-organization-of-cache"></a> General organization of cache</h4>
+<p>![cache organization](cache organization.png)</p>
+<h4 id="direct-mapping-cache"><a class="markdownIt-Anchor" href="#direct-mapping-cache"></a> Direct mapping cache</h4>
+<p>exactly one line ( E=1 )</p>
+<h3 id="writing-cache"><a class="markdownIt-Anchor" href="#writing-cache"></a> Writing Cache</h3>
+<p><em>write through</em>: immediately write back to memory</p>
+<p><em>write back</em>:</p>
+<ul>
+<li>
+<p>write back only when the data shall be evicted</p>
+</li>
+<li>
+<p>need a dirty bit</p>
+</li>
+</ul>
+<p>when it comes to write <em>miss</em>, there are 2 strategies correspondlingly:</p>
+<ul>
+<li><em>write-allocate</em> for write back: exchange level by level</li>
+<li><em>no-write-allocate</em> for write through: write directyly to low level</li>
+</ul>
+<h3 id="memory-mountain"><a class="markdownIt-Anchor" href="#memory-mountain"></a> Memory Mountain</h3>
+<hr />
+<h2 id="exceptional-control-flow"><a class="markdownIt-Anchor" href="#exceptional-control-flow"></a> Exceptional Control Flow</h2>
+<h3 id="process-control-exception"><a class="markdownIt-Anchor" href="#process-control-exception"></a> Process Control (Exception)</h3>
+<h4 id="reaping"><a class="markdownIt-Anchor" href="#reaping"></a> reaping</h4>
+<p>Pay attention to these concepts:</p>
+<ul>
+<li>zombie, child process terminated but not recycled</li>
+<li>orphane, child process who is still running when parent exit</li>
+</ul>
+<p>parent reaps the terminated child (<em>zombie</em>)</p>
+<p>init process:</p>
+<ul>
+<li>when a parent terminates, kernel arrange for <em>init process</em> to be the adopted parent of orpahaned children</li>
+<li>created during sys setup</li>
+<li>never terminate</li>
+<li>is the ancestor of every process</li>
+</ul>
+<p>waitpid function:</p>
+<p><code>pid_t waitpid(pid_t pid, int* statusp, int options);</code></p>
+<p>Returns: PID of child is OK, 0(if WHOHANG), or -1 if error</p>
+<p>TODO: 3 types of options</p>
+<h4 id="sleep"><a class="markdownIt-Anchor" href="#sleep"></a> sleep</h4>
+<h4 id="execve"><a class="markdownIt-Anchor" href="#execve"></a> execve</h4>
+<p>load and run the object, by passing a argument list and a environment variable list</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">execve</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* filename, <span class="type">const</span> <span class="type">char</span>* argv[], <span class="type">const</span> <span class="type">char</span>* envp[])</span></span><br><span class="line">    <span class="comment">//Doesnot return if OK, returns -1 if error</span></span><br></pre></td></tr></table></figure>
+<h3 id="signals"><a class="markdownIt-Anchor" href="#signals"></a> Signals</h3>
+<p>higher level of exceptional control flow</p>
+<p><strong>Difference</strong> between signal and exception</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>sender</th>
+<th>receiver</th>
+<th></th>
+<th>character</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>signal</td>
+<td>cpu (user or kernel mode)</td>
+<td>kernel</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>exception</td>
+<td>kernel mode</td>
+<td>user mode</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h4 id="sending-signal"><a class="markdownIt-Anchor" href="#sending-signal"></a> Sending Signal</h4>
+<h5 id="process-groups"><a class="markdownIt-Anchor" href="#process-groups"></a> Process Groups</h5>
+<h5 id="kill-function"><a class="markdownIt-Anchor" href="#kill-function"></a> kill function</h5>
+<p>send signal to a particular process / process group</p>
+<h5 id="alarm-function"><a class="markdownIt-Anchor" href="#alarm-function"></a> alarm function</h5>
+<p>return remaining sec of previous alarm</p>
+<hr />
+<h4 id="receiving-signal"><a class="markdownIt-Anchor" href="#receiving-signal"></a> Receiving Signal</h4>
+<h5 id="pending-signal-set"><a class="markdownIt-Anchor" href="#pending-signal-set"></a> Pending Signal Set</h5>
+<h5 id="sighandler"><a class="markdownIt-Anchor" href="#sighandler"></a> sighandler</h5>
+<hr />
+<h4 id="blocking-n-unblocking"><a class="markdownIt-Anchor" href="#blocking-n-unblocking"></a> Blocking N Unblocking</h4>
+<ul>
+<li>Implicit: <em>kernel</em></li>
+<li>Explicit</li>
+</ul>
+<hr />
+<h4 id="sighandler-design"><a class="markdownIt-Anchor" href="#sighandler-design"></a> Sighandler Design</h4>
+<ul>
+<li>G0</li>
+<li>G1</li>
+</ul>
+<p>Design should be aware that pending signals <strong>are not queued</strong></p>
+<p>eg. catch SIGCHLD to reap children</p>
+<hr />
+<h4 id="avoid-nasty-concurrency-bugs"><a class="markdownIt-Anchor" href="#avoid-nasty-concurrency-bugs"></a> Avoid Nasty Concurrency Bugs</h4>
+<p>key: signals are async,</p>
+<p>eg. If a parents calls fork() and create a record of the child, and registers a <em>sighandler</em> to delete the record after SIGCHLD, it may face bugs</p>
+<p>this is called a <strong>race</strong></p>
+<h4 id="explictly-waiting-4-signals"><a class="markdownIt-Anchor" href="#explictly-waiting-4-signals"></a> Explictly waiting 4 signals</h4>
+<p>use a <code>pause</code>funtion, and a while loop; however the signal may race with pause which could cause the  program from never ending</p>
+<p>A popular solution is <code>sigsuspend</code>, which is a atomic combination of <code>sigprocmask-pause-sigprocmask</code></p>
+<h3 id="nonlocal-jumps"><a class="markdownIt-Anchor" href="#nonlocal-jumps"></a> Nonlocal Jumps</h3>
+<p><code>setjmp (jmp_buf env)</code></p>
+<p><code>longjmp (jmp_buf env, int retval)</code>restores the program from the very point of <code>setjmp</code> return</p>
+<p><em>setjmp</em> can be called for several times:</p>
+<ul>
+<li>at first time, save the env, returns 0</li>
+<li>then each corresponding longjmp call, returns retval</li>
+</ul>
+<p>while <em>longjmp</em> may be called several times, but never returns</p>
+<p>It may bring bugs like memory leak</p>
+<p>Application:</p>
+<ol>
+<li>Permit immediate return from a deeply nested function call</li>
+<li>Branch out of a signal handler to a specific code location, rather than to the instr that was interrupted by the signal</li>
+</ol>
+<hr />
+<h2 id="sys-level-io"><a class="markdownIt-Anchor" href="#sys-level-io"></a> Sys-level I/O</h2>
+<h3 id="unix-io"><a class="markdownIt-Anchor" href="#unix-io"></a> Unix IO</h3>
+<p>modeled as files</p>
+<p>records <em>file offset</em> k</p>
+<h3 id="opening-and-closing-files"><a class="markdownIt-Anchor" href="#opening-and-closing-files"></a> Opening and Closing Files</h3>
+<p><code>open</code> converts a filename into a <strong>file descriptor</strong> and returns fd num</p>
+<p><img src="cc87cbcb356fe6dba523352732179f7e.jpg" alt="cc87cbcb356fe6dba523352732179f7e" /></p>
+<h3 id="sharing-files"><a class="markdownIt-Anchor" href="#sharing-files"></a> Sharing Files</h3>
+<p>if a child is fork() from its parent, then the two processes have <em>different</em> fd table, but will point to one open file,  whose <code>refcnt++</code></p>
+<p><img src="12f1c33ea3c1bb59ba2909b4380696cf.jpg" alt="12f1c33ea3c1bb59ba2909b4380696cf" /></p>
+<h3 id="io-redirection"><a class="markdownIt-Anchor" href="#io-redirection"></a> IO Redirection</h3>
+<p><code>dup(oldfd)</code>creates a copy using currently avaliable smallest num</p>
+<p><code>dup2(oldfd, newfd)</code>overwrites the entry in fd table</p>
+<p><img src="bf60e8ec73a339a3560063aa442f6861.jpg" alt="bf60e8ec73a339a3560063aa442f6861" /></p>
+<h3 id="rio"><a class="markdownIt-Anchor" href="#rio"></a> RIO</h3>
+<h4 id="no-buffer-version"><a class="markdownIt-Anchor" href="#no-buffer-version"></a> no-buffer version</h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">ssize_t</span> <span class="title function_">rio_readn</span><span class="params">()</span></span><br><span class="line"><span class="type">ssize_t</span> <span class="title function_">rio_writen</span><span class="params">()</span></span><br><span class="line">    <span class="meta"># returns: num of bytes transferred <span class="keyword">if</span> OK, 0 on EOF, -1 on <span class="keyword">error</span></span></span><br></pre></td></tr></table></figure>
+<h4 id="with-buffer"><a class="markdownIt-Anchor" href="#with-buffer"></a> with buffer:</h4>
+<p>in this version, the high level functions are based on internel function<code>rio_read()</code></p>
+<p>First define a struct</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">int</span> rio_fd;                <span class="comment">// fd</span></span><br><span class="line">    <span class="type">int</span> rio_cnt;               <span class="comment">// Unread bytes in internal buf</span></span><br><span class="line">    <span class="type">char</span> *rio_bufptr;          <span class="comment">// Ptr to next unread byte</span></span><br><span class="line">    <span class="type">char</span> rio_buf[RIO_BUFSIZE]; <span class="comment">// Internal buffer</span></span><br><span class="line">&#125; <span class="type">rio_t</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">rio_readinitb</span><span class="params">()</span></span><br><span class="line"></span><br><span class="line"><span class="type">ssize_t</span> <span class="title function_">rio_readlineb</span><span class="params">()</span></span><br><span class="line"><span class="type">ssize_t</span> <span class="title function_">rio_readnb</span><span class="params">()</span></span><br></pre></td></tr></table></figure>
+<h3 id="standard-io"><a class="markdownIt-Anchor" href="#standard-io"></a> Standard I/O</h3>
+<p>open files as <strong>streams</strong></p>
+<p>similar to rio with buffer,but it is generally designed to operate <strong>in one state at a time</strong></p>
+<hr />
+<h2 id="virtual-memory"><a class="markdownIt-Anchor" href="#virtual-memory"></a> Virtual Memory</h2>
+<h3 id="physical-and-virtual-memory"><a class="markdownIt-Anchor" href="#physical-and-virtual-memory"></a> Physical and Virtual Memory</h3>
+<h3 id="vm-as-a-tool-for-caching"><a class="markdownIt-Anchor" href="#vm-as-a-tool-for-caching"></a> VM as a tool for caching</h3>
+<p>See VM as a tool for <strong>caching data from disk</strong>, it can maximize the use of memory</p>
+<p>However, the cached data are always organized in <em>Physical</em> address, see it in later section where <strong>reverse mapping</strong> takes the responsibility</p>
+<h3 id="page-table-and-address-translation"><a class="markdownIt-Anchor" href="#page-table-and-address-translation"></a> Page Table and Address Translation</h3>
+<p>Because of <strong>large miss penalty</strong> and <strong>large expense of accessing the first byte</strong>, VM system paritions VM into <em>pages</em> of size 4k blocks, naming <em>Vitual Page</em></p>
+<p>Similarly PM is also partitioned into <em>Phsical Page</em></p>
+<p>Thus <em>Page Table</em> plays the role of mapping virtual address to physical address, playing an important role in address translation</p>
+<p>Here’s the component of <em>Virtual Address</em> and <em>Physical Address</em>:</p>
+<ul>
+<li>the front part is marked as page number</li>
+<li>the latter part is marked as page offset</li>
+</ul>
+<p><img src="1ff8407363186e9a060a0ee691026f21.jpg" alt="1ff8407363186e9a060a0ee691026f21" /></p>
+<p>Page table: index is VPN while its entry consists PPN</p>
+<p><img src="a8763ecf92a3a34fd2a02a403d13c335.jpg" alt="a8763ecf92a3a34fd2a02a403d13c335" /></p>
+<h4 id="page-fault"><a class="markdownIt-Anchor" href="#page-fault"></a> page fault</h4>
+<p>If a DRAM miss happens, or say there’s no valid item in corresponding PTE, this is a Page fault.</p>
+<p>Handler will try to update the PT; if the PM is already full, then chose a victim to swap out.</p>
+<h3 id="functionalities-of-pt"><a class="markdownIt-Anchor" href="#functionalities-of-pt"></a> Functionalities of PT</h3>
+<p>Thus PT serves as a tool for:</p>
+<ol>
+<li>Memory management</li>
+<li>Memory protection: Extend PTE with permission bits</li>
+<li>Memory recorder: Extend PTE with a <em>Reference bit</em> and a <em>dirty bit</em></li>
+</ol>
+<h3 id="tlb"><a class="markdownIt-Anchor" href="#tlb"></a> TLB</h3>
+<p>PT is a powerful tool, but it faces a problem. Dig into its procedure:</p>
+<ol>
+<li>get VA and the base address of PT, calulate the PTEA(a PA)</li>
+<li>fetch PTE from memory, using PTEA</li>
+<li>translate into PA, fetch memory</li>
+</ol>
+<p>This procedure contains 2 times of visiting memory, how to reduce the overhead?</p>
+<p>By Applying the method of cache to PT, a TLB(<em>Translation Lookaside Buffer</em>) is created. It is a SRAM that can be visited faster, which caches the recent translated address</p>
+<h3 id="multi-level-page-table"><a class="markdownIt-Anchor" href="#multi-level-page-table"></a> Multi-level Page Table</h3>
+<p>Uses a <strong>multi-level PT</strong>: if we use a single level PT, then it is gonna to hold 2^(n-12) lines of entries. By spliting it into more levels, it is broken down into sections, which can save considerable space.</p>
+<p>The base address of first-level PT is store in a register named <strong>CR3</strong> (Thus this table cannot be swapped out, which may be discussed later)</p>
+<p><img src="intel.png" alt="intel" /></p>
+<h3 id="vma"><a class="markdownIt-Anchor" href="#vma"></a> VMA</h3>
+<p>Virtual Memory Area, can be displayed in data structure below</p>
+<p><img src="VMA.png" alt="VMA" /></p>
+<ul>
+<li>vm_prot: premision</li>
+<li>vn_flags: share / private</li>
+</ul>
+<h3 id="memory-mapping"><a class="markdownIt-Anchor" href="#memory-mapping"></a> Memory Mapping</h3>
+<p>A <strong>VM</strong> area can get its intial values from the object, it can be backed by</p>
+<ul>
+<li>regular file on disk</li>
+<li>anonymous file (nothing)</li>
+</ul>
+<h4 id="fork-revisit"><a class="markdownIt-Anchor" href="#fork-revisit"></a> fork() revisit</h4>
+<p>Make copies of old process’s <em>mm_struct</em>, <em>vm_area_struct</em>, <em>PT</em></p>
+<p>The PM will be separated using “Copy On Write” strategy (a lazy strategy).</p>
+<h4 id="user-level"><a class="markdownIt-Anchor" href="#user-level"></a> User-level</h4>
+<p>call <code>mmap</code> to allow tansfer without copying into user space</p>
+<p><img src="mmap.jpg" alt="mmap" /></p>
+<h3 id="page-swapping-and-replacement-policy"><a class="markdownIt-Anchor" href="#page-swapping-and-replacement-policy"></a> Page Swapping and Replacement Policy</h3>
+<p>happen time: maintain a <em>high/low water mark</em></p>
+<p>There are a few replace policies:</p>
+<ul>
+<li><strong>OPT</strong>: optimal strategy</li>
+<li><strong>FIFO</strong>: first in first out</li>
+<li></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="followme">
+  <span>Welcome to my other publishing channels</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/S1mpleWind">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">Github</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/07/03/maintanance/" rel="prev" title="maintanance">
+                  <i class="fa fa-angle-left"></i> maintanance
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/05/08/dsa-op/" rel="next" title="dsa-op">
+                  dsa-op <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2025 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-fan"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">S1mpleWind</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="Word count total">124k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">3:46</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+</div><script
+    color="0,64,0"
+    opacity="0.8"
+    zIndex="-1"
+    count="109"
+    src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"
+></script>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/S1mpleWind" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

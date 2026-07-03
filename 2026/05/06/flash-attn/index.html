@@ -44,7 +44,7 @@
 <meta property="og:image" content="http://s1mplewind.github.io/2026/05/06/flash-attn/warp.png">
 <meta property="og:image" content="http://s1mplewind.github.io/2026/05/06/flash-attn/illustrate.jpg">
 <meta property="article:published_time" content="2026-05-06T07:08:03.000Z">
-<meta property="article:modified_time" content="2026-05-12T07:38:07.519Z">
+<meta property="article:modified_time" content="2026-06-03T05:37:10.602Z">
 <meta property="article:author" content="S1mpleWind">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://s1mplewind.github.io/2026/05/06/flash-attn/3pass.png">
@@ -137,7 +137,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">15</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">12</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">35</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">15</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">13</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">37</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
         </a>
@@ -205,13 +205,13 @@ Do a big SMILE to today!
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -289,7 +289,7 @@ Do a big SMILE to today!
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-05-12 15:38:07" itemprop="dateModified" datetime="2026-05-12T15:38:07+08:00">2026-05-12</time>
+      <time title="Modified: 2026-06-03 13:37:10" itemprop="dateModified" datetime="2026-06-03T13:37:10+08:00">2026-06-03</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -403,6 +403,7 @@ Do a big SMILE to today!
 <p>FlashAttention backward pass最主要的优化就是：Recompute。对比Standard Self Attention，FlashAttention在前向不需要保留S和P矩阵，所以backward的时候也要重新计算一遍S和P</p>
 <p>既然是重算，为什么还是优化呢？因为standard的实现里是要读取<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo separator="true">,</mo><mi>P</mi></mrow><annotation encoding="application/x-tex">S,P</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span>，写回<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mi>S</mi><mo separator="true">,</mo><mi>d</mi><mi>P</mi></mrow><annotation encoding="application/x-tex">dS,dP</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">d</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal">d</span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span>的这个I/O过程的overhead远大于计算量的增加；同时也能减少OOM的风险</p>
 <p>这也就说明随着迭代，在芯片上计算是越来越廉价的，但是 I/O 还是很昂贵</p>
+<hr />
 <h2 id="2-flashattn-v2"><a class="markdownIt-Anchor" href="#2-flashattn-v2"></a> 2. Flashattn-v2</h2>
 <p>这篇是对第一篇技术上的优化</p>
 <h3 id="1-减少非matmul的冗余计算"><a class="markdownIt-Anchor" href="#1-减少非matmul的冗余计算"></a> 1). 减少非matmul的冗余计算</h3>
@@ -524,13 +525,13 @@ Do a big SMILE to today!
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="Word count total">117k</span>
+    <span title="Word count total">124k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">3:33</span>
+    <span title="Reading time total">3:46</span>
   </span>
 </div>
 <div class="busuanzi-count">
